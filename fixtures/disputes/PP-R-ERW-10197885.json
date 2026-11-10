@@ -53,11 +53,6 @@
       "method": "GET"
     },
     {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/make-offer",
-      "rel": "make_offer",
-      "method": "POST"
-    },
-    {
       "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/accept-claim",
       "rel": "accept_claim",
       "method": "POST"
@@ -70,6 +65,11 @@
     {
       "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/escalate",
       "rel": "escalate",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/make-offer",
+      "rel": "make_offer",
       "method": "POST"
     }
   ],
