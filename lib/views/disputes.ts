@@ -117,6 +117,7 @@ export function listDisputeRows(db: Db, now = new Date()): DisputeListRow[] {
 export type TimelineEntry = { at: string; kind: 'paypal' | 'agent' | 'human' | 'system'; title: string; detail?: string };
 
 export type CaseFile = {
+  asOf: string; // server render time, for hydration-safe clocks
   dispute: DisputeListRow;
   raw: { reason: string; stage: string; status: string; requestedEvidence: string[]; availableActions: string[]; buyerClaim: string; outcome: string | null };
   order: { id: string; createdAt: string; items: { name: string; qty: number; unitCents: number }[]; totalCents: number; shipTo: { city: string; region: string; postal: string }; note: string | null } | null;
@@ -157,6 +158,7 @@ export function getCaseFile(db: Db, id: string, now = new Date()): CaseFile | nu
   timeline.sort((a, b) => a.at.localeCompare(b.at));
 
   return {
+    asOf: now.toISOString(),
     dispute: listRow,
     raw: {
       reason: d.reason,

@@ -17,9 +17,13 @@ export const URGENCY: Record<DeadlineBucket, { color: string; soft: string; labe
   none: { color: 'var(--v-faint)', soft: 'var(--v-highlight)', label: 'No clock' },
 };
 
-/** Re-render every `ms` so countdowns tick. */
-export function useNow(ms = 30_000) {
-  const [now, setNow] = useState(() => new Date());
+/**
+ * Re-render every `ms` so countdowns tick. `initialIso` (the server's render time) makes the first
+ * client render match the server HTML; the clock catches up right after hydration.
+ */
+export function useNow(ms = 30_000, initialIso?: string) {
+  const [now, setNow] = useState(() => (initialIso ? new Date(initialIso) : new Date()));
+  useEffect(() => setNow(new Date()), []);
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), ms);
     return () => clearInterval(t);
@@ -95,7 +99,7 @@ export function Timeline({ items, dense = false }: { items: TimelineItem[]; dens
           <span aria-hidden className="mt-1.5 size-[11px] shrink-0 rounded-full border-2 border-v-surface" style={{ background: KIND[it.kind].color }} />
           <div className="min-w-0">
             <p className={`${dense ? 'text-[13px]' : 'text-sm'} font-medium text-v-ink`}>{it.title}</p>
-            <p className="text-xs text-v-muted">
+            <p className="text-xs text-v-muted" suppressHydrationWarning>
               <span className="sr-only">{KIND[it.kind].label}, </span>
               {fmt(it.at)}
               {it.detail ? <> · {it.detail}</> : null}
