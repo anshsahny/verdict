@@ -1,63 +1,130 @@
 @import "tailwindcss";
 
+/*
+ * Verdict design tokens: one source of truth for the app shell (Tailwind colours below, e.g.
+ * bg-v-surface), for AG Studio (lib/ui/studio-theme.ts) and for AG Grid cells, which all read
+ * these variables. Light by default; dark via [data-theme="dark"] on <html> (set from the
+ * system preference or the toggle) - Studio follows through data-ag-theme-mode.
+ */
+:root {
+  --v-canvas: #f6f5f1;
+  --v-surface: #ffffff;
+  --v-raised: #fbfaf7;
+  --v-ink: #15172a;
+  --v-muted: #5c6271;
+  --v-faint: #8b909c;
+  --v-border: #e3e0d8;
+  --v-gridline: #eeece6;
+  --v-highlight: #eef1fb;
+  --v-accent: #2f55d4; /* links, focus, primary buttons */
+  --v-accent-ink: #ffffff;
+  --v-win: #0e7a5c;
+  --v-win-soft: #e3f4ee;
+  --v-warn: #b26a00;
+  --v-warn-soft: #fbf0dc;
+  --v-danger: #c0342b;
+  --v-danger-soft: #fbe6e3;
+  --v-info-soft: #e8edfb;
+  --v-sim: #6b4fc8; /* SIMULATED badge */
+  --v-sim-soft: #efeafb;
+  --v-font: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --v-mono: var(--font-mono-face), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --v-chart-1: #2f55d4;
+  --v-chart-2: #0e7a5c;
+  --v-chart-3: #d08a1d;
+  --v-chart-4: #c0342b;
+  --v-chart-5: #6b4fc8;
+  --v-chart-6: #1c8fa8;
+  --v-chart-7: #8a6a3f;
+  --v-chart-8: #4f5b75;
+  --v-chart-9: #b45a8c;
+  --v-chart-10: #7d8a3a;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --v-canvas: #0e1017;
+  --v-surface: #161924;
+  --v-raised: #1b1f2c;
+  --v-ink: #e9eaf0;
+  --v-muted: #a0a6b6;
+  --v-faint: #747b8d;
+  --v-border: #2a2f3e;
+  --v-gridline: #222634;
+  --v-highlight: #1f2640;
+  --v-accent: #7c9cff;
+  --v-accent-ink: #0e1017;
+  --v-win: #3cc49a;
+  --v-win-soft: #13302a;
+  --v-warn: #f0a93b;
+  --v-warn-soft: #33270f;
+  --v-danger: #ff6f61;
+  --v-danger-soft: #3a1b19;
+  --v-info-soft: #1c2440;
+  --v-sim: #b39cff;
+  --v-sim-soft: #251f3d;
+  --v-chart-1: #7c9cff;
+  --v-chart-2: #3cc49a;
+  --v-chart-3: #f0a93b;
+  --v-chart-4: #ff6f61;
+  --v-chart-5: #b39cff;
+  --v-chart-6: #4fc3dc;
+  --v-chart-7: #c9a36a;
+  --v-chart-8: #8f9bb8;
+  --v-chart-9: #e08bbb;
+  --v-chart-10: #b8c46a;
+  color-scheme: dark;
+}
+
 @theme inline {
-  --font-mono: var(--font-geist-mono);
+  --color-v-canvas: var(--v-canvas);
+  --color-v-surface: var(--v-surface);
+  --color-v-raised: var(--v-raised);
+  --color-v-ink: var(--v-ink);
+  --color-v-muted: var(--v-muted);
+  --color-v-faint: var(--v-faint);
+  --color-v-border: var(--v-border);
+  --color-v-highlight: var(--v-highlight);
+  --color-v-accent: var(--v-accent);
+  --color-v-accent-ink: var(--v-accent-ink);
+  --color-v-win: var(--v-win);
+  --color-v-win-soft: var(--v-win-soft);
+  --color-v-warn: var(--v-warn);
+  --color-v-warn-soft: var(--v-warn-soft);
+  --color-v-danger: var(--v-danger);
+  --color-v-danger-soft: var(--v-danger-soft);
+  --color-v-info-soft: var(--v-info-soft);
+  --color-v-sim: var(--v-sim);
+  --color-v-sim-soft: var(--v-sim-soft);
+  --font-sans: var(--v-font);
+  --font-mono: var(--v-mono);
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--pp-canvas);
-  color: var(--pp-ink);
-  font-family: var(--pp-font);
+  background: var(--v-canvas);
+  color: var(--v-ink);
+  font-family: var(--v-font);
+  -webkit-font-smoothing: antialiased;
 }
 
-/*
- * PayPal design tokens: the single source of truth for the dashboard shell (through the
- * Tailwind colours below, e.g. bg-pp-blue), for AG Studio (app/dashboard/studio/theme.ts)
- * and for AG Grid (app/(endpoints)/data-grid.tsx), whose themes reference these variables directly.
- */
-:root {
-  --pp-navy: #001c64;
-  --pp-blue: #0070e0;
-  --pp-blue-dark: #003087;
-  --pp-sky: #009cde;
-  --pp-highlight: #e6f0fc;
-  --pp-canvas: #f5f7fa;
-  --pp-surface: #ffffff;
-  --pp-border: #dbe1e8;
-  --pp-gridline: #e9edf2;
-  --pp-ink: #001435;
-  --pp-muted: #545d68;
-  --pp-success: #00875a;
-  --pp-warning: #b45309;
-  --pp-danger: #c4122f;
-  --pp-font: "PayPal Open", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-  /* Chart series, PayPal blue and navy first. */
-  --pp-chart-1: #0070e0;
-  --pp-chart-2: #001c64;
-  --pp-chart-3: #00a8a8;
-  --pp-chart-4: #f5a623;
-  --pp-chart-5: #7b61ff;
-  --pp-chart-6: #e8615a;
-  --pp-chart-7: #60cdff;
-  --pp-chart-8: #2e9e6a;
-  --pp-chart-9: #b47cd8;
-  --pp-chart-10: #8a94a6;
+:focus-visible {
+  outline: 2px solid var(--v-accent);
+  outline-offset: 2px;
 }
 
-@theme inline {
-  --color-pp-navy: var(--pp-navy);
-  --color-pp-blue: var(--pp-blue);
-  --color-pp-blue-dark: var(--pp-blue-dark);
-  --color-pp-sky: var(--pp-sky);
-  --color-pp-highlight: var(--pp-highlight);
-  --color-pp-canvas: var(--pp-canvas);
-  --color-pp-surface: var(--pp-surface);
-  --color-pp-border: var(--pp-border);
-  --color-pp-ink: var(--pp-ink);
-  --color-pp-muted: var(--pp-muted);
-  --color-pp-success: var(--pp-success);
-  --color-pp-warning: var(--pp-warning);
-  --color-pp-danger: var(--pp-danger);
-  --font-paypal: var(--pp-font);
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

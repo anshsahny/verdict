@@ -1,11 +1,9 @@
-// AG Studio theme for the PayPal dashboard. Every value points at a design token from
-// app/globals.css, the same variables the shell's Tailwind classes use, so Studio renders as
-// part of the page rather than a component embedded in it: change a token there and the shell,
-// widgets, grids and charts all follow.
+// AG Studio theme for Verdict. Every value points at a design token in app/globals.css, so Studio
+// (canvas, widgets, grids, charts) renders as part of the page and follows light/dark with it.
 
 import { studioTheme } from 'ag-studio';
 
-const token = (name: string) => `var(--pp-${name})`;
+const token = (name: string) => `var(--v-${name})`;
 const line = (color: string) => ({ width: 1, color: token(color) });
 
 const palette = Object.fromEntries(
@@ -15,8 +13,7 @@ const palette = Object.fromEntries(
   ]).flat(),
 );
 
-export const agStudioPayPalTheme = studioTheme.withParams({
-  // Shared by Studio's UI, grids and charts.
+export const verdictStudioTheme = studioTheme.withParams({
   fontFamily: token('font'),
   fontSize: 14,
   textColor: token('ink'),
@@ -24,12 +21,10 @@ export const agStudioPayPalTheme = studioTheme.withParams({
   subtleTextColor: token('muted'),
   backgroundColor: token('surface'),
   borderColor: token('border'),
-  accentColor: token('blue'),
-  iconColor: token('navy'),
+  accentColor: token('accent'),
+  iconColor: token('muted'),
   rowHoverColor: token('highlight'),
 
-  // No frame: the canvas is the page's own background. Each widget is inset 12px inside its
-  // grid cell, so 20px of padding puts widget edges on the header's 32px gutter.
   studioWrapperBorder: false,
   studioWrapperBorderRadius: 0,
   studioWrapperSpacing: 0,
@@ -38,52 +33,47 @@ export const agStudioPayPalTheme = studioTheme.withParams({
   studioCanvasBorderRadius: 0,
   studioCanvasShadow: false,
   studioCanvasBackgroundColor: token('canvas'),
-  studioCanvasPadding: 20,
-  // Slightly taller rows than the default 16px make room for card padding.
+  studioCanvasPadding: 16,
   studioCanvasRowHeight: 18,
   studioCanvasFontFamily: token('font'),
 
-  // Widgets are the shell's cards: white, 1px border, 8px radius.
   studioWidgetBackgroundColor: token('surface'),
   studioWidgetBorder: line('border'),
-  studioWidgetBorderRadius: 8,
-  studioWidgetPadding: 10,
+  studioWidgetBorderRadius: 10,
+  studioWidgetPadding: 12,
   studioWidgetTitleFontFamily: token('font'),
-  studioWidgetTitleFontSize: 16,
+  studioWidgetTitleFontSize: 14,
   studioWidgetTitleFontWeight: 600,
-  studioWidgetTitleTextColor: token('navy'),
+  studioWidgetTitleTextColor: token('ink'),
   studioWidgetSubtitleFontFamily: token('font'),
-  studioWidgetSubtitleFontSize: 13,
+  studioWidgetSubtitleFontSize: 12,
   studioWidgetSubtitleTextColor: token('muted'),
   studioWidgetCaptionFontFamily: token('font'),
-  studioWidgetCaptionFontSize: 13,
+  studioWidgetCaptionFontSize: 12,
   studioWidgetCaptionTextColor: token('muted'),
-  studioWidgetResizeBorderColor: token('blue'),
+  studioWidgetResizeBorderColor: token('accent'),
 
-  // Edit-mode panels read as more of the sidebar.
   studioPanelContainerBackgroundColor: token('surface'),
   studioPanelContainerBorder: line('border'),
   studioPanelContainerBorderRadius: 0,
   studioPanelDividerColor: token('border'),
-  studioPanelDividerActiveColor: token('blue'),
+  studioPanelDividerActiveColor: token('accent'),
   studioPanelSectionBorderColor: token('border'),
   studioPanelHeaderFontFamily: token('font'),
   studioPanelHeaderFontWeight: 600,
   studioPanelChevronButtonHoverBackgroundColor: token('highlight'),
-  studioPanelChevronButtonHoverColor: token('blue'),
-  // Selected toggles match the sidebar's selected item: highlight fill, blue text and edge.
+  studioPanelChevronButtonHoverColor: token('accent'),
   studioToggleButtonActiveBackgroundColor: token('highlight'),
-  studioToggleButtonActiveBorderColor: token('blue'),
-  studioToggleButtonActiveColor: token('blue'),
+  studioToggleButtonActiveBorderColor: token('accent'),
+  studioToggleButtonActiveColor: token('accent'),
 
-  // Grid widgets: muted semibold headers, light dividers, roomy rows.
   gridFontFamily: token('font'),
-  gridFontSize: 14,
+  gridFontSize: 13,
   gridCellTextColor: token('ink'),
   gridHeaderBackgroundColor: token('surface'),
   gridHeaderTextColor: token('muted'),
   gridHeaderFontWeight: 600,
-  gridHeaderFontSize: 13,
+  gridHeaderFontSize: 12,
   gridRowHeight: 40,
   gridRowBorder: line('gridline'),
   gridHeaderRowBorder: line('border'),
@@ -91,7 +81,6 @@ export const agStudioPayPalTheme = studioTheme.withParams({
   gridRowHoverColor: token('highlight'),
   gridWrapperBorder: false,
 
-  // Charts.
   chartFontFamily: token('font'),
   chartTextColor: token('ink'),
   chartSubtleTextColor: token('muted'),
