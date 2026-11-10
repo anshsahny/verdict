@@ -10,7 +10,8 @@
     "sandbox:smoke": "tsx scripts/sandbox-smoke.ts",
     "test": "vitest run",
     "ai:smoke": "tsx scripts/ai-smoke.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sandbox:orders": "tsx scripts/sandbox-orders.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.7.0",

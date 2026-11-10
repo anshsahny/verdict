@@ -1,46 +1,55 @@
 {
   "status": 201,
-  "debugId": "ca5828fa92819",
+  "debugId": "f212311cbe18b",
   "body": {
-    "id": "68G18376SS6985455",
+    "id": "8JG71603UK264490V",
     "intent": "CAPTURE",
     "status": "COMPLETED",
     "payment_source": {
-      "card": {
-        "name": "Sandbox Tester",
-        "last_digits": "1111",
-        "expiry": "2030-12",
-        "brand": "VISA",
-        "type": "UNKNOWN",
-        "bin_details": {}
+      "paypal": {
+        "email_address": "[REDACTED]",
+        "account_id": "[REDACTED]",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "[REDACTED]",
+          "surname": "[REDACTED]"
+        },
+        "address": {
+          "country_code": "US"
+        },
+        "attributes": {
+          "vault": {
+            "id": "[REDACTED]",
+            "status": "VAULTED"
+          }
+        }
       }
     },
     "purchase_units": [
       {
-        "reference_id": "smoke-card-mwa8guz9",
+        "reference_id": "smoke-vault-mwa8guz9",
         "amount": {
           "currency_code": "USD",
-          "value": "24.00",
+          "value": "12.00",
           "breakdown": {}
         },
         "payee": {
           "email_address": "[REDACTED]",
           "merchant_id": "KNT7TPTCVPK3N"
         },
-        "soft_descriptor": "TEST STORE",
         "shipping": {
           "trackers": [
             {
-              "id": "5D129389L9402035R-9400111899794287535418",
+              "id": "44N80858BG5744711-9400111899794288984848",
               "status": "SHIPPED",
               "links": [
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455",
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
                   "rel": "up",
                   "method": "GET"
                 },
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455/trackers/5D129389L9402035R-9400111899794287535418",
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V/trackers/44N80858BG5744711-9400111899794288984848",
                   "rel": "update",
                   "method": "PATCH"
                 }
@@ -49,76 +58,77 @@
             }
           ]
         },
-        "supplementary_data": {
-          "risk": {
-            "risk_level_indicator": "HIGH_RISK"
-          }
-        },
         "payments": {
           "captures": [
             {
-              "id": "5D129389L9402035R",
+              "id": "44N80858BG5744711",
               "status": "COMPLETED",
               "amount": {
                 "currency_code": "USD",
-                "value": "24.00"
+                "value": "12.00"
               },
               "final_capture": true,
               "seller_protection": {
-                "status": "NOT_ELIGIBLE"
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
               },
               "seller_receivable_breakdown": {
                 "gross_amount": {
                   "currency_code": "USD",
-                  "value": "24.00"
+                  "value": "12.00"
                 },
                 "paypal_fee": {
                   "currency_code": "USD",
-                  "value": "1.11"
+                  "value": "0.91"
                 },
                 "net_amount": {
                   "currency_code": "USD",
-                  "value": "22.89"
+                  "value": "11.09"
                 }
               },
               "links": [
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/5D129389L9402035R",
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/44N80858BG5744711",
                   "rel": "self",
                   "method": "GET"
                 },
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/5D129389L9402035R/refund",
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/44N80858BG5744711/refund",
                   "rel": "refund",
                   "method": "POST"
                 },
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455",
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
                   "rel": "up",
                   "method": "GET"
                 }
               ],
-              "create_time": "2026-11-10T05:12:12Z",
-              "update_time": "2026-11-10T05:12:12Z",
-              "network_transaction_reference": {
-                "id": "058868058687642",
-                "network": "VISA"
-              },
-              "processor_response": {
-                "avs_code": "A",
-                "cvv_code": "M",
-                "response_code": "0000"
-              }
+              "create_time": "2026-11-10T05:36:23Z",
+              "update_time": "2026-11-10T05:36:23Z"
             }
           ]
         }
       }
     ],
-    "create_time": "2026-11-10T05:12:12Z",
-    "update_time": "2026-11-10T05:12:12Z",
+    "payer": {
+      "name": {
+        "given_name": "[REDACTED]",
+        "surname": "[REDACTED]"
+      },
+      "email_address": "[REDACTED]",
+      "payer_id": "[REDACTED]",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-11-10T05:36:23Z",
+    "update_time": "2026-11-10T05:36:23Z",
     "links": [
       {
-        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455",
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
         "rel": "self",
         "method": "GET"
       }

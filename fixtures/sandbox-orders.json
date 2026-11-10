@@ -1,0 +1,82 @@
+[
+  {
+    "ref": "VRD-1001",
+    "item": "Ceramic pour-over set",
+    "amount": "42.00",
+    "orderId": "1RN8914643102270A",
+    "captureId": "0LW23195B1463514N",
+    "tracking": "9400111899560000100101",
+    "suggestedReason": "Item not received",
+    "createdAt": "2026-11-10T05:37:42.686Z"
+  },
+  {
+    "ref": "VRD-1002",
+    "item": "Linen apron",
+    "amount": "28.50",
+    "orderId": "6MF00606P8065362B",
+    "captureId": "2Y342457EJ6187507",
+    "tracking": null,
+    "suggestedReason": "Item not received",
+    "createdAt": "2026-11-10T05:37:44.825Z"
+  },
+  {
+    "ref": "VRD-1003",
+    "item": "Walnut serving board",
+    "amount": "64.00",
+    "orderId": "040195878M003861D",
+    "captureId": "0WK149649L349122E",
+    "tracking": "9400111899560000100103",
+    "suggestedReason": "Not as described",
+    "createdAt": "2026-11-10T05:37:48.295Z"
+  },
+  {
+    "ref": "VRD-1004",
+    "item": "Stoneware mug pair",
+    "amount": "36.75",
+    "orderId": "5RM14143RY9703448",
+    "captureId": "0WY78334600739500",
+    "tracking": "9400111899560000100104",
+    "suggestedReason": "Not as described",
+    "createdAt": "2026-11-10T05:37:51.967Z"
+  },
+  {
+    "ref": "VRD-1005",
+    "item": "Hand-thrown vase",
+    "amount": "89.00",
+    "orderId": "54K57916RD7845907",
+    "captureId": "49W901059U322915G",
+    "tracking": null,
+    "suggestedReason": "Unauthorized",
+    "createdAt": "2026-11-10T05:37:54.103Z"
+  },
+  {
+    "ref": "VRD-1006",
+    "item": "Tea towel set",
+    "amount": "19.25",
+    "orderId": "8NF56841PN5713214",
+    "captureId": "4J264399PV6096257",
+    "tracking": "9400111899560000100106",
+    "suggestedReason": "Item not received",
+    "createdAt": "2026-11-10T05:37:57.375Z"
+  },
+  {
+    "ref": "VRD-1007",
+    "item": "Coffee grinder",
+    "amount": "118.00",
+    "orderId": "44G168233J0677213",
+    "captureId": "3DE04097G5186223T",
+    "tracking": "9400111899560000100107",
+    "suggestedReason": "Not as described",
+    "createdAt": "2026-11-10T05:38:00.852Z"
+  },
+  {
+    "ref": "VRD-1008",
+    "item": "Espresso cups (4)",
+    "amount": "47.40",
+    "orderId": "93L74672MN0045823",
+    "captureId": "6VV87013M9548531E",
+    "tracking": null,
+    "suggestedReason": "Item not received",
+    "createdAt": "2026-11-10T05:38:02.991Z"
+  }
+]

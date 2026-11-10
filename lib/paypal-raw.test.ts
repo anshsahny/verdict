@@ -7,11 +7,15 @@ describe('redactValue', () => {
       access_token: 'A21AAsecret',
       payer: { email_address: 'buyer@example.com', name: { given_name: 'Ada', surname: 'L' }, payer_id: 'ABC123' },
       items: [{ email_address: 'x@y.z' }],
+      payment_source: { paypal: { attributes: { vault: { id: 'tok_1', status: 'VAULTED', customer: { id: 'c1' }, links: [{ href: '/v3/vault/payment-tokens/tok_1' }] } } } },
+      merchant_id: 'MERCHANT1',
     });
     expect(out).toEqual({
       access_token: '[REDACTED]',
-      payer: { email_address: '[REDACTED]', name: { given_name: '[REDACTED]', surname: '[REDACTED]' }, payer_id: 'ABC123' },
+      payer: { email_address: '[REDACTED]', name: { given_name: '[REDACTED]', surname: '[REDACTED]' }, payer_id: '[REDACTED]' },
       items: [{ email_address: '[REDACTED]' }],
+      payment_source: { paypal: { attributes: { vault: { id: '[REDACTED]', status: 'VAULTED' } } } },
+      merchant_id: 'MERCHANT1',
     });
   });
 });

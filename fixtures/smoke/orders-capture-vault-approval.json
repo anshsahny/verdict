@@ -1,0 +1,115 @@
+{
+  "status": 201,
+  "debugId": "f666599400575",
+  "body": {
+    "id": "8JG71603UK264490V",
+    "intent": "CAPTURE",
+    "status": "COMPLETED",
+    "payment_source": {
+      "paypal": {
+        "email_address": "[REDACTED]",
+        "account_id": "[REDACTED]",
+        "account_status": "VERIFIED",
+        "name": {
+          "given_name": "[REDACTED]",
+          "surname": "[REDACTED]"
+        },
+        "address": {
+          "country_code": "US"
+        },
+        "attributes": {
+          "vault": {
+            "id": "[REDACTED]",
+            "status": "VAULTED"
+          }
+        }
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "smoke-vault-mwa8guz9",
+        "amount": {
+          "currency_code": "USD",
+          "value": "12.00"
+        },
+        "payee": {
+          "email_address": "[REDACTED]",
+          "merchant_id": "KNT7TPTCVPK3N"
+        },
+        "payments": {
+          "captures": [
+            {
+              "id": "44N80858BG5744711",
+              "status": "COMPLETED",
+              "amount": {
+                "currency_code": "USD",
+                "value": "12.00"
+              },
+              "final_capture": true,
+              "seller_protection": {
+                "status": "ELIGIBLE",
+                "dispute_categories": [
+                  "ITEM_NOT_RECEIVED",
+                  "UNAUTHORIZED_TRANSACTION"
+                ]
+              },
+              "seller_receivable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "12.00"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "0.91"
+                },
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "11.09"
+                }
+              },
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/44N80858BG5744711",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/44N80858BG5744711/refund",
+                  "rel": "refund",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-11-10T05:36:23Z",
+              "update_time": "2026-11-10T05:36:23Z"
+            }
+          ]
+        }
+      }
+    ],
+    "payer": {
+      "name": {
+        "given_name": "[REDACTED]",
+        "surname": "[REDACTED]"
+      },
+      "email_address": "[REDACTED]",
+      "payer_id": "[REDACTED]",
+      "address": {
+        "country_code": "US"
+      }
+    },
+    "create_time": "2026-11-10T05:12:14Z",
+    "update_time": "2026-11-10T05:36:24Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
+        "rel": "self",
+        "method": "GET"
+      }
+    ]
+  }
+}

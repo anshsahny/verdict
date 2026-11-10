@@ -81,11 +81,15 @@ export function authAssertion(clientId: string, subject: { payer_id?: string; em
 }
 
 // Strip anything that looks like a credential or personal identifier before logging or saving.
-const SECRET_KEYS = /^(access_token|refresh_token|nonce|client_secret|authorization|app_id)$/i;
-const PII_KEYS = /^(email_address|email|phone_number|national_number|given_name|surname|full_name|name_on_card|address_line_1|address_line_2|postal_code)$/i;
+const SECRET_KEYS = /^(access_token|refresh_token|nonce|client_secret|authorization|app_id|vault_id)$/i;
+const PII_KEYS = /^(email_address|email|phone_number|national_number|given_name|surname|full_name|name_on_card|address_line_1|address_line_2|postal_code|account_id|payer_id)$/i;
 
 export function redactValue(value: unknown, key = ''): unknown {
   if (SECRET_KEYS.test(key)) return '[REDACTED]';
+  // A vault entry is a reusable payment token for the buyer: keep only its status.
+  if (key === 'vault' && value && typeof value === 'object') {
+    return { id: '[REDACTED]', status: (value as { status?: unknown }).status };
+  }
   if (PII_KEYS.test(key) && typeof value === 'string') return '[REDACTED]';
   if (Array.isArray(value)) return value.map((v) => redactValue(v));
   if (value && typeof value === 'object') {

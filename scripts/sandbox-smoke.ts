@@ -322,6 +322,18 @@ async function stepLifecycle(start?: Dispute) {
 
 (async () => {
   if (process.argv.includes('--approve')) {
+    // Don't throw away an order the buyer already approved: the next normal run captures it.
+    if (state.approvalOrderId) {
+      const prev = await call<Order>(merchant, `/v2/checkout/orders/${state.approvalOrderId}`);
+      if (prev.body?.status === 'APPROVED') {
+        console.log(`Order ${state.approvalOrderId} is already approved. Run: npm run sandbox:smoke`);
+        return;
+      }
+    }
+    if (state.vaultId) {
+      console.log('Buyer is already vaulted; no approval needed. Delete .smoke-state.json to start over.');
+      return;
+    }
     delete state.approvalOrderId;
     await createVaultApprovalOrder();
     return;
