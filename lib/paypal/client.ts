@@ -9,7 +9,10 @@
 import { randomUUID } from 'node:crypto';
 import { allowedActions, type DisputeAction } from './actions';
 import { PayPalDispute } from './dispute-schema';
+import { getDb } from '@/lib/db';
+import { appMode } from '@/lib/mode';
 import { redactValue } from '@/lib/paypal-raw';
+import { replayFetch } from './replay';
 
 export type Money = { currency_code: string; value: string };
 
@@ -277,6 +280,10 @@ let shared: PayPalClient | undefined;
 
 /** Process-wide client from env (merchant sandbox app), logging requests to the console. */
 export function paypal(): PayPalClient {
+  // REPLAY mode: recorded sandbox behaviour over the ledger; never contacts PayPal.
+  if (!shared && appMode() === 'replay') {
+    shared = new PayPalClient({ clientId: 'replay', clientSecret: 'replay', fetch: replayFetch(getDb()), sleep: async () => {} });
+  }
   if (!shared) {
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;

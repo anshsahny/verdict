@@ -107,7 +107,7 @@ function Recommendation({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
   }
 
   const flags = dec!.payload.validation.flags;
-  const canAct = !resolved && !decided && mode === 'live';
+  const canAct = !resolved && !decided;
   return (
     <Card
       title="Verdict's recommendation"
@@ -251,10 +251,12 @@ function Recommendation({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
               </div>
             </form>
           ) : null}
-          <p className="mt-3 text-xs text-v-faint">Verdict re-checks the dispute with PayPal before acting. Nothing happens without your click.</p>
+          <p className="mt-3 text-xs text-v-faint">
+            {mode === 'replay'
+              ? 'REPLAY: this acts on recorded sandbox data with the transitions PayPal showed us. Nothing is sent to PayPal.'
+              : 'Verdict re-checks the dispute with PayPal before acting. Nothing happens without your click.'}
+          </p>
         </div>
-      ) : !resolved && mode === 'replay' ? (
-        <p className="mt-4 text-sm text-v-warn">REPLAY mode: approvals are disabled because PayPal responses here are recorded, not live.</p>
       ) : null}
 
       {!resolved && decided ? (

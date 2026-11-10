@@ -18,7 +18,8 @@
     "agent": "tsx scripts/agent.ts",
     "eval": "tsx scripts/eval.ts",
     "arena": "tsx scripts/arena.ts",
-    "arena:bound": "tsx scripts/arena-bound.ts"
+    "arena:bound": "tsx scripts/arena-bound.ts",
+    "replay:export": "tsx scripts/export-replay.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.7.0",

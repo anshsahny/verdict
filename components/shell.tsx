@@ -58,7 +58,7 @@ export function ModeBadge({ mode }: { mode: AppMode }) {
   ) : (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-v-warn-soft px-2.5 py-0.5 text-xs font-semibold text-v-warn">
       <span className="size-1.5 rounded-full bg-v-warn" aria-hidden />
-      REPLAY · recorded sandbox responses
+      REPLAY · recorded sandbox disputes, dates shifted to today
     </span>
   );
 }

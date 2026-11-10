@@ -1,0 +1,1219 @@
+{
+  "source": "fixtures/disputes/snapshots/2026-11-10-before-gate1",
+  "disputes": [
+    {
+      "dispute_id": "PP-R-AKY-10197889",
+      "create_time": "2026-11-10T05:52:48.027Z",
+      "update_time": "2026-11-10T05:56:23.886Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "118.00"
+      },
+      "seller_response_due_date": "2026-11-30T05:52:48.027Z",
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "3DE04097G5186223T",
+          "buyer_transaction_id": "6D0308047S168632G",
+          "create_time": "2026-11-10T05:37:58.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "118.00"
+          },
+          "invoice_number": "VRD-1007-mwa9e0sf",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Coffee grinder",
+              "item_description": "Coffee grinder",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+              "notes": "This product is broken as none of the parts are working as advertised and I want a refund because I cannot use this product",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-AKY-10197889",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-AKY-10197889/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-AKY-10197889/send-message",
+          "rel": "send_message",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-AKY-10197889/escalate",
+          "rel": "escalate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-AKY-10197889/make-offer",
+          "rel": "make_offer",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "REQUIRED_ACTION",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "113.39"
+          },
+          "initiated_time": "2026-11-10T05:56:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T05:52:48.027Z",
+          "content": "N/A"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T05:52:47.495Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T05:52:48.027Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "118.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "118.00"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "PARTIAL_REFUND",
+            "REFUND_WITH_RETURN",
+            "REFUND"
+          ]
+        },
+        "make_offer": {
+          "offer_types": [
+            "REFUND",
+            "REFUND_WITH_RETURN"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-BFE-10197888",
+      "create_time": "2026-11-10T05:52:04.870Z",
+      "update_time": "2026-11-10T05:55:23.968Z",
+      "reason": "UNAUTHORISED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "89.00"
+      },
+      "seller_response_due_date": "2026-11-21T04:59:59.000Z",
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "49W901059U322915G",
+          "buyer_transaction_id": "3F9050397A3324013",
+          "create_time": "2026-11-10T05:37:53.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "89.00"
+          },
+          "invoice_number": "VRD-1005-mwa9dwm7",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-BFE-10197888",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-BFE-10197888/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-BFE-10197888/provide-evidence",
+          "rel": "provide_evidence",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "REQUIRED_ACTION",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "85.40"
+          },
+          "initiated_time": "2026-11-10T05:55:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T05:50:38.403Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "PROOF_OF_FULFILLMENT",
+          "source": "REQUESTED_FROM_SELLER",
+          "date": "2026-11-10T05:55:23.968Z"
+        },
+        {
+          "evidence_type": "PROOF_OF_REFUND",
+          "source": "REQUESTED_FROM_SELLER",
+          "date": "2026-11-10T05:55:23.968Z"
+        },
+        {
+          "evidence_type": "OTHER",
+          "source": "REQUESTED_FROM_SELLER",
+          "date": "2026-11-10T05:55:23.968Z"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "89.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "89.00"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "REFUND"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-ERW-10197885",
+      "create_time": "2026-11-10T05:49:58.266Z",
+      "update_time": "2026-11-10T05:53:23.694Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "36.75"
+      },
+      "seller_response_due_date": "2026-11-30T05:49:58.266Z",
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "0WY78334600739500",
+          "buyer_transaction_id": "1TS24488L28262124",
+          "create_time": "2026-11-10T05:37:49.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "36.75"
+          },
+          "invoice_number": "VRD-1004-mwa9dts7",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Stoneware mug pair",
+              "item_description": "Stoneware mug pair",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+              "notes": "This is a product that I thought would be new but turns out it was very old and is unusable and I do not like it and this was a waste of my money.",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/send-message",
+          "rel": "send_message",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/escalate",
+          "rel": "escalate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/make-offer",
+          "rel": "make_offer",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "REQUIRED_ACTION",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "34.98"
+          },
+          "initiated_time": "2026-11-10T05:53:03.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T05:49:58.266Z",
+          "content": "N/A"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T05:49:57.731Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T05:49:58.266Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "36.75"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "36.75"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "PARTIAL_REFUND",
+            "REFUND_WITH_RETURN",
+            "REFUND"
+          ]
+        },
+        "make_offer": {
+          "offer_types": [
+            "REFUND",
+            "REFUND_WITH_RETURN"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-FGG-10198062",
+      "create_time": "2026-11-10T16:13:31.294Z",
+      "update_time": "2026-11-10T16:17:00.682Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "18.00"
+      },
+      "seller_response_due_date": "2026-11-30T16:13:31.294Z",
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "6FC997144D953851K",
+          "buyer_transaction_id": "70P75993YP409615S",
+          "create_time": "2026-11-10T05:37:04.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "18.00"
+          },
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Test",
+              "item_description": "Test",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-FGG-10198062",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-FGG-10198062/escalate",
+          "rel": "escalate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-FGG-10198062/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-FGG-10198062/make-offer",
+          "rel": "make_offer",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-FGG-10198062/provide-evidence",
+          "rel": "provide_evidence",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-FGG-10198062/send-message",
+          "rel": "send_message",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "REQUIRED_ACTION",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "16.88"
+          },
+          "initiated_time": "2026-11-10T16:17:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T16:13:31.294Z",
+          "content": "N/A"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T16:13:30.511Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T16:13:31.294Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        },
+        {
+          "evidence_type": "PROOF_OF_FULFILLMENT",
+          "source": "REQUESTED_FROM_SELLER",
+          "date": "2026-11-10T16:17:00.682Z"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "18.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "18.00"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "PARTIAL_REFUND",
+            "REFUND"
+          ]
+        },
+        "make_offer": {
+          "offer_types": [
+            "REFUND"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-GSO-10197884",
+      "create_time": "2026-11-10T05:47:03.763Z",
+      "update_time": "2026-11-10T05:50:22.661Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "64.00"
+      },
+      "seller_response_due_date": "2026-11-30T05:47:03.763Z",
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "0WK149649L349122E",
+          "buyer_transaction_id": "86G80046TH945333R",
+          "create_time": "2026-11-10T05:37:46.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "64.00"
+          },
+          "invoice_number": "VRD-1003-mwa9dr3t",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Walnut serving board",
+              "item_description": "Walnut serving board",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+              "notes": "This product is broken, useless and does not work. I tried to use this but it did not work and it was a waste of my money.",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/send-message",
+          "rel": "send_message",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/escalate",
+          "rel": "escalate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/make-offer",
+          "rel": "make_offer",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "REQUIRED_ACTION",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "61.28"
+          },
+          "initiated_time": "2026-11-10T05:50:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T05:47:03.763Z",
+          "content": "N/A"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T05:47:03.203Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T05:47:03.763Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "64.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "64.00"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "PARTIAL_REFUND",
+            "REFUND_WITH_RETURN",
+            "REFUND"
+          ]
+        },
+        "make_offer": {
+          "offer_types": [
+            "REFUND",
+            "REFUND_WITH_RETURN"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-HRR-10197887",
+      "create_time": "2026-11-10T05:51:49.667Z",
+      "update_time": "2026-11-10T06:13:23.973Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "UNDER_REVIEW",
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "19.25"
+      },
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "4J264399PV6096257",
+          "buyer_transaction_id": "0DF21510G2246484R",
+          "create_time": "2026-11-10T05:37:55.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "19.25"
+          },
+          "invoice_number": "VRD-1006-mwa9dy9j",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Tea towel set",
+              "item_description": "Tea towel set",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/adjudicate",
+          "rel": "adjudicate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/require-evidence",
+          "rel": "require_evidence",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/provide-supporting-info",
+          "rel": "provide_supporting_info",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "UNDER_PAYPAL_REVIEW",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "18.09"
+          },
+          "initiated_time": "2026-11-10T05:55:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T05:51:49.103Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T05:51:49.667Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "REFUND"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-NXP-10197883",
+      "create_time": "2026-11-10T05:44:22.791Z",
+      "update_time": "2026-11-10T05:47:43.859Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "28.50"
+      },
+      "seller_response_due_date": "2026-11-30T05:44:22.791Z",
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "2Y342457EJ6187507",
+          "buyer_transaction_id": "1BR6934029297542F",
+          "create_time": "2026-11-10T05:37:44.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "28.50"
+          },
+          "invoice_number": "VRD-1002-mwa9dpgf",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Linen apron",
+              "item_description": "Linen apron",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/provide-evidence",
+          "rel": "provide_evidence",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/send-message",
+          "rel": "send_message",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/escalate",
+          "rel": "escalate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/make-offer",
+          "rel": "make_offer",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "REQUIRED_ACTION",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "27.02"
+          },
+          "initiated_time": "2026-11-10T05:47:34.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T05:44:22.791Z",
+          "content": "N/A"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T05:44:22.280Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T05:44:22.791Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        },
+        {
+          "evidence_type": "PROOF_OF_FULFILLMENT",
+          "source": "REQUESTED_FROM_SELLER",
+          "date": "2026-11-10T05:47:43.859Z"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "28.50"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "28.50"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "PARTIAL_REFUND",
+            "REFUND"
+          ]
+        },
+        "make_offer": {
+          "offer_types": [
+            "REFUND"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-SLD-10197881",
+      "create_time": "2026-11-10T05:42:23.898Z",
+      "update_time": "2026-11-10T05:45:43.747Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "47.40"
+      },
+      "seller_response_due_date": "2026-11-30T05:42:23.898Z",
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "6VV87013M9548531E",
+          "buyer_transaction_id": "6XV37876DM354674V",
+          "create_time": "2026-11-10T05:38:02.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "47.40"
+          },
+          "invoice_number": "VRD-1008-mwa9e3h0",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Espresso cups (4)",
+              "item_description": "Espresso cups (4)",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/provide-evidence",
+          "rel": "provide_evidence",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/send-message",
+          "rel": "send_message",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/escalate",
+          "rel": "escalate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/make-offer",
+          "rel": "make_offer",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "REQUIRED_ACTION",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "45.26"
+          },
+          "initiated_time": "2026-11-10T05:45:34.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T05:42:23.898Z",
+          "content": "N/A"
+        }
+      ],
+      "extensions": {
+        "buyer_contacted_time": "2026-11-10T05:42:23.435Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T05:42:23.898Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        },
+        {
+          "evidence_type": "PROOF_OF_FULFILLMENT",
+          "source": "REQUESTED_FROM_SELLER",
+          "date": "2026-11-10T05:45:43.747Z"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "47.40"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "47.40"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "PARTIAL_REFUND",
+            "REFUND"
+          ]
+        },
+        "make_offer": {
+          "offer_types": [
+            "REFUND"
+          ]
+        }
+      }
+    },
+    {
+      "dispute_id": "PP-R-SUQ-10197882",
+      "create_time": "2026-11-10T05:43:45.414Z",
+      "update_time": "2026-11-10T06:05:03.839Z",
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "UNDER_REVIEW",
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "42.00"
+      },
+      "disputed_transactions": [
+        {
+          "seller_transaction_id": "0LW23195B1463514N",
+          "buyer_transaction_id": "26V924161X633243G",
+          "create_time": "2026-11-10T05:37:40.000Z",
+          "transaction_status": "HELD",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "42.00"
+          },
+          "invoice_number": "VRD-1001-mwa9dm4z",
+          "buyer": {
+            "email": "[REDACTED]",
+            "payer_id": "[REDACTED]",
+            "name": "[REDACTED]"
+          },
+          "seller": {
+            "email": "[REDACTED]",
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Ceramic pour-over set",
+              "item_description": "Ceramic pour-over set",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882/adjudicate",
+          "rel": "adjudicate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882/require-evidence",
+          "rel": "require_evidence",
+          "method": "POST"
+        },
+        {
+          "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882/provide-supporting-info",
+          "rel": "provide_supporting_info",
+          "method": "POST"
+        }
+      ],
+      "dispute_state": "UNDER_PAYPAL_REVIEW",
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "40.04"
+          },
+          "initiated_time": "2026-11-10T05:47:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "extensions": {
+        "merchant_contacted": false,
+        "buyer_contacted_time": "2026-11-10T05:43:44.876Z"
+      },
+      "evidences": [
+        {
+          "evidence_type": "CREATE",
+          "notes": "N/A",
+          "source": "SUBMITTED_BY_BUYER",
+          "date": "2026-11-10T05:43:45.414Z",
+          "dispute_life_cycle_stage": "INQUIRY"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "42.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "42.00"
+        }
+      },
+      "supporting_info": [
+        {
+          "notes": "Order VRD-1001 shipped via USPS, tracking 9400111899560000100101; carrier shows delivered.",
+          "source": "SUBMITTED_BY_SELLER",
+          "provided_time": "2026-11-10T05:54:08.550Z"
+        }
+      ],
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "REFUND"
+          ]
+        }
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "id": "59dfe65d-bfd2-4252-91c7-fd79ba870b63",
+      "dispute_id": "PP-R-AKY-10197889",
+      "action": "escalate_to_human",
+      "amount_cents": null,
+      "confidence": 0.7,
+      "payload_json": "{\"decision\":{\"action\":\"escalate_to_human\",\"amount\":null,\"confidence\":0.7,\"reasoning\":[\"The dispute is a not-as-described claim for $118 on order VRD-1007. It is at the INQUIRY stage, and the available actions are accept, offer_refund and escalate_to_human. Contest is not available.\",\"The buyer's only message is \\\"N/A\\\" and there are no buyer notes. We don't know what is wrong with the item, so we can't tell whether it is damage (full refund under the playbook) or normal handmade variation (25-35% partial refund).\",\"Tracking shows USPS 9400111899560000100107 delivered 2026-11-03 to Columbus, OH 43215. The address matches the order and it was signed for by FRONT DESK. Delivery is not in question.\",\"The order is one Coffee grinder at $118. It has no prior refund and no internal note. The customer has 6 earlier orders to the same address and no disputes.\",\"The playbook says to send anything unusual to a human. An empty claim on a delivered, matching order doesn't fit a fixed refund tier, so the owner should decide. The owner could ask the buyer for a photo, as the damaged-item policy requires, before choosing between a full refund and a partial offer.\"],\"evidence\":[{\"type\":\"delivery_confirmation\",\"recordId\":\"ship-VRD-1007\",\"whyItHelps\":\"Shows delivery on 2026-11-03 to the order address, before the dispute was filed.\"},{\"type\":\"product_listing\",\"recordId\":\"p-grinder\",\"whyItHelps\":\"The listing describes a manual burr grinder with ceramic burrs and a walnut handle. It can be compared against whatever the buyer says is wrong.\"},{\"type\":\"customer_history\",\"recordId\":\"c-avery\",\"whyItHelps\":\"The buyer has 6 earlier orders to the same address with no disputes, which suggests a good-faith customer.\"}],\"risks\":[\"The buyer gave no details, so the real issue (damage, variation or a wrong item) is unknown.\",\"If the item arrived damaged, the playbook requires a full refund, and a partial offer would be the wrong response.\",\"Delivery was signed for by FRONT DESK, which is not necessarily the buyer. This is a minor point.\",\"The response is due 2026-11-30, so there is time to gather information, but the deadline still applies.\"],\"draftMessageToBuyer\":\"Hello Jordan, thank you for contacting us about your coffee grinder order. Your message didn't say what is wrong with the item. Could you send a short description and a photo so we can look into it? Our team is reviewing your case and will follow up soon.\"},\"validation\":{\"errors\":[],\"flags\":[\"Agent escalated to a human.\"]},\"model\":\"claude-sonnet-5-5\",\"promptVersion\":\"defender-v1\",\"packet\":{\"strength\":0.6,\"rating\":\"moderate\",\"gaps\":[\"No photos of the item as shipped.\"]}}",
+      "status": "needs_human",
+      "created_at": "2026-11-10T19:44:25.156Z"
+    },
+    {
+      "id": "a3c6f927-ed38-4c80-8607-37f6b07bf610",
+      "dispute_id": "PP-R-GSO-10197884",
+      "action": "escalate_to_human",
+      "amount_cents": null,
+      "confidence": 0.6,
+      "payload_json": "{\"decision\":{\"action\":\"escalate_to_human\",\"amount\":null,\"confidence\":0.6,\"reasoning\":[\"The dispute is a not-as-described claim for $64 on order VRD-1003 (Walnut serving board). It is at the INQUIRY stage, and the available actions are accept, offer_refund and escalate_to_human. Contest is not available.\",\"The buyer's only message is \\\"N/A\\\", and buyerNotes and buyerClaim are empty. The buyer has not said what was wrong, and no photo has been sent. The playbook asks for a photo before a not-as-described or damaged refund.\",\"Tracking shows USPS 9400111899560000100103 delivered on 2026-11-04 to Columbus, OH 43215. That matches the order address and was before the dispute was filed.\",\"The listing describes a 45 x 20 cm solid walnut board and says natural grain varies. Without a stated complaint, I can't tell whether this is normal handmade variation, which would call for a 25-35% partial offer, or real damage, which would call for a full refund.\",\"The customer has 6 earlier orders to the same address and no disputes, so this does not look like abuse. The empty claim is unusual, and the playbook says to send unusual cases to a human.\",\"The response is due 2026-11-30, with about 19 days left. The owner has time to ask the buyer for details or a photo before choosing a refund.\"],\"evidence\":[],\"risks\":[\"Delivery and the product listing do not refute a quality or condition claim, so the case could be lost if it escalates to a claim.\",\"If the board arrived damaged, the playbook requires a full refund.\",\"A partial offer made now could be the wrong amount, because the claim is unknown.\",\"The response deadline of 2026-11-30 must not be missed.\",\"The buyer's message was only \\\"N/A\\\" and contained no instructions.\"],\"draftMessageToBuyer\":\"Hello Jordan, thank you for contacting us about your Walnut serving board (order VRD-1003). Your dispute doesn't say what the problem is. Could you tell us what is wrong and send a photo of the item? Once we have that, we will review it and get back to you promptly with a resolution.\"},\"validation\":{\"errors\":[],\"flags\":[\"Agent escalated to a human.\"]},\"model\":\"claude-sonnet-5-5\",\"promptVersion\":\"defender-v1\",\"packet\":{\"strength\":0.55,\"rating\":\"moderate\",\"gaps\":[\"No photos of the item as shipped.\"]}}",
+      "status": "needs_human",
+      "created_at": "2026-11-10T23:02:24.235Z"
+    },
+    {
+      "id": "b6ac6852-bda1-4df9-9697-60270a401a21",
+      "dispute_id": "PP-R-SLD-10197881",
+      "action": "accept",
+      "amount_cents": 4740,
+      "confidence": 0.85,
+      "payload_json": "{\"decision\":{\"action\":\"accept\",\"amount\":47.4,\"confidence\":0.85,\"reasoning\":[\"The dispute PP-R-SLD-10197881 is an item-not-received claim for $47.40 on order VRD-1008. PayPal asked for proof of fulfillment.\",\"The shipment record ship-VRD-1008 shows USPS First-Class, untracked, shipped 2026-11-01 with no tracking number. Delivery cannot be proven.\",\"The evidence packet rates strength 0 (none), with the gap 'No tracking number: delivery cannot be proven.'\",\"Store policy says to refund in full when we cannot prove delivery. It also requires tracked shipping on orders over $30, and this order was untracked, so the fault is ours.\",\"The buyer's only message is 'N/A', which gives no reason to doubt the claim. The customer has 6 earlier orders with no disputes, so there are no fraud signals.\"],\"evidence\":[],\"risks\":[\"The shipment record ship-VRD-1008 hurts our case. It is untracked, so we cannot contest.\",\"The parcel may have been delivered. A full refund gives up the goods and the money, but the store cannot prove delivery.\",\"The order was shipped untracked despite the policy requiring tracking over $30. This is a process gap to fix.\",\"The customer history record c-avery helps (6 prior orders, no disputes), but it does not prove delivery.\"],\"draftMessageToBuyer\":\"Hello, thank you for contacting us. We are unable to confirm delivery of your order VRD-1008 because it shipped without tracking. We are sorry for the trouble and are refunding the full $47.40 through PayPal. Thank you for your patience and for shopping with Kiln & Co.\"},\"validation\":{\"errors\":[],\"flags\":[]},\"model\":\"claude-sonnet-5-5\",\"promptVersion\":\"defender-v1\",\"packet\":{\"strength\":0,\"rating\":\"none\",\"gaps\":[\"No tracking number: delivery cannot be proven.\"]}}",
+      "status": "proposed",
+      "created_at": "2026-11-10T19:44:59.445Z"
+    }
+  ]
+}

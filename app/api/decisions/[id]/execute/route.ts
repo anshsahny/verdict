@@ -1,11 +1,11 @@
 // The owner's Approve / Edit / Override on an agent decision. This is the only web path that acts
 // on PayPal, and it goes through the executor (which re-checks PayPal's allowed actions first).
+// In REPLAY mode the executor's PayPal client is the replay transport (lib/paypal/replay.ts).
 
 import { z } from 'zod';
 import { getDb } from '@/lib/db';
 import { executeDecision } from '@/lib/agent/executor';
 import { AGENT_ACTIONS } from '@/lib/agent/schema';
-import { appMode } from '@/lib/mode';
 import { paypal } from '@/lib/paypal/client';
 import { assertHourlyLimit, RateLimitError } from '@/lib/rate-limit';
 
@@ -19,7 +19,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const { id } = await params;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: 'Invalid request.' }, { status: 400 });
-  if (appMode() === 'replay') return Response.json({ error: 'Actions are disabled in REPLAY mode: PayPal responses are recorded, not live.' }, { status: 409 });
 
   const db = getDb();
   const body = parsed.data;
