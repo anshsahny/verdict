@@ -19,6 +19,13 @@ export const MERCHANT_POLICY = {
   damaged: 'Damaged or not-as-described items: full refund or replacement after the buyer sends a photo.',
   lost: 'If tracking shows no movement for 10 days, we reship or refund in full.',
   handmade: 'Pieces are handmade; small variations in glaze and size (up to 5%) are expected and stated on every listing.',
+  disputes: [
+    'Contest only when our records directly refute the claim (e.g. tracked delivery to the order address before the dispute, a refund already issued, or separate orders behind a "duplicate").',
+    'Refund in full when our own records show we are at fault (lost or stalled parcel past 10 days, wrong address, a real duplicate payment) or when we cannot prove delivery.',
+    'For not-as-described claims about normal handmade variation on a delivered item that matches its listing, offer a partial refund (about 25-35%) and let the buyer keep the item.',
+    'Damaged items: refund in full.',
+    'Send to a human when there is no matching order, records conflict, an unauthorized claim lacks a solid account history, or anything looks unusual.',
+  ].join(' '),
 };
 
 const PRODUCTS = [
@@ -86,7 +93,16 @@ function prng(seed: number) {
 const DAY = 86_400_000;
 const at = (base: string, days: number, hours = 0) => new Date(Date.parse(base) - days * DAY + hours * 3_600_000).toISOString();
 const later = (iso: string, days: number, hours = 0) => new Date(Date.parse(iso) + days * DAY + hours * 3_600_000).toISOString();
-const postalFor = (city: string) => String(10000 + ([...city].reduce((s, c) => s + c.charCodeAt(0), 0) * 37) % 89999);
+// Real downtown ZIP codes, so addresses look right to the agent (and to anyone reading a case).
+const CITY_ZIP: Record<string, string> = {
+  Columbus: '43215', Austin: '78701', Portland: '97205', Phoenix: '85004', Seattle: '98101', Atlanta: '30303',
+  Boston: '02108', 'San Jose': '95113', Denver: '80202', Chicago: '60601', 'New Orleans': '70112', Brooklyn: '11201',
+  Miami: '33130', Minneapolis: '55401', Dearborn: '48126', Madison: '53703', Charlotte: '28202', 'San Diego': '92101',
+  Philadelphia: '19103', Honolulu: '96813', Tucson: '85701',
+};
+export const postalFor = (city: string) => CITY_ZIP[city] ?? '00000';
+/** A different, nearby ZIP in the same city (for wrong-address deliveries). */
+export const nearbyPostal = (postal: string) => String(Number(postal) + 18).padStart(5, '0');
 
 type ShipmentRow = {
   id: string;
@@ -120,7 +136,7 @@ function shipment(
   }
   if (spec.status === 'DELIVERED') {
     deliveredAt = later(shippedAt, spec.transitDays, 5);
-    deliveredTo = spec.addressMatch === false ? { city: shipTo.city, region: shipTo.region, postal: String(Number(shipTo.postal) + 7) } : shipTo;
+    deliveredTo = spec.addressMatch === false ? { city: shipTo.city, region: shipTo.region, postal: nearbyPostal(shipTo.postal) } : shipTo;
     events.push({ at: deliveredAt, status: 'DELIVERED', location: `${deliveredTo.city}, ${deliveredTo.region} ${deliveredTo.postal}` });
   }
   return {

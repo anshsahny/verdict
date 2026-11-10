@@ -14,7 +14,9 @@
     "sandbox:orders": "tsx scripts/sandbox-orders.ts",
     "seed": "tsx scripts/seed.ts",
     "sandbox:capture": "tsx scripts/capture-disputes.ts",
-    "sandbox:lifecycle": "tsx scripts/sandbox-lifecycle.ts"
+    "sandbox:lifecycle": "tsx scripts/sandbox-lifecycle.ts",
+    "agent": "tsx scripts/agent.ts",
+    "eval": "tsx scripts/eval.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.7.0",

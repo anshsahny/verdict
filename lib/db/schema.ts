@@ -1,7 +1,7 @@
 // SQLite schema for Verdict. Money is stored in integer cents; times are ISO-8601 UTC strings.
 // Bump SCHEMA_VERSION and add a migration step in lib/db/index.ts when this changes.
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const SCHEMA = /* sql */ `
 CREATE TABLE IF NOT EXISTS merchants (
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS orders (
   id                 TEXT PRIMARY KEY,         -- store order number, e.g. KC-1042 or VRD-1001
   merchant_id        TEXT NOT NULL REFERENCES merchants(id),
   customer_id        TEXT NOT NULL REFERENCES customers(id),
-  status             TEXT NOT NULL,            -- PAID | SHIPPED | DELIVERED | REFUNDED | CANCELLED
+  status             TEXT NOT NULL,            -- PAID | SHIPPED | DELIVERED | REFUNDED | CANCELLED | DUPLICATE_PAYMENT
   currency           TEXT NOT NULL,
   total_cents        INTEGER NOT NULL,
   items_json         TEXT NOT NULL,            -- [{ productId, sku, name, qty, unitCents }]
@@ -45,7 +45,10 @@ CREATE TABLE IF NOT EXISTS orders (
   created_at         TEXT NOT NULL,
   paypal_order_id    TEXT,
   paypal_capture_id  TEXT UNIQUE,              -- joins to disputes.seller_transaction_id
-  source             TEXT NOT NULL             -- seed | sandbox
+  source             TEXT NOT NULL,            -- seed | sandbox | eval
+  note               TEXT,                     -- internal note, e.g. why a payment was duplicated
+  refunded_cents     INTEGER,
+  refunded_at        TEXT
 );
 CREATE INDEX IF NOT EXISTS orders_customer ON orders(customer_id);
 
@@ -154,3 +157,10 @@ CREATE TABLE IF NOT EXISTS audit_log (
   data_json TEXT NOT NULL
 );
 `;
+
+// Upgrades for databases created by an older SCHEMA_VERSION (index = target version).
+export const MIGRATIONS: Record<number, string> = {
+  2: `ALTER TABLE orders ADD COLUMN note TEXT;
+      ALTER TABLE orders ADD COLUMN refunded_cents INTEGER;
+      ALTER TABLE orders ADD COLUMN refunded_at TEXT;`,
+};

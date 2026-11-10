@@ -18,7 +18,10 @@ export type EvidenceKind =
   | 'product_listing'
   | 'policy'
   | 'customer_history'
-  | 'customer_note';
+  | 'customer_note'
+  | 'refund_record'
+  | 'duplicate_payment'
+  | 'separate_orders';
 
 export type EvidenceItem = {
   id: string; // stable: `${kind}:${recordTable}:${recordId}`
@@ -28,7 +31,7 @@ export type EvidenceItem = {
   summary: string;
   helps: boolean; // false = this record supports the buyer
   weight: number; // contribution to strength, negative when it hurts
-  paypalType?: 'PROOF_OF_FULFILLMENT' | 'OTHER';
+  paypalType?: 'PROOF_OF_FULFILLMENT' | 'PROOF_OF_REFUND' | 'OTHER';
   tracking?: { carrier_name: string; tracking_number: string };
 };
 
@@ -42,7 +45,18 @@ export type EvidencePacket = {
   gaps: string[]; // what's missing that would help
 };
 
-type Order = { id: string; customer_id: string; total_cents: number; items_json: string; ship_to_json: string; created_at: string };
+type Order = {
+  id: string;
+  customer_id: string;
+  status: string;
+  total_cents: number;
+  items_json: string;
+  ship_to_json: string;
+  created_at: string;
+  note: string | null;
+  refunded_cents: number | null;
+  refunded_at: string | null;
+};
 type Shipment = {
   id: string;
   carrier: string;
@@ -53,6 +67,7 @@ type Shipment = {
   signed_by: string | null;
   delivered_to_json: string | null;
   address_match: number | null;
+  events_json: string;
 };
 type Customer = { id: string; name: string; first_seen: string; notes: string | null };
 
@@ -68,10 +83,12 @@ const place = (json: string | null) => {
 const INR = 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED';
 const SNAD = 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED';
 const UNAUTH = 'UNAUTHORISED';
+const DUP = 'DUPLICATE_TRANSACTION';
 const WEIGHTS: Record<string, Partial<Record<EvidenceKind, number>>> = {
   [INR]: { tracking: 0.25, delivery_confirmation: 0.25, signature: 0.15, address_match: 0.15, customer_history: 0.05, untracked: -0.1, address_mismatch: -0.45, not_delivered: -0.35 },
   [SNAD]: { tracking: 0.05, delivery_confirmation: 0.1, signature: 0.05, address_match: 0.05, product_listing: 0.2, policy: 0.1, customer_history: 0.05, untracked: -0.05, address_mismatch: -0.2, not_delivered: -0.2 },
   [UNAUTH]: { tracking: 0.15, delivery_confirmation: 0.15, signature: 0.15, address_match: 0.15, customer_history: 0.3, untracked: -0.1, address_mismatch: -0.45, not_delivered: -0.2 },
+  [DUP]: { separate_orders: 0.5, refund_record: 0.7, duplicate_payment: -0.6, tracking: 0.05, delivery_confirmation: 0.1, address_match: 0.05, customer_history: 0.05 },
 };
 const weightOf = (reason: string, kind: EvidenceKind, fallback: number) => WEIGHTS[reason]?.[kind] ?? fallback;
 
@@ -169,11 +186,14 @@ export function buildEvidencePacket(db: Db, dispute: DisputeRow): EvidencePacket
         });
       }
     } else if (shipment.status === 'LOST' || shipment.status === 'IN_TRANSIT') {
+      const scans = JSON.parse(shipment.events_json) as { at: string }[];
+      const last = scans.at(-1)?.at ?? shipment.shipped_at;
+      const idle = last ? Math.floor((filedAt - Date.parse(last)) / 86_400_000) : null;
       add({
         kind: 'not_delivered',
         recordTable: 'shipments',
         recordId: shipment.id,
-        summary: `Carrier status is ${shipment.status}; no delivery scan.`,
+        summary: `Carrier status is ${shipment.status}; no delivery scan${last ? `. Last scan ${fmtDate(last)}${idle !== null && idle >= 0 ? `, ${idle} days before the dispute was filed` : ''}` : ''}.`,
         helps: false,
         weight: -0.35,
       });
@@ -213,6 +233,48 @@ export function buildEvidencePacket(db: Db, dispute: DisputeRow): EvidencePacket
       });
     }
     gaps.push('No photos of the item as shipped.');
+  }
+
+  // --- refunds and duplicate payments -----------------------------------------------------------
+  if (order.refunded_cents && order.refunded_at) {
+    add({
+      kind: 'refund_record',
+      recordTable: 'orders',
+      recordId: order.id,
+      summary: `Refunded $${(order.refunded_cents / 100).toFixed(2)} on ${fmtDate(order.refunded_at)}${order.note ? ` (${order.note})` : ''}.`,
+      helps: true,
+      weight: 0.5,
+      paypalType: 'PROOF_OF_REFUND',
+    });
+  }
+  if (order.status === 'DUPLICATE_PAYMENT' && !order.refunded_cents) {
+    add({
+      kind: 'duplicate_payment',
+      recordTable: 'orders',
+      recordId: order.id,
+      summary: `Our records mark this payment as a duplicate${order.note ? `: ${order.note}` : ''}, and it has not been refunded.`,
+      helps: false,
+      weight: -0.6,
+    });
+  } else if (dispute.reason === DUP && order.status !== 'DUPLICATE_PAYMENT') {
+    const siblings = db
+      .prepare(
+        `SELECT o.id, o.created_at, s.status AS ship_status FROM orders o LEFT JOIN shipments s ON s.order_id = o.id
+         WHERE o.customer_id = ? AND o.id != ? AND o.total_cents = ? AND ABS(julianday(o.created_at) - julianday(?)) < 2`,
+      )
+      .all(order.customer_id, order.id, order.total_cents, order.created_at) as { id: string; created_at: string; ship_status: string | null }[];
+    const shippedSeparately = siblings.filter((o) => o.ship_status);
+    if (shippedSeparately.length && shipment) {
+      add({
+        kind: 'separate_orders',
+        recordTable: 'orders',
+        recordId: order.id,
+        summary: `Separate order with its own shipment; the similar charge belongs to order(s) ${shippedSeparately.map((o) => o.id).join(', ')}, which shipped independently.`,
+        helps: true,
+        weight: 0.5,
+        paypalType: 'OTHER',
+      });
+    }
   }
 
   // --- customer history (matters most for unauthorized) ----------------------------------------

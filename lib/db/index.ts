@@ -4,7 +4,7 @@
 import Database from 'better-sqlite3';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { SCHEMA, SCHEMA_VERSION } from './schema';
+import { MIGRATIONS, SCHEMA, SCHEMA_VERSION } from './schema';
 import { seedDemoStore } from './seed';
 
 export type Db = Database.Database;
@@ -30,8 +30,14 @@ function migrate(db: Db) {
   const current = db.pragma('user_version', { simple: true }) as number;
   if (current === SCHEMA_VERSION) return;
   if (current > SCHEMA_VERSION) throw new Error(`Database schema ${current} is newer than this code (${SCHEMA_VERSION})`);
-  db.exec(SCHEMA);
-  db.pragma(`user_version = ${SCHEMA_VERSION}`);
+  db.transaction(() => {
+    if (current === 0) {
+      db.exec(SCHEMA); // fresh database: the full current schema
+    } else {
+      for (let v = current + 1; v <= SCHEMA_VERSION; v++) if (MIGRATIONS[v]) db.exec(MIGRATIONS[v]);
+    }
+    db.pragma(`user_version = ${SCHEMA_VERSION}`);
+  })();
 }
 
 /** The app's shared connection, at DATABASE_PATH (default data/verdict.sqlite). */

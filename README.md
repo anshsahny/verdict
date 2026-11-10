@@ -20,6 +20,8 @@ npm run dev                  # http://localhost:3000
 | `npm run seed` | Seeds the demo store into SQLite (`-- --reset` recreates it). The app also seeds on first start |
 | `npm run sandbox:capture` | Saves the current redacted state of every sandbox dispute to `fixtures/disputes/` |
 | `npm run sandbox:lifecycle -- --dry-run` | Shows the Gate 1 live lifecycle plan and what each dispute allows now. Without `--dry-run` it acts on real sandbox disputes (one-shot) |
+| `npm run agent -- <disputeId>` | Defender agent recommendation for a dispute in the ledger (no PayPal action). `-- --approve <decisionId>` executes it after review |
+| `npm run eval` | Defender evaluation on 20 labelled, SIMULATED scenarios: action accuracy, routing, citation validity, injection resistance, latency, cost |
 | `npm run ai:smoke` | Claude tool-use call with a Zod-validated decision |
 | `npm test` | Unit tests (Vitest) |
 
