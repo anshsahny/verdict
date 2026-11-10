@@ -34,7 +34,7 @@ function PolicySlider({ policy }: { policy: PolicyProjection[] }) {
   const agentOnly = policy[0];
   const maxSaved = Math.max(...policy.map((x) => x.savedVsAlwaysRefundUsd), 1);
   return (
-    <section className="rounded-xl border border-v-border bg-v-surface p-5" aria-labelledby="policy-title">
+    <section className="rounded-2xl border border-v-border bg-v-surface p-5 shadow-[0_1px_2px_rgba(16,24,40,0.04)]" aria-labelledby="policy-title">
       <div className="flex items-center justify-between gap-2">
         <h2 id="policy-title" className="text-sm font-semibold text-v-ink">
           Policy: auto-refund small disputes
@@ -118,7 +118,7 @@ function LiveRun({ caps }: { caps: { perRequest: number; perHour: number } }) {
   }
 
   return (
-    <section className="rounded-xl border border-v-border bg-v-surface p-5" aria-labelledby="live-title">
+    <section className="rounded-2xl border border-v-border bg-v-surface p-5 shadow-[0_1px_2px_rgba(16,24,40,0.04)]" aria-labelledby="live-title">
       <div className="flex items-center justify-between gap-2">
         <h2 id="live-title" className="text-sm font-semibold text-v-ink">
           Run the Arena
@@ -215,7 +215,7 @@ export function Arena({ rows, bench, policy, caps, licenseKey }: { rows: ArenaRo
       <div className="grid gap-5 p-6 xl:grid-cols-3">
         <LiveRun caps={caps} />
         <PolicySlider policy={policy} />
-        <section className="rounded-xl border border-v-border bg-v-surface p-5" aria-labelledby="weak-title">
+        <section className="rounded-2xl border border-v-border bg-v-surface p-5 shadow-[0_1px_2px_rgba(16,24,40,0.04)]" aria-labelledby="weak-title">
           <div className="flex items-center justify-between gap-2">
             <h2 id="weak-title" className="text-sm font-semibold text-v-ink">
               Weak spots
