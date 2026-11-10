@@ -22,7 +22,7 @@ export default async function WarRoomPage() {
       ...r,
       due48: ['overdue', 'critical', 'urgent'].includes(r.urgency) ? 1 : 0,
       queueRank: r.state === 'Resolved' ? 1e6 - Date.parse(r.filedAt) / 1e9 : (r.hoursLeft ?? 1e5),
-    })),
+    })).sort((a, b) => a.queueRank - b.queueRank),
     events,
     asOf: new Date().toISOString(),
   };

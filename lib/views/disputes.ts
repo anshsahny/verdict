@@ -69,6 +69,7 @@ export type DisputeListRow = {
   won: number; // 1 if resolved in the seller's favour
   resolved: number; // 1 if resolved
   respondedHours: number | null; // hours from filing to our first executed response
+  whyRecommended: string; // the latest recommendation's reasoning, for the assistant
 };
 
 export function listDisputeRows(db: Db, now = new Date()): DisputeListRow[] {
@@ -77,6 +78,8 @@ export function listDisputeRows(db: Db, now = new Date()): DisputeListRow[] {
     const deadline = computeDeadline(d.status === 'WAITING_FOR_SELLER_RESPONSE' ? d.seller_response_due_at : null, now);
     const packet = buildEvidencePacket(db, d);
     const decision = latestDecision(db, d.id);
+    const payload = decision ? (db.prepare('SELECT payload_json FROM decisions WHERE id = ?').get(decision.id) as { payload_json: string }) : undefined;
+    const reasoning = payload ? ((JSON.parse(payload.payload_json).decision?.reasoning as string[] | undefined) ?? []) : [];
     const customer = d.order_id
       ? ((db.prepare('SELECT c.name FROM orders o JOIN customers c ON c.id = o.customer_id WHERE o.id = ?').get(d.order_id) as { name: string } | undefined)?.name ?? '—')
       : 'Unknown (no order)';
@@ -110,6 +113,7 @@ export function listDisputeRows(db: Db, now = new Date()): DisputeListRow[] {
       won: d.outcome === 'RESOLVED_SELLER_FAVOUR' ? 1 : 0,
       resolved: resolved ? 1 : 0,
       respondedHours: firstAction.at ? Math.round(((Date.parse(firstAction.at) - Date.parse(d.created_at)) / 3_600_000) * 10) / 10 : null,
+      whyRecommended: reasoning.join(' ').slice(0, 1200),
     };
   });
 }

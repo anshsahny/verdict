@@ -34,22 +34,38 @@ export type ArenaRunResult = {
   liveDisputeId?: string; // bound runs only
 };
 
-export async function runArenaScenario(mainDb: Db, s: ArenaScenario, opts: { client?: Anthropic; buyer?: BuyerAgent } = {}): Promise<ArenaRunResult> {
+export type ArenaEvent =
+  | { type: 'start'; scenario: ArenaScenario }
+  | { type: 'claim'; scenarioId: string; claim: string }
+  | { type: 'decision'; scenarioId: string; action: string; amount: number | null; status: string; flags: string[] }
+  | { type: 'offer_reply'; scenarioId: string; accept: boolean; reply: string }
+  | { type: 'verdict'; scenarioId: string; result: ArenaRunResult };
+
+export async function runArenaScenario(
+  mainDb: Db,
+  s: ArenaScenario,
+  opts: { client?: Anthropic; buyer?: BuyerAgent; onEvent?: (e: ArenaEvent) => void } = {},
+): Promise<ArenaRunResult> {
+  const emit = opts.onEvent ?? (() => {});
+  emit({ type: 'start', scenario: s });
   const startedAt = nowIso();
   const buyer = opts.buyer ?? new BuyerAgent(opts.client);
   const buyerUsage: BuyerUsage = { inputTokens: 0, outputTokens: 0 };
 
   const claim = await buyer.writeClaim(s, buyerUsage);
+  emit({ type: 'claim', scenarioId: s.id, claim });
   const spec = { ...s.spec, buyerMessage: claim };
   const sim = openDb(':memory:');
   try {
     const disputeId = materialize(sim, spec, { tag: `A${s.index}`, prefix: 'ARENA' });
     const run = await runDefender({ db: sim, disputeId, client: opts.client, now: EVAL_NOW, tokenBudget: maxTokensPerRun() });
     const packet = buildEvidencePacket(sim, getDispute(sim, disputeId)!);
+    emit({ type: 'decision', scenarioId: s.id, action: run.decision?.action ?? 'invalid', amount: run.decision?.amount ?? null, status: run.status, flags: run.validation.flags });
 
     let offerReply: ArenaRunResult['offerReply'] = null;
     if (run.decision?.action === 'offer_refund' && run.decision.amount) {
       offerReply = await buyer.respondToOffer(s, claim, run.decision.amount, run.decision.draftMessageToBuyer, buyerUsage);
+      emit({ type: 'offer_reply', scenarioId: s.id, ...offerReply });
     }
     const verdict = arbitrate(s, run.status === 'invalid' ? null : run.decision, packet, offerReply);
     const costUsd = run.usage.costUsd + (buyerUsage.inputTokens * PRICE.input + buyerUsage.outputTokens * PRICE.output) / 1_000_000;
@@ -70,6 +86,7 @@ export async function runArenaScenario(mainDb: Db, s: ArenaScenario, opts: { cli
       costUsd,
     };
     saveArenaRun(mainDb, result);
+    emit({ type: 'verdict', scenarioId: s.id, result });
     return result;
   } finally {
     sim.close();

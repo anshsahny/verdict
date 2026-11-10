@@ -44,6 +44,7 @@ export function warRoomData(data: WarRoomData): AgDataSourcesDefinition {
           ['due48', 'Due within 48h', 'integerFormat'],
           ['queueRank', 'Queue order', 'decimalFormat', true],
           ['respondedHours', 'Hours to first response', 'decimalFormat'],
+          ['whyRecommended', "Verdict's reasoning", 'textFormat'],
         ]),
       },
       {
@@ -97,7 +98,7 @@ const kpi = (text: string, value: { id: string; aggregation?: 'sum' | 'avg' }, c
 
 export const WAR_ROOM_REPORT = {
   selectedPageId: 'war-room',
-  panels: { filters: { collapsed: true } },
+  panels: { filters: { collapsed: true }, ai: { collapsed: true } },
   pages: [
     {
       id: 'war-room',
@@ -130,11 +131,9 @@ export const WAR_ROOM_REPORT = {
               { id: 'disputes.outcome' },
             ],
           },
-          // Waiting on us > Waiting on buyer > Under review > Resolved, then soonest deadline.
-          sort: [
-            { field: { id: 'disputes.status' }, direction: 'desc' },
-            { field: { id: 'disputes.dueAt' }, direction: 'asc' },
-          ],
+          // One sort field per grid: Waiting on us > Waiting on buyer > Under review > Resolved. Rows
+          // arrive pre-ordered by deadline (page.tsx), which holds within each status.
+          sort: [{ field: { id: 'disputes.status' }, direction: 'desc' }],
           format: title('Dispute queue', 'Open a dispute for its Case File. Select a row to focus the other widgets.'),
         },
         timeline: {
