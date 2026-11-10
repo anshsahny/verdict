@@ -2,6 +2,7 @@
 //   npm run agent -- <disputeId>                 recommend (no PayPal action)
 //   npm run agent -- --approve <decisionId>      execute an approved decision against PayPal
 //   npm run agent -- --override <decisionId> <action> [amountUsd]
+//   npm run agent -- --trace <decisionId>         markdown trace from the audit log
 
 import { config } from 'dotenv';
 config({ path: '.env.local', quiet: true });
@@ -15,7 +16,41 @@ import { paypal } from '../lib/paypal/client';
 const args = process.argv.slice(2);
 const db = getDb();
 
+// Markdown trace of one decision from the audit log: tool calls, output, validation, approval.
+function trace(decisionId: string): string {
+  const run = db.prepare("SELECT at, ref, data_json FROM audit_log WHERE kind = 'agent.run' AND json_extract(data_json, '$.decisionId') = ?").get(decisionId) as
+    | { at: string; ref: string; data_json: string }
+    | undefined;
+  if (!run) throw new Error(`no agent run for decision ${decisionId}`);
+  const d = JSON.parse(run.data_json);
+  const row = db.prepare('SELECT status, decided_by, executed_at, result_json, payload_json FROM decisions WHERE id = ?').get(decisionId) as Record<string, string | null>;
+  const decision = JSON.parse(row.payload_json!).decision;
+  const clip = (s: string, n = 600) => (s.length > n ? `${s.slice(0, n)}…` : s);
+  return [
+    `# Defender trace: ${run.ref}`,
+    '',
+    `Decision \`${decisionId}\` · ${run.at} · model \`${d.model}\` · prompt \`${d.promptVersion}\` · effort ${d.effort} · ${d.attempts.length} attempt(s) · ${(d.latencyMs / 1000).toFixed(1)} s · $${d.usage.costUsd.toFixed(4)}`,
+    '',
+    '## Tool calls',
+    ...d.toolCalls.map((c: { name: string; input: unknown; output: string }, i: number) => `${i + 1}. \`${c.name}(${JSON.stringify(c.input)})\`\n   \`\`\`json\n   ${clip(c.output)}\n   \`\`\``),
+    '',
+    '## Decision (Zod-validated)',
+    '```json',
+    JSON.stringify(decision, null, 2),
+    '```',
+    '',
+    `## Guardrails\nerrors: ${d.validation.errors.length ? d.validation.errors.join('; ') : 'none'} · flags: ${d.validation.flags.length ? d.validation.flags.join('; ') : 'none'} · routed: **${d.status}**`,
+    '',
+    `## Human step\nstatus **${row.status}**${row.decided_by ? ` by ${row.decided_by}` : ''}${row.executed_at ? ` at ${row.executed_at}` : ''}`,
+    row.result_json ? `\n\`\`\`json\n${JSON.stringify(JSON.parse(row.result_json), null, 2)}\n\`\`\`` : '',
+  ].join('\n');
+}
+
 (async () => {
+  if (args[0] === '--trace') {
+    console.log(trace(args[1]));
+    return;
+  }
   if (args[0] === '--approve' || args[0] === '--override') {
     const [, decisionId, action, amount] = args;
     if (args[0] === '--override' && !AGENT_ACTIONS.includes(action as AgentAction)) throw new Error(`action must be one of ${AGENT_ACTIONS.join(', ')}`);

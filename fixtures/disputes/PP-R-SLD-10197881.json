@@ -1,22 +1,29 @@
 {
   "dispute_id": "PP-R-SLD-10197881",
   "create_time": "2026-11-10T05:42:23.898Z",
-  "update_time": "2026-11-10T05:45:43.747Z",
+  "update_time": "2026-11-10T19:50:29.370Z",
   "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
-  "status": "WAITING_FOR_SELLER_RESPONSE",
+  "status": "RESOLVED",
   "dispute_life_cycle_stage": "INQUIRY",
   "dispute_channel": "INTERNAL",
   "dispute_amount": {
     "currency_code": "USD",
     "value": "47.40"
   },
-  "seller_response_due_date": "2026-11-30T05:42:23.898Z",
+  "dispute_outcome": {
+    "outcome_code": "RESOLVED_BUYER_FAVOUR",
+    "outcome_reason": "SELLER_ISSUED_REFUND",
+    "amount_refunded": {
+      "currency_code": "USD",
+      "value": "47.40"
+    }
+  },
   "disputed_transactions": [
     {
       "seller_transaction_id": "6VV87013M9548531E",
       "buyer_transaction_id": "6XV37876DM354674V",
       "create_time": "2026-11-10T05:38:02.000Z",
-      "transaction_status": "HELD",
+      "transaction_status": "REFUNDED",
       "gross_amount": {
         "currency_code": "USD",
         "value": "47.40"
@@ -50,34 +57,41 @@
       "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881",
       "rel": "self",
       "method": "GET"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/accept-claim",
-      "rel": "accept_claim",
-      "method": "POST"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/provide-evidence",
-      "rel": "provide_evidence",
-      "method": "POST"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/send-message",
-      "rel": "send_message",
-      "method": "POST"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/escalate",
-      "rel": "escalate",
-      "method": "POST"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881/make-offer",
-      "rel": "make_offer",
-      "method": "POST"
     }
   ],
-  "dispute_state": "REQUIRED_ACTION",
+  "dispute_state": "RESOLVED",
+  "money_movements": [
+    {
+      "affected_party": "SELLER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "47.40"
+      },
+      "initiated_time": "2026-11-10T19:48:39.813Z",
+      "type": "DEBIT",
+      "reason": "DISPUTE_SETTLEMENT"
+    },
+    {
+      "affected_party": "SELLER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "2.14"
+      },
+      "initiated_time": "2026-11-10T19:48:39.813Z",
+      "type": "DEBIT",
+      "reason": "DISPUTE_SETTLEMENT_FEE"
+    },
+    {
+      "affected_party": "BUYER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "47.40"
+      },
+      "initiated_time": "2026-11-10T19:48:39.813Z",
+      "type": "CREDIT",
+      "reason": "DISPUTE_SETTLEMENT"
+    }
+  ],
   "fund_movements": [
     {
       "party": "SELLER",
@@ -88,6 +102,26 @@
       "initiated_time": "2026-11-10T05:45:34.000Z",
       "type": "DEBIT",
       "reason": "HOLD_PLACED"
+    },
+    {
+      "party": "SELLER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "47.40"
+      },
+      "initiated_time": "2026-11-10T19:48:39.813Z",
+      "type": "DEBIT",
+      "reason": "DISPUTE_SETTLEMENT"
+    },
+    {
+      "party": "BUYER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "47.40"
+      },
+      "initiated_time": "2026-11-10T19:48:39.813Z",
+      "type": "CREDIT",
+      "reason": "DISPUTE_SETTLEMENT"
     }
   ],
   "messages": [
@@ -109,9 +143,15 @@
       "dispute_life_cycle_stage": "INQUIRY"
     },
     {
-      "evidence_type": "PROOF_OF_FULFILLMENT",
-      "source": "REQUESTED_FROM_SELLER",
-      "date": "2026-11-10T05:45:43.747Z"
+      "evidence_type": "OTHER",
+      "notes": "Hello, thank you for contacting us. We are unable to confirm delivery of your order VRD-1008 because it shipped without tracking. We are sorry for the trouble and are refunding the full $47.40 through PayPal. Thank you for your patience and for shopping with Kiln & Co.",
+      "source": "SUBMITTED_BY_SELLER",
+      "date": "2026-11-10T19:48:39.993Z",
+      "action_info": {
+        "action": "ACCEPT_CLAIM",
+        "response_option": "REFUND"
+      },
+      "dispute_life_cycle_stage": "INQUIRY"
     }
   ],
   "offer": {
@@ -124,19 +164,16 @@
     "allowed_refund_amount": {
       "currency_code": "USD",
       "value": "47.40"
-    }
-  },
-  "allowed_response_options": {
-    "accept_claim": {
-      "accept_claim_types": [
-        "PARTIAL_REFUND",
-        "REFUND"
-      ]
     },
-    "make_offer": {
-      "offer_types": [
-        "REFUND"
-      ]
-    }
+    "transactions": [
+      {
+        "id": "03E92414PV8849720",
+        "gross_amount": {
+          "currency_code": "USD",
+          "value": "47.40"
+        },
+        "create_time": "2026-11-10T19:48:39.000Z"
+      }
+    ]
   }
 }

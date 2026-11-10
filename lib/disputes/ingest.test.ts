@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { openDb, type Db } from '@/lib/db';
@@ -10,11 +10,10 @@ import { syncDisputes } from './sync';
 
 // Real (redacted) sandbox payloads: a CUSTOMER.DISPUTE.UPDATED delivery and the full GET of the same dispute.
 const DISPUTE_ID = 'PP-R-SLD-10197881';
-const webhookFile = readdirSync('fixtures/webhooks').find((f) => {
-  const j = JSON.parse(readFileSync(`fixtures/webhooks/${f}`, 'utf8'));
-  return j.event.event_type === 'CUSTOMER.DISPUTE.UPDATED' && j.event.resource?.dispute_id === DISPUTE_ID;
-})!;
-const realEvent = JSON.parse(readFileSync(`fixtures/webhooks/${webhookFile}`, 'utf8')).event;
+// Pinned: the delivery that moved this dispute to WAITING_FOR_SELLER_RESPONSE (update_time 05:45:43),
+// which predates the snapshot below. New deliveries keep arriving in fixtures/webhooks/.
+const WEBHOOK_FILE = 'CUSTOMER.DISPUTE.UPDATED-WH-4HL63831WR726640C-4P078399BE657110B.json';
+const realEvent = JSON.parse(readFileSync(`fixtures/webhooks/${WEBHOOK_FILE}`, 'utf8')).event;
 const fullDispute = JSON.parse(readFileSync(`fixtures/disputes/snapshots/2026-11-10-before-gate1/${DISPUTE_ID}.json`, 'utf8')) as PayPalDispute;
 
 // Stand-in for PayPal's verify API: the "signature" is a hash of the exact body it was sent with,
