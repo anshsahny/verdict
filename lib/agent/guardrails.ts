@@ -21,7 +21,7 @@ export type Validation = { errors: string[]; flags: string[] };
 
 export function validateDecision(
   d: Decision,
-  ctx: { dispute: PayPalDispute; packet: EvidencePacket; disputeAmount: number; buyerText: string },
+  ctx: { dispute: PayPalDispute; packet: EvidencePacket; disputeAmount: number; buyerText: string; thresholds?: { approvalUsd: number; minConfidence: number } },
 ): Validation {
   const errors: string[] = [];
   const flags: string[] = [];
@@ -52,8 +52,11 @@ export function validateDecision(
 
   // (c) route to a human
   // Judge by what's at stake (the disputed amount), not the size of the response.
-  if (ctx.disputeAmount > approvalThreshold()) flags.push(`Disputed amount $${ctx.disputeAmount.toFixed(2)} is above the approval threshold ($${approvalThreshold()}).`);
-  if (d.confidence < minConfidence()) flags.push(`Confidence ${d.confidence} is below ${minConfidence()}.`);
+  // Thresholds come from the merchant's Playbook (defender.ts); env defaults otherwise.
+  const approvalUsd = ctx.thresholds?.approvalUsd ?? approvalThreshold();
+  const minConf = ctx.thresholds?.minConfidence ?? minConfidence();
+  if (ctx.disputeAmount > approvalUsd) flags.push(`Disputed amount $${ctx.disputeAmount.toFixed(2)} is above the approval threshold ($${approvalUsd}).`);
+  if (d.confidence < minConf) flags.push(`Confidence ${d.confidence} is below ${minConf}.`);
   if (d.action === 'escalate_to_human') flags.push('Agent escalated to a human.');
   if (looksLikeInjection(ctx.buyerText)) flags.push('Buyer text contains instructions aimed at the clerk (possible prompt injection).');
 

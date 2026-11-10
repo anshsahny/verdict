@@ -6,7 +6,9 @@
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import { AgStudioAiModule, createAiHarness, type AgAiHarnessSetup, type AgStudioMode } from 'ag-studio';
 import { AgStudio, AgStudioProvider } from 'ag-studio-react';
-import { PageHeader } from '@/components/page-header';
+import { Button, usd } from '@/components/ui';
+import { formatRemaining } from '@/lib/disputes/deadline';
+import { Inbox, Welcome, type InboxItem, type RecentItem } from './inbox';
 import { verdictStudioTheme } from '@/lib/ui/studio-theme';
 import { WAR_ROOM_REPORT, warRoomData, type WarRoomData } from '@/lib/ui/war-room-report';
 import { verdictWidgets } from '@/lib/ui/widgets';
@@ -23,30 +25,58 @@ const ai: AgAiHarnessSetup = ({ api }) => createAiHarness(api, { adapter: claude
 
 const noSubscription = () => () => {};
 
-export function WarRoom({ data, licenseKey, aiEnabled }: { data: WarRoomData; licenseKey?: string; aiEnabled: boolean }) {
+export function WarRoom({ data, inbox, recent, licenseKey, aiEnabled }: { data: WarRoomData; inbox: InboxItem[]; recent: RecentItem[]; licenseKey?: string; aiEnabled: boolean }) {
   // Studio needs the browser (layout measurement); render a skeleton on the server.
   const inBrowser = useSyncExternalStore(noSubscription, () => true, () => false);
   const [mode, setMode] = useState<AgStudioMode>('view');
   const studioData = useMemo(() => warRoomData(data), [data]);
-  const open = data.disputes.filter((d) => d.state === 'Open');
-  const atRisk = open.reduce((s, d) => s + d.amount, 0);
+  const atStake = inbox.reduce((s, d) => s + d.amount, 0);
+  const next = inbox.find((i) => i.dueAt);
+  const nextIn = next?.dueAt ? formatRemaining(Date.parse(next.dueAt) - Date.parse(data.asOf)) : null;
+  const toggleEdit = () => {
+    setMode((m) => (m === 'view' ? 'edit' : 'view'));
+    document.getElementById('insights')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <PageHeader
-        title="War Room"
-        subtitle={`${open.length} open dispute${open.length === 1 ? '' : 's'} · $${atRisk.toFixed(2)} at risk · live from the PayPal sandbox ledger`}
-        actions={
-          <button
-            type="button"
-            onClick={() => setMode((m) => (m === 'view' ? 'edit' : 'view'))}
-            className="rounded-md border border-v-border bg-v-surface px-3 py-1.5 text-sm font-medium text-v-ink hover:bg-v-highlight"
-            aria-pressed={mode === 'edit'}
-          >
-            {mode === 'view' ? (aiEnabled ? 'Customize & ask AI' : 'Customize') : 'Done'}
-          </button>
-        }
-      />
+      <div className="border-b border-v-border bg-v-surface px-6 py-5">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-v-ink">War Room</h1>
+            <p className="mt-1 text-[15px] text-v-muted" suppressHydrationWarning>
+              {inbox.length ? (
+                <>
+                  <strong className="font-semibold text-v-ink">
+                    {inbox.length} dispute{inbox.length === 1 ? '' : 's'} need{inbox.length === 1 ? 's' : ''} a decision
+                  </strong>{' '}
+                  · {usd(atStake)} at stake{nextIn ? <> · next deadline in {nextIn}</> : null}
+                </>
+              ) : (
+                'Nothing needs you right now. New disputes appear here within seconds.'
+              )}
+            </p>
+          </div>
+          {aiEnabled ? (
+            <Button variant="secondary" onClick={toggleEdit} aria-pressed={mode === 'edit'}>
+              {mode === 'view' ? 'Ask the AI assistant' : 'Close assistant'}
+            </Button>
+          ) : null}
+        </div>
+      </div>
+      <div className="space-y-5 p-6">
+        <Welcome />
+        <Inbox items={inbox} recent={recent} asOf={data.asOf} />
+      </div>
+      <div id="insights" className="flex flex-wrap items-end justify-between gap-3 px-6 pb-1 pt-2">
+        <div>
+          <h2 className="text-lg font-semibold text-v-ink">Insights</h2>
+          <p className="text-sm text-v-muted">Live analytics on every dispute. Built with AG Studio: customize it, or ask the AI assistant to add a chart.</p>
+        </div>
+        <Button variant="secondary" size="sm" onClick={toggleEdit} aria-pressed={mode === 'edit'}>
+          {mode === 'view' ? 'Customize' : 'Done'}
+        </Button>
+      </div>
       <div className="min-h-[900px] flex-1">
         {inBrowser ? (
           <AgStudioProvider licenseKey={licenseKey} modules={aiEnabled ? [AgStudioAiModule] : undefined}>

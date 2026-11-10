@@ -3,6 +3,7 @@ import { connection } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getCaseFile, listDisputeRows } from '@/lib/views/disputes';
 import type { WarRoomData } from '@/lib/ui/war-room-report';
+import type { InboxItem, RecentItem } from './inbox';
 import { WarRoom } from './war-room';
 
 export const metadata: Metadata = { title: 'War Room' };
@@ -26,5 +27,30 @@ export default async function WarRoomPage() {
     events,
     asOf: new Date().toISOString(),
   };
-  return <WarRoom data={data} licenseKey={process.env.AG_STUDIO_LICENSE_KEY} aiEnabled={Boolean(process.env.ANTHROPIC_API_KEY)} />;
+  // What needs the merchant: disputes waiting on them, soonest deadline first, with the latest recommendation.
+  const latest = db.prepare(
+    "SELECT action, amount_cents, status, confidence FROM decisions WHERE dispute_id = ? AND status IN ('proposed', 'needs_human') ORDER BY created_at DESC LIMIT 1",
+  );
+  const inbox: InboxItem[] = rows
+    .filter((r) => r.status === 'Waiting on us')
+    .sort((a, b) => (a.hoursLeft ?? 1e9) - (b.hoursLeft ?? 1e9))
+    .map((r) => {
+      const dec = latest.get(r.id) as { action: string; amount_cents: number | null; status: string; confidence: number | null } | undefined;
+      return {
+        id: r.id,
+        reason: r.reason,
+        amount: r.amount,
+        customer: r.customer,
+        dueAt: r.dueAt,
+        rating: r.rating,
+        recommendation: dec ? { action: dec.action, amount: dec.amount_cents != null ? dec.amount_cents / 100 : null, status: dec.status, summary: dec.status === 'needs_human' ? 'flagged for your review' : `${Math.round((dec.confidence ?? 0) * 100)}% confident` } : null,
+      };
+    });
+  const recent: RecentItem[] = rows
+    .filter((r) => r.state === 'Resolved')
+    .slice(0, 5)
+    .map((r) => ({ id: r.id, reason: r.reason, amount: r.amount, outcome: r.outcome, won: r.won === 1, closedAt: r.filedAt }));
+  return (
+    <WarRoom data={data} inbox={inbox} recent={recent} licenseKey={process.env.AG_STUDIO_LICENSE_KEY} aiEnabled={Boolean(process.env.ANTHROPIC_API_KEY)} />
+  );
 }

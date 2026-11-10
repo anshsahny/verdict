@@ -7,7 +7,14 @@ import type { DisputeListRow, TimelineEntry } from '@/lib/views/disputes';
 export type WarRoomData = { disputes: (DisputeListRow & { due48: number; queueRank: number })[]; events: (TimelineEntry & { id: string; disputeId: string })[]; asOf: string };
 
 type FieldSpec = [id: string, name: string, format: AgFormat, hide?: boolean];
-const fields = (specs: FieldSpec[]): AgFieldDefinition[] => specs.map(([id, name, format, hide]) => ({ id, name, format, ...(hide && { hide }) }));
+const fields = (specs: FieldSpec[]): AgFieldDefinition[] =>
+  specs.map(([id, name, format, hide]) => ({
+    id,
+    name,
+    format,
+    ...(format === 'currencyFormat' && { formatOptions: { currency: 'USD', decimalPlaces: 2 } }),
+    ...(hide && { hide }),
+  }));
 const sum = (id: string) => ({ id, aggregation: 'sum' as const });
 
 export function warRoomData(data: WarRoomData): AgDataSourcesDefinition {

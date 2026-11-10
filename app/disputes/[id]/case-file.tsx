@@ -1,74 +1,128 @@
 'use client';
 
-// The Case File: everything about one dispute, the agent's recommendation, and the owner's
-// Approve / Edit / Override. Every PayPal action goes through /api/decisions/[id]/execute.
+// The Case File: one dispute, in plain language. Where it stands (progress), what Verdict
+// recommends and why, the evidence, and the owner's Approve / Edit / Override. Every PayPal action
+// goes through /api/decisions/[id]/execute. Record citations are one click away ("Show sources").
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { DeadlineRing, StrengthGauge, Timeline, URGENCY, useNow } from '@/components/viz';
+import { Badge, Button, Card, usd, useToast } from '@/components/ui';
 import { computeDeadline, formatRemaining } from '@/lib/disputes/deadline';
 import type { AppMode } from '@/lib/mode';
 import type { CaseFile } from '@/lib/views/disputes';
 
-const ACTION_TEXT: Record<string, string> = {
-  accept: 'Refund in full',
-  offer_refund: 'Offer a partial refund',
-  contest: 'Contest with evidence',
-  escalate_to_human: 'Handle it yourself',
+const ACTION_TEXT: Record<string, (amount: number | null) => string> = {
+  accept: (a) => `Refund ${usd(a)} in full`,
+  offer_refund: (a) => `Offer a ${usd(a)} partial refund`,
+  contest: () => 'Contest with your evidence',
+  escalate_to_human: () => 'Handle this one yourself',
 };
-const usd = (n: number | null | undefined) => (n == null ? '—' : `$${n.toFixed(2)}`);
+const ACTION_SHORT: Record<string, string> = { accept: 'Refund in full', offer_refund: 'Offer a partial refund', contest: 'Contest with evidence', escalate_to_human: 'Handle it yourself' };
+const EVIDENCE_LABEL: Record<string, string> = {
+  tracking: 'Tracking number',
+  delivery_confirmation: 'Delivery scan',
+  signature: 'Signature',
+  address_match: 'Right address',
+  address_mismatch: 'Wrong address',
+  not_delivered: 'No delivery scan',
+  untracked: 'No tracking',
+  product_listing: 'Product listing',
+  policy: 'Store policy',
+  customer_history: 'Customer history',
+  customer_note: 'Support note',
+  refund_record: 'Refund on file',
+  duplicate_payment: 'Duplicate payment',
+  separate_orders: 'Separate orders',
+};
+// Guardrail flags, in the merchant's words.
+function plainFlag(f: string): string {
+  if (/prompt injection/i.test(f)) return 'The buyer’s message tries to give Verdict instructions. They were ignored; please check this one yourself.';
+  if (/escalated/i.test(f)) return 'Verdict wants your judgment on this one.';
+  const big = f.match(/\$([\d.,]+) is above the approval threshold \(\$([\d.,]+)\)/);
+  if (big) return `Large dispute: $${big[1]} is above your $${big[2]} review threshold (Playbook).`;
+  const conf = f.match(/Confidence ([\d.]+) is below ([\d.]+)/);
+  if (conf) return `Verdict is only ${Math.round(Number(conf[1]) * 100)}% sure (your Playbook asks for ${Math.round(Number(conf[2]) * 100)}%).`;
+  return f;
+}
 
-function Card({ title, children, right, className = '' }: { title: string; children: ReactNode; right?: ReactNode; className?: string }) {
+const SUCCESS: Record<string, string> = {
+  accept_claim: 'Refund sent to PayPal. PayPal closes the dispute in about a minute.',
+  make_offer: 'Offer sent. The buyer can accept or decline it in PayPal.',
+  provide_evidence: 'Evidence submitted. PayPal is now reviewing the case.',
+  provide_supporting_info: 'Information submitted to PayPal’s review.',
+};
+
+// --- Progress -------------------------------------------------------------------------------------
+
+function Progress({ status, outcome }: { status: string; outcome: string | null }) {
+  const steps = ['Opened', 'Your response', status === 'WAITING_FOR_BUYER_RESPONSE' ? 'Buyer’s reply' : 'PayPal review', 'Closed'];
+  const current = status === 'RESOLVED' ? 4 : status === 'WAITING_FOR_SELLER_RESPONSE' ? 1 : 2;
   return (
-    <section className={`rounded-xl border border-v-border bg-v-surface p-5 ${className}`} aria-label={title}>
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-v-ink">{title}</h2>
-        {right}
-      </div>
-      {children}
-    </section>
+    <ol className="mt-5 flex items-center gap-2" aria-label="Dispute progress">
+      {steps.map((s, i) => {
+        const done = i < current;
+        const now = i === current;
+        return (
+          <li key={s} className="flex flex-1 items-center gap-2" aria-current={now ? 'step' : undefined}>
+            <span
+              className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${done ? 'bg-v-win text-white' : now ? 'bg-v-accent text-v-accent-ink' : 'bg-v-highlight text-v-muted'}`}
+              aria-hidden
+            >
+              {done ? '✓' : i + 1}
+            </span>
+            <span className={`text-sm ${now ? 'font-semibold text-v-ink' : done ? 'text-v-ink' : 'text-v-muted'}`}>
+              {i === 3 && outcome ? outcome : s}
+              <span className="sr-only">{done ? ' (done)' : now ? ' (current)' : ''}</span>
+            </span>
+            {i < steps.length - 1 ? <span className={`mx-1 h-px flex-1 ${done ? 'bg-v-win' : 'bg-v-border'}`} aria-hidden /> : null}
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
-function Pill({ tone, children }: { tone: 'win' | 'warn' | 'danger' | 'muted' | 'sim' | 'accent'; children: ReactNode }) {
-  const map = {
-    win: 'bg-v-win-soft text-v-win',
-    warn: 'bg-v-warn-soft text-v-warn',
-    danger: 'bg-v-danger-soft text-v-danger',
-    muted: 'bg-v-highlight text-v-muted',
-    sim: 'bg-v-sim-soft text-v-sim',
-    accent: 'bg-v-info-soft text-v-accent',
-  };
-  return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${map[tone]}`}>{children}</span>;
+// --- Recommendation and owner actions ---------------------------------------------------------------
+
+function Section({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="mt-5">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-v-faint">{label}</h3>
+      <div className="mt-1.5">{children}</div>
+    </div>
+  );
 }
 
-// --- Recommendation and owner actions -------------------------------------------------------------
-
-function Recommendation({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
+function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode; showSources: boolean }) {
   const router = useRouter();
+  const toast = useToast();
   const [busy, setBusy] = useState<null | 'recommend' | 'execute'>(null);
   const [error, setError] = useState<string | null>(null);
   const [panel, setPanel] = useState<null | 'edit' | 'override'>(null);
+  const [allReasons, setAllReasons] = useState(false);
   const dec = cf.decision;
   const d = dec?.payload.decision ?? null;
   const resolved = cf.raw.status === 'RESOLVED';
   const decided = dec && !['proposed', 'needs_human'].includes(dec.status);
   const [amount, setAmount] = useState<string>(d?.amount != null ? String(d.amount) : '');
   const [message, setMessage] = useState<string>(d?.draftMessageToBuyer ?? '');
-  const [overrideAction, setOverrideAction] = useState<string>(cf.raw.availableActions.find((a) => a !== d?.action) ?? 'accept');
+  const choices = cf.raw.availableActions.filter((a) => a !== 'escalate_to_human');
+  const [overrideAction, setOverrideAction] = useState<string>(choices.find((a) => a !== d?.action) ?? choices[0] ?? 'accept');
 
   async function call(url: string, body?: unknown) {
     setError(null);
     const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(json.error ?? json.status ?? `Request failed (${res.status})`);
+    if (!res.ok) throw new Error(json.error ?? `Request failed (${res.status})`);
     return json;
   }
   async function recommend() {
     setBusy('recommend');
     try {
-      await call(`/api/disputes/${cf.dispute.id}/recommend`);
+      const r = await call(`/api/disputes/${cf.dispute.id}/recommend`);
+      toast({ tone: 'accent', title: 'Verdict reviewed this dispute', body: r.decision ? ACTION_TEXT[r.decision.action]?.(r.decision.amount) : undefined });
       router.refresh();
     } catch (e) {
       setError((e as Error).message);
@@ -80,7 +134,12 @@ function Recommendation({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
     setBusy('execute');
     try {
       const r = await call(`/api/decisions/${dec!.id}/execute`, body);
-      if (r.status === 'failed') setError(`PayPal refused: ${r.error}`);
+      if (r.status === 'failed') {
+        setError(`PayPal didn’t accept that: ${r.error}`);
+        toast({ tone: 'danger', title: 'Nothing was changed', body: r.error });
+      } else {
+        toast({ tone: 'win', title: r.status === 'escalated' ? 'Kept for you to handle' : 'Done', body: SUCCESS[r.paypalAction] ?? 'Saved.' });
+      }
       setPanel(null);
       router.refresh();
     } catch (e) {
@@ -92,177 +151,195 @@ function Recommendation({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
 
   if (!d) {
     return (
-      <Card title="Verdict's recommendation">
-        <p className="text-sm text-v-muted">
-          {resolved ? 'This dispute is closed.' : "Verdict hasn't reviewed this dispute yet. It reads the order, tracking, customer history and your playbook, then proposes a response. Nothing is sent to PayPal until you approve."}
+      <Card>
+        <p className="text-xs font-semibold uppercase tracking-wide text-v-faint">Verdict’s recommendation</p>
+        <h2 className="mt-1 text-lg font-semibold text-v-ink">{resolved ? 'This dispute is closed' : 'Let Verdict build the case'}</h2>
+        <p className="mt-1 text-sm text-v-muted">
+          {resolved
+            ? 'No action is needed.'
+            : 'Verdict reads the order, tracking, customer history and your Playbook, then proposes a response with the evidence attached. Nothing is sent to PayPal until you approve it.'}
         </p>
         {!resolved ? (
-          <button type="button" onClick={recommend} disabled={busy !== null} className="mt-4 rounded-md bg-v-accent px-4 py-2 text-sm font-semibold text-v-accent-ink disabled:opacity-60">
-            {busy === 'recommend' ? 'Investigating… (about 10 seconds)' : 'Ask Verdict to review'}
-          </button>
+          <Button size="lg" className="mt-4" onClick={recommend} disabled={busy !== null}>
+            {busy === 'recommend' ? 'Reviewing… about 10 seconds' : 'Review this dispute'}
+          </Button>
         ) : null}
-        {error ? <p role="alert" className="mt-3 text-sm text-v-danger">{error}</p> : null}
+        {error ? (
+          <p role="alert" className="mt-3 text-sm text-v-danger">
+            {error}
+          </p>
+        ) : null}
       </Card>
     );
   }
 
   const flags = dec!.payload.validation.flags;
   const canAct = !resolved && !decided;
+  const reasons = allReasons ? d.reasoning : d.reasoning.slice(0, 3);
   return (
-    <Card
-      title="Verdict's recommendation"
-      right={
-        <span className="flex items-center gap-2">
-          {dec!.status === 'needs_human' ? <Pill tone="warn">Needs your judgment</Pill> : null}
-          {decided ? <Pill tone={dec!.status === 'failed' ? 'danger' : 'win'}>{dec!.status === 'executed' ? 'Approved' : dec!.status}</Pill> : null}
-        </span>
-      }
-    >
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <p className="text-lg font-semibold text-v-ink">
-          {ACTION_TEXT[d.action]}
-          {d.amount != null ? <span className="tabular"> · {usd(d.amount)}</span> : null}
-        </p>
-        <span className="text-sm text-v-muted tabular">confidence {Math.round(d.confidence * 100)}%</span>
+    <Card className={dec!.status === 'needs_human' && canAct ? 'ring-1 ring-v-warn' : ''}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-v-faint">Verdict recommends</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-v-ink">{ACTION_TEXT[d.action]?.(d.amount) ?? d.action}</h2>
+        </div>
+        <div className="flex flex-col items-end gap-1.5">
+          {decided ? <Badge tone={dec!.status === 'failed' ? 'danger' : 'win'}>{dec!.status === 'executed' ? 'Approved' : dec!.status === 'escalated' ? 'Kept for you' : dec!.status}</Badge> : null}
+          {dec!.status === 'needs_human' && canAct ? <Badge tone="warn">Needs your judgment</Badge> : null}
+          <div className="flex items-center gap-2 text-xs text-v-muted" aria-label={`Confidence ${Math.round(d.confidence * 100)} percent`}>
+            confidence
+            <span className="h-1.5 w-20 overflow-hidden rounded-full bg-v-highlight" aria-hidden>
+              <span className="block h-full rounded-full bg-v-accent" style={{ width: `${Math.round(d.confidence * 100)}%` }} />
+            </span>
+            <span className="tabular font-semibold text-v-ink">{Math.round(d.confidence * 100)}%</span>
+          </div>
+        </div>
       </div>
 
-      {flags.length ? (
-        <ul className="mt-3 space-y-1 rounded-lg bg-v-warn-soft p-3 text-sm text-v-warn">
+      {flags.length && canAct ? (
+        <ul className="mt-4 space-y-1 rounded-xl bg-v-warn-soft p-3 text-sm text-v-warn">
           {flags.map((f) => (
-            <li key={f}>⚑ {f}</li>
+            <li key={f}>⚑ {plainFlag(f)}</li>
           ))}
         </ul>
       ) : null}
 
-      <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-v-faint">Reasoning</h3>
-      <ol className="mt-1 list-decimal space-y-1.5 pl-5 text-sm text-v-ink">
-        {d.reasoning.map((r, i) => (
-          <li key={i}>{r}</li>
-        ))}
-      </ol>
+      <Section label="Why">
+        <ul className="space-y-2 text-sm text-v-ink">
+          {reasons.map((r, i) => (
+            <li key={i} className="flex gap-2">
+              <span aria-hidden className="mt-1.5 size-1.5 shrink-0 rounded-full bg-v-accent" />
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+        {d.reasoning.length > 3 ? (
+          <button type="button" onClick={() => setAllReasons((v) => !v)} className="mt-2 text-sm font-medium text-v-accent hover:underline" aria-expanded={allReasons}>
+            {allReasons ? 'Show less' : `Show full reasoning (${d.reasoning.length} steps)`}
+          </button>
+        ) : null}
+      </Section>
 
       {d.evidence.length ? (
-        <>
-          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-v-faint">Evidence cited</h3>
-          <ul className="mt-1 space-y-1 text-sm">
+        <Section label="Evidence Verdict will use">
+          <ul className="flex flex-wrap gap-2">
             {d.evidence.map((e) => (
-              <li key={`${e.type}-${e.recordId}`} className="flex gap-2">
-                <code className="shrink-0 rounded bg-v-highlight px-1.5 py-0.5 text-[11px] text-v-muted">{e.recordId}</code>
-                <span className="text-v-ink">{e.whyItHelps}</span>
+              <li key={`${e.type}-${e.recordId}`} title={e.whyItHelps} className="rounded-lg border border-v-border bg-v-raised px-2.5 py-1 text-sm text-v-ink">
+                ✓ {EVIDENCE_LABEL[e.type] ?? e.type}
+                {showSources ? <code className="ml-1.5 text-[11px] text-v-muted">{e.recordId}</code> : null}
               </li>
             ))}
           </ul>
-        </>
+        </Section>
       ) : null}
 
       {d.risks.length ? (
-        <>
-          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-v-faint">Risks</h3>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-v-muted">
+        <details className="mt-5">
+          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-v-faint hover:text-v-ink">Risks to know ({d.risks.length})</summary>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-v-muted">
             {d.risks.map((r, i) => (
               <li key={i}>{r}</li>
             ))}
           </ul>
-        </>
+        </details>
       ) : null}
 
-      <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-v-faint">Message to the buyer</h3>
-      <blockquote className="mt-1 rounded-lg border-l-2 border-v-accent bg-v-raised p-3 text-sm text-v-ink">{d.draftMessageToBuyer}</blockquote>
+      <Section label="Message to the buyer">
+        <blockquote className="rounded-xl border-l-2 border-v-accent bg-v-raised p-3 text-sm text-v-ink">{d.draftMessageToBuyer}</blockquote>
+      </Section>
 
       {decided ? (
-        <p className="mt-4 text-sm text-v-muted" suppressHydrationWarning>
-          {dec!.decided_by ? `${dec!.decided_by} · ` : ''}
-          {dec!.executed_at ? new Date(dec!.executed_at).toLocaleString() : ''} · result: {JSON.stringify((dec!.result as { paypalAction?: string })?.paypalAction ?? dec!.status)}
+        <p className="mt-5 text-sm text-v-muted" suppressHydrationWarning>
+          {dec!.status === 'executed' ? 'Approved' : dec!.status === 'escalated' ? 'Kept for manual handling' : dec!.status} by {dec!.decided_by ?? 'the owner'}
+          {dec!.executed_at ? ` on ${new Date(dec!.executed_at).toLocaleString()}` : ''}.
         </p>
       ) : null}
 
       {canAct ? (
-        <div className="mt-5 border-t border-v-border pt-4">
+        <div className="mt-6 border-t border-v-border pt-5">
           <div className="flex flex-wrap gap-2">
             {d.action !== 'escalate_to_human' ? (
-              <button type="button" onClick={() => execute({ mode: 'approve' })} disabled={busy !== null} className="rounded-md bg-v-accent px-4 py-2 text-sm font-semibold text-v-accent-ink disabled:opacity-60">
-                {busy === 'execute' ? 'Sending to PayPal…' : `Approve: ${ACTION_TEXT[d.action].toLowerCase()}`}
-              </button>
+              <Button size="lg" onClick={() => execute({ mode: 'approve' })} disabled={busy !== null}>
+                {busy === 'execute' ? 'Sending to PayPal…' : `Approve: ${ACTION_SHORT[d.action].toLowerCase()}`}
+              </Button>
             ) : null}
             {d.action === 'accept' || d.action === 'offer_refund' ? (
-              <button type="button" onClick={() => setPanel(panel === 'edit' ? null : 'edit')} aria-expanded={panel === 'edit'} className="rounded-md border border-v-border px-4 py-2 text-sm font-medium text-v-ink hover:bg-v-highlight">
-                Edit
-              </button>
+              <Button variant="secondary" size="lg" onClick={() => setPanel(panel === 'edit' ? null : 'edit')} aria-expanded={panel === 'edit'}>
+                Edit amount or message
+              </Button>
             ) : null}
-            <button type="button" onClick={() => setPanel(panel === 'override' ? null : 'override')} aria-expanded={panel === 'override'} className="rounded-md border border-v-border px-4 py-2 text-sm font-medium text-v-ink hover:bg-v-highlight">
-              Override
-            </button>
+            <Button variant={d.action === 'escalate_to_human' ? 'primary' : 'secondary'} size="lg" onClick={() => setPanel(panel === 'override' ? null : 'override')} aria-expanded={panel === 'override'}>
+              {d.action === 'escalate_to_human' ? 'Choose a response' : 'Do something else'}
+            </Button>
           </div>
 
           {panel === 'edit' ? (
             <form
-              className="mt-4 grid gap-3"
+              className="mt-4 grid gap-3 rounded-xl border border-v-border bg-v-raised p-4"
               onSubmit={(ev) => {
                 ev.preventDefault();
                 execute({ mode: 'edit', amount: Number(amount), message });
               }}
             >
               <label className="grid gap-1 text-sm">
-                <span className="text-v-muted">Amount (USD, max {usd(cf.dispute.amount)})</span>
-                <input type="number" step="0.01" min="0.01" max={cf.dispute.amount} required value={amount} onChange={(e) => setAmount(e.target.value)} className="w-40 rounded-md border border-v-border bg-v-surface px-3 py-1.5 tabular" />
+                <span className="text-v-muted">Amount (up to {usd(cf.dispute.amount)})</span>
+                <input type="number" step="0.01" min="0.01" max={cf.dispute.amount} required value={amount} onChange={(e) => setAmount(e.target.value)} className="w-40 rounded-lg border border-v-border bg-v-surface px-3 py-1.5 tabular" />
               </label>
               <label className="grid gap-1 text-sm">
                 <span className="text-v-muted">Message to the buyer</span>
-                <textarea rows={3} value={message} onChange={(e) => setMessage(e.target.value)} className="rounded-md border border-v-border bg-v-surface px-3 py-2" />
+                <textarea rows={3} value={message} onChange={(e) => setMessage(e.target.value)} className="rounded-lg border border-v-border bg-v-surface px-3 py-2" />
               </label>
               <div>
-                <button type="submit" disabled={busy !== null} className="rounded-md bg-v-accent px-4 py-2 text-sm font-semibold text-v-accent-ink disabled:opacity-60">
-                  Approve edited response
-                </button>
+                <Button type="submit" disabled={busy !== null}>
+                  Approve with my changes
+                </Button>
               </div>
             </form>
           ) : null}
 
           {panel === 'override' ? (
             <form
-              className="mt-4 grid gap-3"
+              className="mt-4 grid gap-3 rounded-xl border border-v-border bg-v-raised p-4"
               onSubmit={(ev) => {
                 ev.preventDefault();
                 const needsAmount = overrideAction === 'accept' || overrideAction === 'offer_refund';
                 execute({ mode: 'override', action: overrideAction, amount: needsAmount ? Number(amount || cf.dispute.amount) : null });
               }}
             >
-              <fieldset className="grid gap-1 text-sm">
-                <legend className="mb-1 text-v-muted">Instead, do this</legend>
-                {cf.raw.availableActions
-                  .filter((a) => a !== 'escalate_to_human')
-                  .map((a) => (
-                    <label key={a} className="flex items-center gap-2">
-                      <input type="radio" name="override" value={a} checked={overrideAction === a} onChange={() => setOverrideAction(a)} />
-                      {ACTION_TEXT[a]}
-                    </label>
-                  ))}
+              <fieldset className="grid gap-2 text-sm">
+                <legend className="mb-1 text-v-muted">What should Verdict send to PayPal?</legend>
+                {choices.map((a) => (
+                  <label key={a} className="flex items-center gap-2">
+                    <input type="radio" name="override" value={a} checked={overrideAction === a} onChange={() => setOverrideAction(a)} />
+                    {ACTION_SHORT[a]}
+                  </label>
+                ))}
               </fieldset>
               {overrideAction === 'accept' || overrideAction === 'offer_refund' ? (
                 <label className="grid gap-1 text-sm">
-                  <span className="text-v-muted">Amount (USD)</span>
-                  <input type="number" step="0.01" min="0.01" max={cf.dispute.amount} required value={amount || String(cf.dispute.amount)} onChange={(e) => setAmount(e.target.value)} className="w-40 rounded-md border border-v-border bg-v-surface px-3 py-1.5 tabular" />
+                  <span className="text-v-muted">Amount</span>
+                  <input type="number" step="0.01" min="0.01" max={cf.dispute.amount} required value={amount || String(cf.dispute.amount)} onChange={(e) => setAmount(e.target.value)} className="w-40 rounded-lg border border-v-border bg-v-surface px-3 py-1.5 tabular" />
                 </label>
               ) : null}
               <div>
-                <button type="submit" disabled={busy !== null} className="rounded-md bg-v-ink px-4 py-2 text-sm font-semibold text-v-canvas disabled:opacity-60">
-                  Override and send to PayPal
-                </button>
+                <Button type="submit" variant="dark" disabled={busy !== null}>
+                  Send to PayPal
+                </Button>
               </div>
             </form>
           ) : null}
-          <p className="mt-3 text-xs text-v-faint">
+          <p className="mt-3 text-xs text-v-muted">
             {mode === 'replay'
-              ? 'REPLAY: this acts on recorded sandbox data with the transitions PayPal showed us. Nothing is sent to PayPal.'
-              : 'Verdict re-checks the dispute with PayPal before acting. Nothing happens without your click.'}
+              ? 'REPLAY: this acts on recorded sandbox data using the transitions PayPal showed us. Nothing is sent to PayPal.'
+              : 'Verdict re-checks the dispute with PayPal right before acting. Nothing happens without your click.'}
           </p>
         </div>
       ) : null}
 
       {!resolved && decided ? (
-        <button type="button" onClick={recommend} disabled={busy !== null} className="mt-4 text-sm font-medium text-v-accent hover:underline">
-          {busy === 'recommend' ? 'Investigating…' : 'Ask Verdict again'}
-        </button>
+        <Button variant="ghost" size="sm" className="mt-4" onClick={recommend} disabled={busy !== null}>
+          {busy === 'recommend' ? 'Reviewing…' : 'Ask Verdict again'}
+        </Button>
       ) : null}
       {error ? (
         <p role="alert" className="mt-3 text-sm text-v-danger">
@@ -277,33 +354,30 @@ function Recommendation({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
 
 export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
   const now = useNow(30_000, cf.asOf);
+  const [showSources, setShowSources] = useState(false);
   const r = cf.dispute;
   const deadline = computeDeadline(r.dueAt, now);
-  const outcomeTone = r.outcome === 'Won' ? 'win' : r.state === 'Resolved' ? 'danger' : 'muted';
+  const outcomeText = r.state === 'Resolved' ? r.outcome : null;
   return (
     <div className="flex-1">
-      <div className="border-b border-v-border bg-v-surface px-6 py-4">
-        <nav aria-label="Breadcrumb" className="mb-1 text-xs text-v-muted">
+      <div className="border-b border-v-border bg-v-surface px-6 py-5">
+        <nav aria-label="Breadcrumb" className="mb-2 text-sm text-v-muted">
           <Link href="/war-room" className="hover:text-v-ink hover:underline">
             War Room
           </Link>{' '}
-          / <span className="font-mono">{r.id}</span>
+          / Case
         </nav>
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-v-ink">
+            <h1 className="text-2xl font-semibold tracking-tight text-v-ink">
               {r.reason} · <span className="tabular">{usd(r.amount)}</span>
             </h1>
-            <div className="mt-1.5 flex flex-wrap items-center gap-2">
-              <Pill tone="accent">{r.stage}</Pill>
-              <Pill tone={r.state === 'Resolved' ? outcomeTone : 'muted'}>{r.state === 'Resolved' ? r.outcome : r.status}</Pill>
-              <span className="text-sm text-v-muted">
-                {r.customer} · order {r.orderId}
-              </span>
-            </div>
+            <p className="mt-1 text-sm text-v-muted">
+              {r.customer} · order {r.orderId} · {r.stage === 'Chargeback' ? 'chargeback (bank-level claim)' : 'PayPal inquiry'} · <span className="font-mono text-xs">PayPal case {r.id}</span>
+            </p>
           </div>
           {r.dueAt ? (
-            <div className="flex items-center gap-3 rounded-lg px-3 py-2" style={{ background: URGENCY[deadline.bucket].soft }}>
+            <div className="flex items-center gap-3 rounded-xl px-4 py-2.5" style={{ background: URGENCY[deadline.bucket].soft }}>
               <DeadlineRing dueAt={r.dueAt} now={now} size={44} />
               <div>
                 <p className="text-xs text-v-muted">Respond within</p>
@@ -312,46 +386,64 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
                 </p>
               </div>
             </div>
+          ) : outcomeText ? (
+            <Badge tone={r.outcome === 'Won' ? 'win' : 'muted'} className="px-3 py-1 text-sm">
+              {outcomeText}
+            </Badge>
           ) : null}
         </div>
+        <Progress status={cf.raw.status} outcome={outcomeText} />
       </div>
 
       <div className="grid gap-5 p-6 lg:grid-cols-12">
         <div className="space-y-5 lg:col-span-7">
-          <Recommendation cf={cf} mode={mode} />
-          <Card title="What the buyer says" right={<Pill tone="muted">buyer-written, untrusted</Pill>}>
-            {cf.raw.buyerClaim ? <blockquote className="whitespace-pre-wrap text-sm text-v-ink">“{cf.raw.buyerClaim}”</blockquote> : <p className="text-sm text-v-muted">The buyer didn&apos;t write a description.</p>}
+          <Recommendation cf={cf} mode={mode} showSources={showSources} />
+          <Card title="What the buyer says" right={<Badge>written by the buyer</Badge>}>
+            {cf.raw.buyerClaim ? <blockquote className="whitespace-pre-wrap text-sm text-v-ink">“{cf.raw.buyerClaim}”</blockquote> : <p className="text-sm text-v-muted">The buyer didn’t write a description.</p>}
           </Card>
-          <Card title="Timeline">
+          <Card title="History">
             <Timeline items={cf.timeline} />
           </Card>
         </div>
 
         <div className="space-y-5 lg:col-span-5">
-          <Card title="Evidence" right={cf.raw.requestedEvidence.length ? <span className="text-xs text-v-muted">PayPal asked for: {cf.raw.requestedEvidence.map((t) => t.replace(/_/g, ' ').toLowerCase()).join(', ')}</span> : null}>
+          <Card
+            title="Your evidence"
+            subtitle={cf.raw.requestedEvidence.length ? `PayPal asked for ${cf.raw.requestedEvidence.map((t) => t.replace(/_/g, ' ').toLowerCase()).join(', ')}.` : undefined}
+            right={
+              <button type="button" onClick={() => setShowSources((v) => !v)} className="text-xs font-medium text-v-accent hover:underline" aria-pressed={showSources}>
+                {showSources ? 'Hide sources' : 'Show sources'}
+              </button>
+            }
+          >
             <div className="flex justify-center">
               <StrengthGauge value={cf.packet.strength} rating={cf.packet.rating} />
             </div>
             {cf.packet.items.length ? (
               <ul className="mt-3 divide-y divide-v-border">
                 {cf.packet.items.map((i) => (
-                  <li key={i.id} className="flex gap-3 py-2 text-sm">
-                    <span aria-hidden className={`mt-0.5 font-bold ${i.helps ? 'text-v-win' : 'text-v-danger'}`}>
-                      {i.helps ? '✓' : '✗'}
+                  <li key={i.id} className="flex gap-3 py-2.5 text-sm">
+                    <span aria-hidden className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${i.helps ? 'bg-v-win-soft text-v-win' : 'bg-v-danger-soft text-v-danger'}`}>
+                      {i.helps ? '✓' : '!'}
                     </span>
                     <span className="min-w-0">
-                      <span className="sr-only">{i.helps ? 'Helps:' : 'Hurts:'} </span>
-                      <span className="text-v-ink">{i.summary}</span>
-                      <code className="ml-1 text-[11px] text-v-faint">
-                        [{i.recordTable}:{i.recordId}]
-                      </code>
+                      <span className="block font-medium text-v-ink">
+                        <span className="sr-only">{i.helps ? 'Helps: ' : 'Hurts: '}</span>
+                        {EVIDENCE_LABEL[i.kind] ?? i.kind}
+                      </span>
+                      <span className="block text-v-muted">{i.summary}</span>
+                      {showSources ? (
+                        <code className="text-[11px] text-v-faint">
+                          source: {i.recordTable}/{i.recordId}
+                        </code>
+                      ) : null}
                     </span>
                   </li>
                 ))}
               </ul>
             ) : null}
             {cf.packet.gaps.length ? (
-              <div className="mt-3 rounded-lg bg-v-highlight p-3">
+              <div className="mt-3 rounded-xl bg-v-highlight p-3">
                 <p className="text-xs font-semibold uppercase tracking-wide text-v-faint">Missing</p>
                 <ul className="mt-1 list-disc pl-5 text-sm text-v-muted">
                   {cf.packet.gaps.map((g) => (
@@ -362,10 +454,10 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
             ) : null}
           </Card>
 
-          <Card title="Order and shipment">
+          <Card title="Order">
             {cf.order ? (
-              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
-                <dt className="text-v-muted">Order</dt>
+              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+                <dt className="text-v-muted">Placed</dt>
                 <dd className="text-v-ink" suppressHydrationWarning>
                   {cf.order.id} · {new Date(cf.order.createdAt).toLocaleDateString()}
                 </dd>
@@ -380,10 +472,10 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
                     <dt className="text-v-muted">Carrier</dt>
                     <dd className="text-v-ink">
                       {cf.shipment.carrier}
-                      {cf.shipment.tracking ? <code className="ml-1 text-xs text-v-muted">{cf.shipment.tracking}</code> : ' (no tracking)'}
+                      {cf.shipment.tracking ? <span className="block font-mono text-xs text-v-muted">{cf.shipment.tracking}</span> : ' · no tracking'}
                     </dd>
                     <dt className="text-v-muted">Status</dt>
-                    <dd className="text-v-ink">
+                    <dd className="text-v-ink capitalize">
                       {cf.shipment.status.replace(/_/g, ' ').toLowerCase()}
                       {cf.shipment.signedBy ? ` · signed by ${cf.shipment.signedBy}` : ''}
                     </dd>
@@ -397,13 +489,13 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
                 ) : null}
               </dl>
             ) : (
-              <p className="text-sm text-v-warn">No store order matches this PayPal transaction.</p>
+              <p className="text-sm text-v-warn">No order in your store matches this PayPal payment. Check it before responding.</p>
             )}
           </Card>
 
           {cf.customer ? (
             <Card title="Customer">
-              <p className="text-sm text-v-ink">{cf.customer.name}</p>
+              <p className="text-sm font-medium text-v-ink">{cf.customer.name}</p>
               <p className="text-sm text-v-muted" suppressHydrationWarning>
                 {cf.customer.city}, {cf.customer.region} · {cf.customer.orders} order{cf.customer.orders === 1 ? '' : 's'} · customer since {new Date(cf.customer.firstSeen).toLocaleDateString()}
               </p>

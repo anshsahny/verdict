@@ -10,6 +10,7 @@ import { audit, nowIso, type Db } from '@/lib/db';
 import { getDispute } from '@/lib/disputes/store';
 import { buildEvidencePacket } from '@/lib/evidence/packet';
 import { PayPalDispute } from '@/lib/paypal/dispute-schema';
+import { getPlaybook } from '@/lib/settings';
 import { validateDecision, type Validation } from './guardrails';
 import { Decision } from './schema';
 import { buyerText, makeTools, type ToolCall } from './tools';
@@ -69,7 +70,14 @@ export async function runDefender(opts: DefenderOptions): Promise<DefenderRun> {
   if (!row) throw new Error(`dispute ${disputeId} not in ledger`);
   const raw = PayPalDispute.parse(JSON.parse(row.raw_json));
   const packet = buildEvidencePacket(db, row);
-  const ctx = { dispute: raw, packet, disputeAmount: row.amount_cents / 100, buyerText: buyerText(raw) };
+  const playbook = getPlaybook(db, row.merchant_id ?? undefined);
+  const ctx = {
+    dispute: raw,
+    packet,
+    disputeAmount: row.amount_cents / 100,
+    buyerText: buyerText(raw),
+    thresholds: { approvalUsd: playbook.approvalThresholdUsd, minConfidence: playbook.minConfidence },
+  };
 
   const calls: ToolCall[] = [];
   const tools = makeTools({ db, disputeId, now: opts.now, calls });

@@ -61,7 +61,14 @@ export function toArenaRow(r: ArenaRunResult): ArenaRow {
 }
 
 type FieldSpec = [id: string, name: string, format: AgFormat, hide?: boolean];
-const fields = (specs: FieldSpec[]): AgFieldDefinition[] => specs.map(([id, name, format, hide]) => ({ id, name, format, ...(hide && { hide }) }));
+const fields = (specs: FieldSpec[]): AgFieldDefinition[] =>
+  specs.map(([id, name, format, hide]) => ({
+    id,
+    name,
+    format,
+    ...(format === 'currencyFormat' && { formatOptions: { currency: 'USD', decimalPlaces: 2 } }),
+    ...(hide && { hide }),
+  }));
 const sum = (id: string) => ({ id, aggregation: 'sum' as const });
 const ratio = (id: string, name: string, description: string, num: string, den: string) => ({
   id,
