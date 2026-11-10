@@ -1,0 +1,97 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-5E3089705S626064B-0FN49448FB802864U",
+    "event_version": "1.0",
+    "create_time": "2026-11-10T22:19:33.802Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.UPDATED",
+    "summary": "A dispute was updated with case # PP-R-MBM-10198360",
+    "resource": {
+      "dispute_id": "PP-R-MBM-10198360",
+      "create_time": "2026-11-10T22:15:58.096Z",
+      "update_time": "2026-11-10T22:19:23.915Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "2EW0916374698633K",
+          "seller_transaction_id": "91850576MY225974G",
+          "transaction_status": "HELD",
+          "invoice_number": "ARN-2-mwb8optu",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Matcha whisk set",
+              "item_description": "Matcha whisk set",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "UNDER_REVIEW",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "34.00"
+      },
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "32.32"
+          },
+          "initiated_time": "2026-11-10T22:19:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "34.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "34.00"
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-MBM-10198360",
+          "rel": "self",
+          "method": "GET",
+          "encType": "application/json"
+        },
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-MBM-10198360/provide-supporting-info",
+          "rel": "provide_supporting_info",
+          "method": "POST",
+          "encType": "application/json"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-5E3089705S626064B-0FN49448FB802864U",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-5E3089705S626064B-0FN49448FB802864U/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}

@@ -1,8 +1,76 @@
 {
   "status": 200,
-  "debugId": "f12546828ad2a",
+  "debugId": "ca5885bde4d65",
   "body": {
     "items": [
+      {
+        "dispute_id": "PP-R-FGG-10198062",
+        "create_time": "2026-11-10T16:13:31.000Z",
+        "update_time": "2026-11-10T16:45:53.000Z",
+        "disputed_transactions": [
+          {
+            "buyer_transaction_id": "70P75993YP409615S",
+            "buyer": {
+              "payer_id": "[REDACTED]"
+            },
+            "seller": {
+              "merchant_id": "KNT7TPTCVPK3N"
+            }
+          }
+        ],
+        "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+        "status": "RESOLVED",
+        "dispute_state": "RESOLVED",
+        "dispute_amount": {
+          "currency_code": "USD",
+          "value": "18.00"
+        },
+        "dispute_life_cycle_stage": "INQUIRY",
+        "dispute_channel": "INTERNAL",
+        "outcome": "LOST",
+        "links": [
+          {
+            "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-FGG-10198062",
+            "rel": "self",
+            "method": "GET",
+            "encType": "application/json"
+          }
+        ]
+      },
+      {
+        "dispute_id": "PP-R-AKY-10197889",
+        "create_time": "2026-11-10T05:52:48.000Z",
+        "update_time": "2026-11-10T05:56:23.000Z",
+        "disputed_transactions": [
+          {
+            "buyer_transaction_id": "6D0308047S168632G",
+            "buyer": {
+              "payer_id": "[REDACTED]"
+            },
+            "seller": {
+              "merchant_id": "KNT7TPTCVPK3N"
+            }
+          }
+        ],
+        "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+        "status": "WAITING_FOR_SELLER_RESPONSE",
+        "dispute_state": "REQUIRED_ACTION",
+        "dispute_amount": {
+          "currency_code": "USD",
+          "value": "118.00"
+        },
+        "dispute_life_cycle_stage": "INQUIRY",
+        "dispute_channel": "INTERNAL",
+        "seller_response_due_date": "2026-11-30T05:52:48.000Z",
+        "links": [
+          {
+            "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-AKY-10197889",
+            "rel": "self",
+            "method": "GET",
+            "encType": "application/json"
+          }
+        ]
+      },
       {
         "dispute_id": "PP-R-BFE-10197888",
         "create_time": "2026-11-10T05:52:04.000Z",
@@ -32,14 +100,15 @@
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-BFE-10197888",
             "rel": "self",
-            "method": "GET"
+            "method": "GET",
+            "encType": "application/json"
           }
         ]
       },
       {
         "dispute_id": "PP-R-HRR-10197887",
         "create_time": "2026-11-10T05:51:49.000Z",
-        "update_time": "2026-11-10T05:55:23.000Z",
+        "update_time": "2026-11-10T17:07:08.000Z",
         "disputed_transactions": [
           {
             "buyer_transaction_id": "0DF21510G2246484R",
@@ -52,26 +121,28 @@
           }
         ],
         "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
-        "status": "UNDER_REVIEW",
-        "dispute_state": "UNDER_PAYPAL_REVIEW",
+        "status": "RESOLVED",
+        "dispute_state": "RESOLVED",
         "dispute_amount": {
           "currency_code": "USD",
           "value": "19.25"
         },
         "dispute_life_cycle_stage": "CHARGEBACK",
         "dispute_channel": "INTERNAL",
+        "outcome": "LOST",
         "links": [
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887",
             "rel": "self",
-            "method": "GET"
+            "method": "GET",
+            "encType": "application/json"
           }
         ]
       },
       {
         "dispute_id": "PP-R-ERW-10197885",
         "create_time": "2026-11-10T05:49:58.000Z",
-        "update_time": "2026-11-10T05:53:23.000Z",
+        "update_time": "2026-11-10T16:45:03.000Z",
         "disputed_transactions": [
           {
             "buyer_transaction_id": "1TS24488L28262124",
@@ -84,20 +155,20 @@
           }
         ],
         "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
-        "status": "WAITING_FOR_SELLER_RESPONSE",
-        "dispute_state": "REQUIRED_ACTION",
+        "status": "WAITING_FOR_BUYER_RESPONSE",
+        "dispute_state": "REQUIRED_OTHER_PARTY_ACTION",
         "dispute_amount": {
           "currency_code": "USD",
           "value": "36.75"
         },
         "dispute_life_cycle_stage": "INQUIRY",
         "dispute_channel": "INTERNAL",
-        "seller_response_due_date": "2026-11-30T05:49:58.000Z",
         "links": [
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885",
             "rel": "self",
-            "method": "GET"
+            "method": "GET",
+            "encType": "application/json"
           }
         ]
       },
@@ -130,7 +201,8 @@
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884",
             "rel": "self",
-            "method": "GET"
+            "method": "GET",
+            "encType": "application/json"
           }
         ]
       },
@@ -163,14 +235,15 @@
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883",
             "rel": "self",
-            "method": "GET"
+            "method": "GET",
+            "encType": "application/json"
           }
         ]
       },
       {
         "dispute_id": "PP-R-SUQ-10197882",
         "create_time": "2026-11-10T05:43:45.000Z",
-        "update_time": "2026-11-10T05:54:08.000Z",
+        "update_time": "2026-11-10T16:45:13.000Z",
         "disputed_transactions": [
           {
             "buyer_transaction_id": "26V924161X633243G",
@@ -183,26 +256,28 @@
           }
         ],
         "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
-        "status": "UNDER_REVIEW",
-        "dispute_state": "UNDER_PAYPAL_REVIEW",
+        "status": "RESOLVED",
+        "dispute_state": "RESOLVED",
         "dispute_amount": {
           "currency_code": "USD",
           "value": "42.00"
         },
         "dispute_life_cycle_stage": "CHARGEBACK",
         "dispute_channel": "INTERNAL",
+        "outcome": "WON",
         "links": [
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882",
             "rel": "self",
-            "method": "GET"
+            "method": "GET",
+            "encType": "application/json"
           }
         ]
       },
       {
         "dispute_id": "PP-R-SLD-10197881",
         "create_time": "2026-11-10T05:42:23.000Z",
-        "update_time": "2026-11-10T05:45:43.000Z",
+        "update_time": "2026-11-10T19:50:29.000Z",
         "disputed_transactions": [
           {
             "buyer_transaction_id": "6XV37876DM354674V",
@@ -215,20 +290,21 @@
           }
         ],
         "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
-        "status": "WAITING_FOR_SELLER_RESPONSE",
-        "dispute_state": "REQUIRED_ACTION",
+        "status": "RESOLVED",
+        "dispute_state": "RESOLVED",
         "dispute_amount": {
           "currency_code": "USD",
           "value": "47.40"
         },
         "dispute_life_cycle_stage": "INQUIRY",
         "dispute_channel": "INTERNAL",
-        "seller_response_due_date": "2026-11-30T05:42:23.000Z",
+        "outcome": "LOST",
         "links": [
           {
             "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881",
             "rel": "self",
-            "method": "GET"
+            "method": "GET",
+            "encType": "application/json"
           }
         ]
       }
@@ -237,12 +313,14 @@
       {
         "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes?page_size=50",
         "rel": "self",
-        "method": "GET"
+        "method": "GET",
+        "encType": "application/json"
       },
       {
         "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes?page_size=50",
         "rel": "first",
-        "method": "GET"
+        "method": "GET",
+        "encType": "application/json"
       }
     ]
   }

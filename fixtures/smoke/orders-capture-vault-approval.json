@@ -1,8 +1,8 @@
 {
   "status": 201,
-  "debugId": "f666599400575",
+  "debugId": "ca5885bc9fd0c",
   "body": {
-    "id": "8JG71603UK264490V",
+    "id": "4RK56875KG687531R",
     "intent": "CAPTURE",
     "status": "COMPLETED",
     "payment_source": {
@@ -27,7 +27,7 @@
     },
     "purchase_units": [
       {
-        "reference_id": "smoke-vault-mwa8guz9",
+        "reference_id": "smoke-vault-mwb8gki0",
         "amount": {
           "currency_code": "USD",
           "value": "12.00"
@@ -39,7 +39,7 @@
         "payments": {
           "captures": [
             {
-              "id": "44N80858BG5744711",
+              "id": "5XJ38901X88565515",
               "status": "COMPLETED",
               "amount": {
                 "currency_code": "USD",
@@ -69,23 +69,23 @@
               },
               "links": [
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/44N80858BG5744711",
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/5XJ38901X88565515",
                   "rel": "self",
                   "method": "GET"
                 },
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/44N80858BG5744711/refund",
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/5XJ38901X88565515/refund",
                   "rel": "refund",
                   "method": "POST"
                 },
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4RK56875KG687531R",
                   "rel": "up",
                   "method": "GET"
                 }
               ],
-              "create_time": "2026-11-10T05:36:23Z",
-              "update_time": "2026-11-10T05:36:23Z"
+              "create_time": "2026-11-10T22:05:25Z",
+              "update_time": "2026-11-10T22:05:25Z"
             }
           ]
         }
@@ -102,11 +102,11 @@
         "country_code": "US"
       }
     },
-    "create_time": "2026-11-10T05:12:14Z",
-    "update_time": "2026-11-10T05:36:24Z",
+    "create_time": "2026-11-10T21:59:44Z",
+    "update_time": "2026-11-10T22:05:26Z",
     "links": [
       {
-        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4RK56875KG687531R",
         "rel": "self",
         "method": "GET"
       }

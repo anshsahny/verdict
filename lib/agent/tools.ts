@@ -22,12 +22,21 @@ export type ToolContext = {
 };
 
 type Message = { posted_by?: string; time_posted?: string; content?: string };
+type Evidence = { evidence_type?: string; source?: string; notes?: string; date?: string };
+
+// Real Resolution Center claims put the buyer's words in evidences[] (source SUBMITTED_BY_BUYER,
+// usually evidence_type CREATE), not in messages[]. "N/A" is PayPal's placeholder for no text.
+const buyerEvidenceNotes = (raw: PayPalDispute) =>
+  ((raw as { evidences?: Evidence[] }).evidences ?? []).filter((e) => e.source === 'SUBMITTED_BY_BUYER' && e.notes && e.notes.trim() !== 'N/A');
 
 /** All buyer-authored text on a dispute, for display and injection screening. */
 export function buyerText(raw: PayPalDispute): string {
-  const msgs = ((raw as { messages?: Message[] }).messages ?? []).filter((m) => m.posted_by === 'BUYER').map((m) => m.content ?? '');
+  const msgs = ((raw as { messages?: Message[] }).messages ?? [])
+    .filter((m) => m.posted_by === 'BUYER' && m.content && m.content.trim() !== 'N/A')
+    .map((m) => m.content!);
   const notes = (raw as { extensions?: { buyer_notes?: string } }).extensions?.buyer_notes;
-  return [...msgs, ...(notes ? [notes] : [])].join('\n');
+  // The same claim often appears in both evidences[] and messages[]; keep one copy.
+  return [...new Set([...buyerEvidenceNotes(raw).map((e) => e.notes!), ...msgs, ...(notes ? [notes] : [])])].join('\n');
 }
 
 const fence = (s: string) => s.replace(/<\/?untrusted_buyer_message>/gi, '[tag removed]');
@@ -55,6 +64,7 @@ export function disputeView(row: DisputeRow, now = new Date()) {
     paypalRequestedEvidence: requestedEvidence(raw),
     paypalResponseOptions: responseOptions(raw),
     buyerNotes: notes ? `<untrusted_buyer_message>${fence(notes)}</untrusted_buyer_message>` : null,
+    buyerClaim: buyerEvidenceNotes(raw).map((e) => ({ at: e.date, text: `<untrusted_buyer_message>${fence(e.notes!)}</untrusted_buyer_message>` })),
     messages: msgs,
   };
 }

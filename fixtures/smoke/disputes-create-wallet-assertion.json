@@ -1,6 +1,6 @@
 {
   "status": 400,
-  "debugId": "f671001537fb3",
+  "debugId": "ca5885bd7d81a",
   "body": {
     "error": "invalid_request",
     "error_description": "No permissions to set target_client_id"
