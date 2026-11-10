@@ -12,7 +12,7 @@
   --v-raised: #fbfaf7;
   --v-ink: #15172a;
   --v-muted: #5c6271;
-  --v-faint: #8b909c;
+  --v-faint: #666b7a; /* >= 4.5:1 on surface and highlight (WCAG AA) */
   --v-border: #e3e0d8;
   --v-gridline: #eeece6;
   --v-highlight: #eef1fb;
@@ -20,7 +20,7 @@
   --v-accent-ink: #ffffff;
   --v-win: #0e7a5c;
   --v-win-soft: #e3f4ee;
-  --v-warn: #b26a00;
+  --v-warn: #8a5200; /* >= 4.5:1 on warn-soft */
   --v-warn-soft: #fbf0dc;
   --v-danger: #c0342b;
   --v-danger-soft: #fbe6e3;
@@ -49,7 +49,7 @@
   --v-raised: #1b1f2c;
   --v-ink: #e9eaf0;
   --v-muted: #a0a6b6;
-  --v-faint: #747b8d;
+  --v-faint: #8f96a8;
   --v-border: #2a2f3e;
   --v-gridline: #222634;
   --v-highlight: #1f2640;

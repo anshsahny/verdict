@@ -67,7 +67,7 @@ function DeadlineClocksWidget(params: AgWidgetParams) {
     .slice(0, 6);
   if (rows && !items.length) return <p className="p-2 text-sm text-v-muted">No open deadlines. Nothing is waiting on you.</p>;
   return (
-    <ul className="grid h-full grid-cols-[repeat(auto-fill,minmax(150px,1fr))] content-start gap-2 overflow-auto p-1">
+    <ul tabIndex={0} aria-label="Response deadlines, soonest first" className="grid h-full grid-cols-[repeat(auto-fill,minmax(150px,1fr))] content-start gap-2 overflow-auto p-1">
       {items.map((it) => {
         const d = computeDeadline(it.dueAt, now);
         return (
@@ -116,7 +116,11 @@ function DisputeTimelineWidget(params: AgWidgetParams) {
     .filter((r) => r.at)
     .sort((a, b) => b.at.localeCompare(a.at))
     .slice(0, 40);
-  return <div className="h-full overflow-auto px-1 py-1">{rows ? <Timeline items={items} dense /> : null}</div>;
+  return (
+    <div tabIndex={0} aria-label="Dispute activity, newest first" className="h-full overflow-auto px-1 py-1">
+      {rows ? <Timeline items={items} dense /> : null}
+    </div>
+  );
 }
 
 // --- Grid cell renderers --------------------------------------------------------------------------
