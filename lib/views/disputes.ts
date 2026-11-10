@@ -150,7 +150,8 @@ export function getCaseFile(db: Db, id: string, now = new Date()): CaseFile | nu
   for (const e of s ? (JSON.parse(String(s.events_json)) as { at: string; status: string; location: string }[]) : []) {
     timeline.push({ at: e.at, kind: 'system', title: `Carrier: ${e.status.replace(/_/g, ' ').toLowerCase()}`, detail: e.location });
   }
-  timeline.push({ at: d.created_at, kind: 'paypal', title: `Buyer opened a ${REASON_LABEL[d.reason]?.toLowerCase() ?? 'dispute'} claim`, detail: `$${(d.amount_cents / 100).toFixed(2)}` });
+  const reasonText = REASON_LABEL[d.reason]?.toLowerCase() ?? 'dispute';
+  timeline.push({ at: d.created_at, kind: 'paypal', title: `Buyer opened ${/^[aeiou]/.test(reasonText) ? 'an' : 'a'} ${reasonText} claim`, detail: `$${(d.amount_cents / 100).toFixed(2)}` });
   for (const e of db.prepare('SELECT event_type, source, status, received_at FROM dispute_events WHERE dispute_id = ? ORDER BY received_at').all(id) as { event_type: string; source: string; status: string | null; received_at: string }[]) {
     if (e.event_type === 'POLL.DISPUTE.DISCOVERED') continue;
     timeline.push({ at: e.received_at, kind: 'paypal', title: `PayPal: ${(STATUS_LABEL[e.status ?? ''] ?? e.status ?? '').toLowerCase()}`, detail: `${e.event_type} via ${e.source}` });

@@ -70,7 +70,7 @@ export function Shell({ mode, children }: { mode: AppMode; children: ReactNode }
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded focus:bg-v-surface focus:px-3 focus:py-2">
         Skip to content
       </a>
-      <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col border-r border-v-border bg-v-surface px-3 py-5 md:flex">
+      <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col border-r border-v-border bg-v-surface px-3 py-5 lg:flex">
         <Link href="/war-room" className="mb-6 flex items-center gap-2 px-3" aria-label="Verdict home">
           <Logo />
         </Link>
@@ -96,7 +96,7 @@ export function Shell({ mode, children }: { mode: AppMode; children: ReactNode }
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-v-border bg-v-surface px-4 py-2 md:hidden">
+        <header className="flex items-center justify-between border-b border-v-border bg-v-surface px-4 py-2 lg:hidden">
           <Link href="/war-room" aria-label="Verdict home">
             <Logo />
           </Link>

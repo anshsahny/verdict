@@ -54,6 +54,8 @@ Entry for the **PayPal AI Hackathon** (Devpost). Solo builder: Ansh. Judges scor
 - `npm run sandbox:orders` — create labelled orders from the vaulted sandbox buyer
 - `npm run sandbox:capture` — save redacted full dispute fixtures to `fixtures/disputes/`
 - `npm run ai:smoke` — Claude tool use + Zod smoke test
+- `npm run e2e` — Playwright demo-path test (REPLAY production build, own DB; fails on console errors or serious a11y issues)
+- `npm run replay:export` — rebuild fixtures/replay/seed.json from recorded sandbox data
 - `npm run sandbox:lifecycle -- --dry-run` — Gate 1 live lifecycle plan (without `--dry-run` it acts on real sandbox disputes)
 - `npm run eval` — defender evaluation harness (20 SIMULATED scenarios; `-- --only <id>`)
 - `npm run agent -- <disputeId>` — agent recommendation; `-- --approve <decisionId>` / `-- --override <decisionId> <action> [usd]` executes
