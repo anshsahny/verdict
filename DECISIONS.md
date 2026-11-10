@@ -29,4 +29,5 @@ One line each, newest last. Times are America/Toronto.
 - 2026-11-10 11:50 — Chargeback evidence goes as evidence_type `OTHER`: PayPal rejected `PROOF_OF_FULFILLMENT` (EVIDENCE_TYPE_IS_NOT_ALLOWED) even while requesting it. Evidence submissions append the records that hurt our case ("Disclosure: …") so they aren't one-sided.
 - 2026-11-10 11:50 — Phase 2 uses direct REST (typed client), not the PayPal Agent Toolkit/MCP; reason in api-notes. Writes are gated by allowedActions (HATEOAS link AND stage/status rule).
 - 2026-11-10 11:50 — PDF evidence summaries: a ~60-line dependency-free writer (lib/evidence/pdf.ts) instead of a PDF library.
+- 2026-11-10 12:10 — Tests read frozen dispute snapshots (`fixtures/disputes/snapshots/2026-11-10-before-gate1/`). `fixtures/disputes/*.json` is the live latest, refreshed by `npm run sandbox:capture`, so live changes can't break tests.
 - 2026-11-10 00:14 — AG Studio key is a TRIAL that expires 2026-12-25, 4 days after winners are announced (Dec 21). Keep an eye on it; ask AG Grid for an extension if anything changes.

@@ -1,0 +1,199 @@
+{
+  "disputeId": "PP-R-HRR-10197887",
+  "outcome": "BUYER_FAVOR",
+  "response": {
+    "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887",
+    "rel": "self",
+    "method": "GET",
+    "encType": "application/json"
+  },
+  "after": {
+    "dispute_id": "PP-R-HRR-10197887",
+    "create_time": "2026-11-10T05:51:49.667Z",
+    "update_time": "2026-11-10T17:07:08.031Z",
+    "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+    "status": "RESOLVED",
+    "dispute_life_cycle_stage": "CHARGEBACK",
+    "dispute_channel": "INTERNAL",
+    "dispute_amount": {
+      "currency_code": "USD",
+      "value": "19.25"
+    },
+    "dispute_outcome": {
+      "outcome_code": "RESOLVED_BUYER_FAVOUR",
+      "outcome_reason": "INELIGIBLE_SELLER_PROTECTION_POLICY",
+      "amount_refunded": {
+        "currency_code": "USD",
+        "value": "19.25"
+      }
+    },
+    "disputed_transactions": [
+      {
+        "seller_transaction_id": "4J264399PV6096257",
+        "buyer_transaction_id": "0DF21510G2246484R",
+        "create_time": "2026-11-10T05:37:55.000Z",
+        "transaction_status": "REVERSED",
+        "gross_amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        },
+        "invoice_number": "VRD-1006-mwa9dy9j",
+        "buyer": {
+          "email": "[REDACTED]",
+          "payer_id": "[REDACTED]",
+          "name": "[REDACTED]"
+        },
+        "seller": {
+          "email": "[REDACTED]",
+          "merchant_id": "KNT7TPTCVPK3N",
+          "name": "Test Store"
+        },
+        "items": [
+          {
+            "item_name": "Tea towel set",
+            "item_description": "Tea towel set",
+            "item_quantity": "1",
+            "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+            "item_type": "PRODUCT"
+          }
+        ],
+        "seller_protection_eligible": true,
+        "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887",
+        "rel": "self",
+        "method": "GET"
+      }
+    ],
+    "dispute_state": "RESOLVED",
+    "adjudications": [
+      {
+        "type": "RECOVER_FROM_SELLER",
+        "adjudication_time": "2026-11-10T17:04:43.627Z",
+        "reason": "INELIGIBLE_SELLER_PROTECTION_POLICY",
+        "dispute_life_cycle_stage": "CHARGEBACK"
+      }
+    ],
+    "money_movements": [
+      {
+        "affected_party": "BUYER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        },
+        "initiated_time": "2026-11-10T17:06:06.110Z",
+        "type": "CREDIT",
+        "reason": "DISPUTE_SETTLEMENT"
+      },
+      {
+        "affected_party": "SELLER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        },
+        "initiated_time": "2026-11-10T17:06:06.110Z",
+        "type": "DEBIT",
+        "reason": "DISPUTE_SETTLEMENT"
+      },
+      {
+        "affected_party": "SELLER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "1.16"
+        },
+        "initiated_time": "2026-11-10T17:06:06.110Z",
+        "type": "DEBIT",
+        "reason": "DISPUTE_SETTLEMENT_FEE"
+      }
+    ],
+    "fund_movements": [
+      {
+        "party": "SELLER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "18.09"
+        },
+        "initiated_time": "2026-11-10T05:55:04.000Z",
+        "type": "DEBIT",
+        "reason": "HOLD_PLACED"
+      },
+      {
+        "party": "SELLER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "18.09"
+        },
+        "initiated_time": "2026-11-10T17:06:04.000Z",
+        "type": "CREDIT",
+        "reason": "HOLD_RELEASED"
+      },
+      {
+        "party": "BUYER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        },
+        "initiated_time": "2026-11-10T17:06:06.110Z",
+        "type": "CREDIT",
+        "reason": "DISPUTE_SETTLEMENT"
+      },
+      {
+        "party": "SELLER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        },
+        "initiated_time": "2026-11-10T17:06:06.110Z",
+        "type": "DEBIT",
+        "reason": "DISPUTE_SETTLEMENT"
+      }
+    ],
+    "extensions": {
+      "buyer_contacted_time": "2026-11-10T05:51:49.103Z"
+    },
+    "evidences": [
+      {
+        "evidence_type": "CREATE",
+        "notes": "N/A",
+        "source": "SUBMITTED_BY_BUYER",
+        "date": "2026-11-10T05:51:49.667Z",
+        "dispute_life_cycle_stage": "INQUIRY"
+      },
+      {
+        "evidence_type": "OTHER",
+        "notes": "USPS tracking 9400111899560000100106, shipped 2026-10-31, carrier shows delivered 2026-11-05 to Columbus, OH (postal code differs from the order address by one digit; we are disclosing this). [shipments:ship-VRD-1006] [orders:VRD-1006]",
+        "source": "SUBMITTED_BY_SELLER",
+        "date": "2026-11-10T16:46:12.359Z",
+        "action_info": {
+          "action": "PROVIDE_EVIDENCE"
+        },
+        "dispute_life_cycle_stage": "CHARGEBACK"
+      }
+    ],
+    "offer": {
+      "buyer_requested_amount": {
+        "currency_code": "USD",
+        "value": "19.25"
+      }
+    },
+    "refund_details": {
+      "allowed_refund_amount": {
+        "currency_code": "USD",
+        "value": "19.25"
+      },
+      "transactions": [
+        {
+          "id": "2HN986652G311662G",
+          "gross_amount": {
+            "currency_code": "USD",
+            "value": "19.25"
+          },
+          "create_time": "2026-11-10T17:06:05.000Z"
+        }
+      ]
+    }
+  }
+}

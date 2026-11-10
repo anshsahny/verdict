@@ -125,8 +125,10 @@ Fixtures: `fixtures/runs/gate1.json`, `fixtures/runs/gate1-hrr-adjudicate.json`.
 | `require-evidence` `SELLER_EVIDENCE` | CHARGEBACK/UNDER_REVIEW | 200; **WAITING_FOR_SELLER_RESPONSE** at once; requests `PROOF_OF_FULFILLMENT`, `PROOF_OF_REFUND`, `PROOF_OF_DELIVERY_SIGNATURE` | — |
 | `provide-evidence` | CHARGEBACK/WAITING (after require-evidence) | `PROOF_OF_FULFILLMENT` → 400 `EVIDENCE_TYPE_IS_NOT_ALLOWED` **even though requested** (notes only, with `tracking_info`, with a PDF: all rejected). `OTHER` with notes → 200, back to **UNDER_REVIEW** | — |
 | `accept-claim` `REFUND` | INQUIRY/WAITING | 200; UNDER_REVIEW; the note is stored as evidence `OTHER / SUBMITTED_BY_SELLER` | **RESOLVED** ~60 s later, `RESOLVED_BUYER_FAVOUR`, `SELLER_ISSUED_REFUND`, `amount_refunded` |
+| `adjudicate` `BUYER_FAVOR` | CHARGEBACK/UNDER_REVIEW (after our evidence; link back ~8 min later) | 200 | **RESOLVED** ~60 s later, `RESOLVED_BUYER_FAVOUR`, `INELIGIBLE_SELLER_PROTECTION_POLICY`, `amount_refunded` $19.25 |
 | `make-offer` `REFUND` $15 | SNAD INQUIRY/WAITING | 200; **WAITING_FOR_BUYER_RESPONSE**; allowed then: `send_message`, `escalate` | buyer decides |
 
 - Writes accept a `PayPal-Request-Id` header without complaint. Whether PayPal dedupes dispute writes on it is unverified, so the client still never retries a 4xx.
+- `update_time` also moves without any visible change (seen every ~40 s while UNDER_REVIEW). The poller stores those but only adds a timeline event when stage, status or outcome changes.
 - Every state change above also arrived through our webhook (`CUSTOMER.DISPUTE.UPDATED`/`RESOLVED`) and updated the ledger without polling.
 - PayPal Agent Toolkit/MCP: not used for Phase 2. Our reads need full HATEOAS links and `allowed_response_options`, which the typed client already returns. Adding an MCP layer for 3 read calls would cost time and a dependency for no user-visible gain. Revisit in Phase 5 if the Studio chat can use it directly.

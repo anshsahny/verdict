@@ -31,8 +31,10 @@ export async function syncDisputes(deps: SyncDeps): Promise<SyncReport> {
     report.fetched++;
     deps.db.transaction(() => {
       const r = upsertDispute(deps.db, full, { full: true, source: 'poll' });
-      if (r === 'inserted' || r === 'updated') {
-        report[r]++;
+      if (r === 'inserted' || r === 'updated') report[r]++;
+      // Timeline entries only for changes a merchant would notice, not every update_time bump.
+      const visible = !stored || stored.status !== full.status || stored.stage !== full.dispute_life_cycle_stage || stored.outcome !== (full.dispute_outcome?.outcome_code ?? null);
+      if ((r === 'inserted' || r === 'updated') && visible) {
         recordDisputeEvent(deps.db, {
           disputeId: full.dispute_id,
           paypalEventId: null,

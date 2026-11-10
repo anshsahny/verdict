@@ -52,8 +52,8 @@
       "method": "GET"
     },
     {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/send-message",
-      "rel": "send_message",
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/accept-claim",
+      "rel": "accept_claim",
       "method": "POST"
     },
     {
@@ -62,8 +62,8 @@
       "method": "POST"
     },
     {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/make-offer",
-      "rel": "make_offer",
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/send-message",
+      "rel": "send_message",
       "method": "POST"
     },
     {
@@ -72,8 +72,8 @@
       "method": "POST"
     },
     {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/accept-claim",
-      "rel": "accept_claim",
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/make-offer",
+      "rel": "make_offer",
       "method": "POST"
     }
   ],

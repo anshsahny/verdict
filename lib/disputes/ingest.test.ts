@@ -153,6 +153,17 @@ describe('syncDisputes (polling fallback)', () => {
     expect(count(db, "SELECT COUNT(*) n FROM dispute_events WHERE event_type = 'POLL.DISPUTE.CHANGED'")).toBe(1);
   });
 
+  it('stores an update_time-only bump without adding a timeline event', async () => {
+    const { db } = setup();
+    let current: PayPalDispute = fullDispute;
+    const deps = { db, listDisputes: async () => [{ ...summary, update_time: current.update_time }], fetchDispute: async () => current };
+    await syncDisputes(deps);
+    current = { ...fullDispute, update_time: '2026-11-10T09:00:00.000Z' }; // same status and stage
+    expect(await syncDisputes(deps)).toMatchObject({ updated: 1 });
+    expect(getDispute(db, DISPUTE_ID)!.updated_at).toBe('2026-11-10T09:00:00.000Z');
+    expect(count(db, "SELECT COUNT(*) n FROM dispute_events WHERE event_type = 'POLL.DISPUTE.CHANGED'")).toBe(0);
+  });
+
   it('completes a dispute that only arrived as a partial webhook resource', async () => {
     const { db, deps } = setup({ fetchDispute: async () => undefined });
     const body = JSON.stringify(realEvent);
