@@ -65,9 +65,9 @@ Tasks
 
 Acceptance tests
 - Fixture-based unit tests for each method and for `allowedActions` across stage/status combos.
-- **Live sandbox run:** create dispute → require-evidence → provide-evidence → adjudicate, and separately create → make-offer (INQUIRY) → accept. State transitions are verified by re-fetching.
+- **Live sandbox run** (revised after Phase 0: dispute create and the sandbox `require-evidence`/`adjudicate` helpers are unavailable to us): on hand-filed Resolution Center disputes, (1) provide-evidence on an INQUIRY and provide-supporting-info on a CHARGEBACK, (2) make-offer on an INQUIRY, (3) accept-claim on one dispute so it really resolves (buyer favour). Every state transition is verified by re-fetching.
 
-**Gate 1 (human present, Tue midday):** a live end-to-end create → respond → settle run, logged. If this isn't green by Tue evening, go to fallback below and tell the human.
+**Gate 1 (human present, Tue midday):** a live end-to-end run, logged: hand-filed dispute → webhook → respond with a real PayPal action → state change verified by re-fetch; plus one real buyer-favour resolution via accept-claim. Seller-favour rulings can't be forced in the sandbox; the SIMULATED arbiter covers outcomes. If this isn't green by Tue evening, go to fallback below and tell the human.
 Fallback: replay mode becomes the primary demo transport; keep live calls for the video's single "real sandbox" shot.
 
 ---
@@ -97,14 +97,14 @@ Gate: show the eval table and one full reasoning trace.
 
 Tasks
 1. Scenario generator: dispute types — Item Not Received, Not As Described, Unauthorized, Duplicate charge, Late delivery. Each scenario is a seeded order + hidden "ground truth" (merchant at fault or not).
-2. Buyer agent (Claude): given the scenario and a persona (honest, mistaken, opportunistic, aggressive), writes the claim, and responds to merchant messages. Files the dispute via sandbox create API (buyer creds), or replays if in replay mode.
-3. Run loop: file → defender responds → sandbox settle via `adjudicate` for the real-PayPal state change, **plus** our rule-based **SIMULATED arbiter** that scores the outcome (rules documented in `docs/arbiter.md`: evidence completeness, tracking proof, timeliness, claim consistency). Label SIMULATED everywhere.
+2. Buyer agent (Claude): given the scenario and a persona (honest, mistaken, opportunistic, aggressive), writes the claim, and responds to merchant messages. The PayPal "file" step is replayed from recorded Resolution Center disputes (API create is unavailable); the claim text is written live. `UNAUTHORISED` scenarios are replay-only (filing one from the vaulted buyer revokes the vault).
+3. Run loop: file → defender responds (real PayPal action when the run is bound to a hand-filed dispute, recorded response otherwise) → our rule-based **SIMULATED arbiter** that scores the outcome (rules documented in `docs/arbiter.md`: evidence completeness, tracking proof, timeliness, claim consistency). Label SIMULATED everywhere.
 4. Results store + benchmark: win rate by type and persona, $ recovered vs lost, top weak spots (e.g. "loses INR when the tracking is stale"), average time-to-respond.
 5. **Policy slider** (✂): auto-refund threshold / auto-contest threshold → recompute projected $ saved from stored runs, no new LLM calls so it's instant and free.
 6. Precomputed sample benchmark (≥60 runs) committed or seeded so the public URL shows results instantly; live runs are capped (`ARENA_MAX_RUNS_PER_HOUR`, `ARENA_MAX_TOKENS`).
 
 Acceptance tests
-- `npm run arena -- --runs 10` completes and writes results; at least 3 runs verified against real sandbox state.
+- `npm run arena -- --runs 10` completes and writes results; at least 3 runs bound to hand-filed sandbox disputes (filed by the human to match Arena scenarios), with the defender's action executed live and verified by re-fetch.
 - Determinism: same seed → same scenarios. Arbiter unit tests. Caps enforced by tests.
 - Benchmark page data matches stored runs.
 

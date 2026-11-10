@@ -39,7 +39,7 @@ Entry for the **PayPal AI Hackathon** (Devpost). Solo builder: Ansh. Judges scor
 - Log decisions and deviations in `DECISIONS.md` (one line each, with date/time).
 - Keep scope tight. If a task slips past its time box by 50%, stop, report, and apply the cut order from PLAN.md rather than pushing on.
 - Prefer boring, working code over clever code. Polish matters for the Design score, but a working demo path matters more.
-- Each commit message ends with the attribution lines required by the Claude Code environment.
+- Commit messages have no Claude co-author or attribution line (Ansh's preference, 2026-11-10).
 
 ## Definition of done (global)
 - `npm run build` passes; `npm test` passes; no console errors on the demo path.
