@@ -29,6 +29,12 @@ type DecisionRow = { id: string; dispute_id: string; status: string; payload_jso
 
 const money = (usd: number) => ({ currency_code: 'USD', value: usd.toFixed(2) });
 
+function defaultNote(action: AgentAction, amount: number | null): string {
+  if (action === 'accept') return `We're sorry for the trouble. We have issued a refund of $${(amount ?? 0).toFixed(2)} through PayPal.`;
+  if (action === 'offer_refund') return `We'd like to offer a refund of $${(amount ?? 0).toFixed(2)} to resolve this.`;
+  return '';
+}
+
 export async function executeDecision(db: Db, client: PayPalClient, decisionId: string, opts: ExecuteOptions): Promise<ExecuteResult> {
   const row = db.prepare('SELECT id, dispute_id, status, payload_json FROM decisions WHERE id = ?').get(decisionId) as DecisionRow | undefined;
   if (!row) throw new Error(`no decision ${decisionId}`);
@@ -40,7 +46,10 @@ export async function executeDecision(db: Db, client: PayPalClient, decisionId: 
 
   const action = opts.override?.action ?? proposed!.action;
   const amount = opts.override ? opts.override.amount : (opts.edits?.amount ?? proposed!.amount);
-  const message = opts.override?.message ?? opts.edits?.message ?? proposed?.draftMessageToBuyer ?? '';
+  // The agent's draft was written for its own action; an override to a different action gets a
+  // neutral note for that action unless the human wrote one.
+  const draftFits = proposed && proposed.action === action;
+  const message = opts.override?.message ?? opts.edits?.message ?? (draftFits ? proposed.draftMessageToBuyer : defaultNote(action, amount));
 
   const finish = (status: ExecuteResult['status'], paypalAction: string | null, result: unknown, extra: Partial<ExecuteResult> = {}): ExecuteResult => {
     db.prepare('UPDATE decisions SET status = ?, decided_by = ?, executed_at = ?, result_json = ? WHERE id = ?').run(

@@ -59,6 +59,18 @@ describe('executeDecision', () => {
     const r = await executeDecision(db, pp, id, { by: 'ansh', override: { action: 'accept', amount: 64 } });
     expect(r.paypalAction).toBe('accept_claim');
     expect(pp.acceptClaim).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ accept_claim_type: 'REFUND' }));
+    // The agent's draft was about an offer; the refund gets a note that matches the refund.
+    expect(pp.acceptClaim).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ note: expect.stringContaining('issued a refund of $64.00') }));
+  });
+
+  it("override of an escalation doesn't send the agent's 'we're reviewing' draft", async () => {
+    const db = openDb(':memory:');
+    const id = seedDecision(db, 'PP-R-SLD-10197881', { ...base, action: 'escalate_to_human', amount: null, draftMessageToBuyer: 'Our team is reviewing your case.' }, 'needs_human');
+    const pp = fakePayPal(fixture('PP-R-SLD-10197881'));
+    await executeDecision(db, pp, id, { by: 'ansh', override: { action: 'accept', amount: 47.4 } });
+    const note = (pp.acceptClaim.mock.calls[0] as unknown[])[1] as { note: string };
+    expect(note.note).not.toMatch(/reviewing/);
+    expect(note.note).toMatch(/\$47\.40/);
   });
 
   it('a partial accept becomes PARTIAL_REFUND with the amount', async () => {
