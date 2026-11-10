@@ -91,6 +91,7 @@ async function prepare() {
     const shipment = db.prepare('SELECT tracking_number FROM shipments WHERE order_id = ?').get(storeOrderId) as { tracking_number: string | null } | undefined;
     if (shipment?.tracking_number) {
       await client.request('POST', `/v2/checkout/orders/${order.id}/track`, { json: { capture_id: captureId, tracking_number: shipment.tracking_number, carrier: 'USPS', notify_payer: false } });
+      db.prepare('UPDATE shipments SET synced_to_paypal = 1 WHERE order_id = ?').run(storeOrderId);
     }
     const claim = await buyer.writeClaim(s, { inputTokens: 0, outputTokens: 0 });
     out.push({ n, scenario: s, paypalOrderId: order.id, captureId, storeOrderId, claim, filedAtEstimate: filedAt });

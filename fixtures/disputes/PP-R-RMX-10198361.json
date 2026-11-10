@@ -1,21 +1,25 @@
 {
   "dispute_id": "PP-R-RMX-10198361",
   "create_time": "2026-11-10T22:16:43.407Z",
-  "update_time": "2026-11-10T22:20:14.098Z",
+  "update_time": "2026-11-10T22:40:57.557Z",
   "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
-  "status": "UNDER_REVIEW",
+  "status": "RESOLVED",
   "dispute_life_cycle_stage": "CHARGEBACK",
   "dispute_channel": "INTERNAL",
   "dispute_amount": {
     "currency_code": "USD",
     "value": "19.25"
   },
+  "dispute_outcome": {
+    "outcome_code": "RESOLVED_SELLER_FAVOUR",
+    "outcome_reason": "INELIGIBLE_BUYER_PROTECTION_POLICY"
+  },
   "disputed_transactions": [
     {
       "seller_transaction_id": "86W90471T1284324F",
       "buyer_transaction_id": "61863398BJ323920N",
       "create_time": "2026-11-10T22:06:09.000Z",
-      "transaction_status": "HELD",
+      "transaction_status": "COMPLETED",
       "gross_amount": {
         "currency_code": "USD",
         "value": "19.25"
@@ -49,14 +53,17 @@
       "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-RMX-10198361",
       "rel": "self",
       "method": "GET"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-RMX-10198361/provide-supporting-info",
-      "rel": "provide_supporting_info",
-      "method": "POST"
     }
   ],
-  "dispute_state": "UNDER_PAYPAL_REVIEW",
+  "dispute_state": "RESOLVED",
+  "adjudications": [
+    {
+      "type": "DENY_BUYER",
+      "adjudication_time": "2026-11-10T22:38:42.482Z",
+      "reason": "INELIGIBLE_BUYER_PROTECTION_POLICY",
+      "dispute_life_cycle_stage": "CHARGEBACK"
+    }
+  ],
   "fund_movements": [
     {
       "party": "SELLER",
@@ -67,6 +74,16 @@
       "initiated_time": "2026-11-10T22:19:47.000Z",
       "type": "DEBIT",
       "reason": "HOLD_PLACED"
+    },
+    {
+      "party": "SELLER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "18.09"
+      },
+      "initiated_time": "2026-11-10T22:40:04.000Z",
+      "type": "CREDIT",
+      "reason": "HOLD_RELEASED"
     }
   ],
   "extensions": {
@@ -92,5 +109,12 @@
       "currency_code": "USD",
       "value": "19.25"
     }
-  }
+  },
+  "supporting_info": [
+    {
+      "notes": "USPS tracking 940011189953500003, shipped 2026-11-02. [shipments:ship-ARN-3] Carrier shows delivered 2026-11-05 to Boston, MA 02108, before the dispute was filed. [shipments:ship-ARN-3] Delivery address matches the order's shipping address (Boston, MA 02108). [shipments:ship-ARN-3] Liam Murphy placed 1 earlier order(s) to the same address with no dispute. [customers:c-murphy]",
+      "source": "SUBMITTED_BY_SELLER",
+      "provided_time": "2026-11-10T22:24:03.263Z"
+    }
+  ]
 }
