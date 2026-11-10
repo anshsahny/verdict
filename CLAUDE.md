@@ -50,6 +50,9 @@ Entry for the **PayPal AI Hackathon** (Devpost). Solo builder: Ansh. Judges scor
 - `npm run dev` — local dev
 - `npm test` — unit tests
 - `npm run sandbox:smoke` — Phase 0 smoke test
-- `npm run seed` — seed the demo store
+- `npm run seed` — seed the demo store (`-- --reset` to recreate the DB)
+- `npm run sandbox:orders` — create labelled orders from the vaulted sandbox buyer
+- `npm run sandbox:capture` — save redacted full dispute fixtures to `fixtures/disputes/`
+- `npm run ai:smoke` — Claude tool use + Zod smoke test
 - `npm run eval` — defender evaluation harness
 - `npm run arena -- --runs N` — run the arena headless

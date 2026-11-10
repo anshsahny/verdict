@@ -17,6 +17,8 @@ npm run dev                  # http://localhost:3000
 | `npm run sandbox:smoke` | Phase 0 PayPal sandbox smoke test (PASS/FAIL per step; redacted responses go to `fixtures/smoke/`) |
 | `npm run sandbox:smoke -- --approve` | Starts the one-time sandbox buyer approval (vaults the buyer for non-interactive orders) |
 | `npm run sandbox:orders` | Creates 8 labelled orders paid by the vaulted sandbox buyer (for filing disputes in the sandbox Resolution Center) |
+| `npm run seed` | Seeds the demo store into SQLite (`-- --reset` recreates it). The app also seeds on first start |
+| `npm run sandbox:capture` | Saves the current redacted state of every sandbox dispute to `fixtures/disputes/` |
 | `npm run ai:smoke` | Claude tool-use call with a Zod-validated decision |
 | `npm test` | Unit tests (Vitest) |
 

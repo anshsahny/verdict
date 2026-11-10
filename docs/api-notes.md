@@ -32,7 +32,7 @@ Base URL (sandbox): `https://api-m.sandbox.paypal.com`
 
 **List:** `GET /v1/customer/disputes`. Params `page_size` (1–50), `page`, `dispute_state`, `create_time_after` (`start_time` deprecated). Items: `dispute_id, create_time, update_time, reason, status, dispute_amount, dispute_life_cycle_stage, dispute_channel, seller_response_due_date, links`. [D] Empty list → `{ items: [], links }` [S]. Fixture: `disputes-list.json`.
 
-**Get:** `GET /v1/customer/disputes/{id}` [S, fixture `lifecycle/0-before-get.json`]. Real Resolution Center dispute, merchant view:
+**Get:** `GET /v1/customer/disputes/{id}` [S, fixtures `fixtures/disputes/<id>.json`, refreshed by `npm run sandbox:capture`]. Real Resolution Center dispute, merchant view:
 - `disputed_transactions[0]`: `buyer_transaction_id` **and** `seller_transaction_id` (= our capture id, which is how we join to orders), `transaction_status: HELD`, `gross_amount`, `invoice_number` (our `invoice_id`), `items[]` (`item_name`, `reason`, `item_type`), `seller_protection_eligible`, `seller_protection_type: EXPANDED_SELLER_PROTECTION`, `buyer {email, payer_id, name}`.
 - `dispute_state: REQUIRED_ACTION`, `dispute_channel: INTERNAL`, `fund_movements[]` (a `HOLD_PLACED` debit on us), `offer.buyer_requested_amount`, `refund_details.allowed_refund_amount`, `extensions.buyer_contacted_time`.
 - **`evidences[]` says what PayPal wants**: `{ evidence_type: PROOF_OF_FULFILLMENT, source: REQUESTED_FROM_SELLER }` alongside the buyer's `{ evidence_type: CREATE, source: SUBMITTED_BY_BUYER }`. Use this to drive the evidence checklist.
@@ -104,3 +104,11 @@ Sandbox Resolution Center: `https://www.sandbox.paypal.com/disputes/dashboard/` 
 - Tool use: `client.beta.messages.toolRunner({ tools: [betaZodTool(...)], output_config: { effort, format: betaZodOutputFormat(schema) } })` runs the loop and returns the final message; we still `safeParse` the final text with Zod. [S]
 - Sonnet 5.5 rejects forced `tool_choice` (`any`/`tool`) and `thinking: {type: "disabled"}` with a 400, so we use `auto` + structured output. [D, from the SDK skill docs]
 - Phase 0 run: 2 tool calls, Zod-valid decision, all evidence cited real record ids, ~9 s, `effort: low`. [S]
+
+## Verdict's dispute ledger (Phase 1)
+
+- **Webhook path:** verify signature → skip if the event id is already in `dispute_events` → `GET` the full dispute (the webhook resource lacks the due date, requested evidence and allowed options) → in one transaction, record the event and upsert the dispute. If the GET fails, the partial resource is stored with `raw_is_full = 0` and no due date. The poller completes it later.
+- **Not ours:** PayPal's `simulate-event` sample (`PP-000-042-663-135`) verifies `SUCCESS`, but `GET` returns 404 for our merchant. Such events get a 200 (no retries) and are kept out of the ledger (`audit_log` kind `webhook.not_ours`). [S]
+- **Ordering:** PayPal `update_time` decides. An older representation never overwrites a newer one, and a partial one never overwrites a full one with the same `update_time`.
+- **Polling:** `GET /v1/customer/disputes?page_size=50&page=N` every `SYNC_POLL_SECONDS` (default 20). Only disputes whose `update_time` moved, or that are stored partial, get re-fetched. A fresh DB discovered all 8 sandbox disputes ~10 s after server start. [S]
+- **Join to orders:** `disputed_transactions[0].seller_transaction_id` = our `orders.paypal_capture_id`.

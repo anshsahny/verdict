@@ -1,33 +1,29 @@
-// PayPal webhook receiver. Phase 0 version: verifies the signature with PayPal's
-// verify-webhook-signature API and records the redacted event under fixtures/webhooks/ in dev.
-// Phase 1 replaces the fixture write with an idempotent upsert into the disputes ledger.
+// PayPal webhook receiver: signature-verified, idempotent by event id, upserts the disputes ledger.
 
 import { mkdir, writeFile } from 'node:fs/promises';
+import { getDb } from '@/lib/db';
+import { ingestWebhook } from '@/lib/disputes/ingest';
+import { fetchDispute } from '@/lib/disputes/paypal-deps';
 import { redactValue } from '@/lib/paypal-raw';
 import { verifyWebhookSignature } from '@/lib/paypal-webhooks';
 
 export async function POST(request: Request) {
   const raw = await request.text();
-  let event: { id?: string; event_type?: string; resource?: { dispute_id?: string } };
-  try {
-    event = JSON.parse(raw);
-  } catch {
-    return Response.json({ error: 'invalid JSON' }, { status: 400 });
+  const result = await ingestWebhook(raw, request.headers, { db: getDb(), verify: verifyWebhookSignature, fetchDispute });
+  console.log(`[webhook] ${result.outcome}${'disputeId' in result && result.disputeId ? ` ${result.disputeId}` : ''}${'reason' in result ? ` (${result.reason})` : ''}`);
+
+  // In dev, keep a redacted copy of each accepted event as a fixture for replay mode and tests.
+  if (process.env.NODE_ENV !== 'production' && result.outcome !== 'rejected') {
+    try {
+      const event = JSON.parse(raw) as { id?: string; event_type?: string };
+      await mkdir('fixtures/webhooks', { recursive: true });
+      const name = `${event.event_type ?? 'unknown'}-${event.id ?? Date.now()}.json`.replace(/[^\w.-]/g, '_');
+      await writeFile(`fixtures/webhooks/${name}`, JSON.stringify({ verification: 'SUCCESS', event: redactValue(event) }, null, 2) + '\n');
+    } catch {
+      /* fixture capture is best-effort */
+    }
   }
 
-  const verification = await verifyWebhookSignature(request.headers, event);
-  console.log(
-    `[webhook] ${event.event_type ?? 'unknown'} ${event.id ?? ''} dispute=${event.resource?.dispute_id ?? '-'} verification=${verification}`,
-  );
-
-  if (process.env.NODE_ENV !== 'production') {
-    await mkdir('fixtures/webhooks', { recursive: true });
-    const name = `${event.event_type ?? 'unknown'}-${event.id ?? Date.now()}.json`.replace(/[^\w.-]/g, '_');
-    await writeFile(`fixtures/webhooks/${name}`, JSON.stringify({ verification, event: redactValue(event) }, null, 2) + '\n');
-  }
-
-  // Reject unverified events. PayPal retries on non-2xx, so a transient verification outage
-  // (verification === 'ERROR') gets another chance later.
-  if (verification === 'SUCCESS') return Response.json({ ok: true });
-  return Response.json({ error: 'signature verification failed' }, { status: verification === 'ERROR' ? 503 : 400 });
+  if (result.status === 200) return Response.json({ ok: true, outcome: result.outcome });
+  return Response.json({ error: result.reason }, { status: result.status });
 }

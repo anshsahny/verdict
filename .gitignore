@@ -33,3 +33,8 @@ npm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local database
+/data/
+*.sqlite-wal
+*.sqlite-shm
