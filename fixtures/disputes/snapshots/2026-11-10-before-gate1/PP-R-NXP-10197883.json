@@ -1,0 +1,142 @@
+{
+  "dispute_id": "PP-R-NXP-10197883",
+  "create_time": "2026-11-10T05:44:22.791Z",
+  "update_time": "2026-11-10T05:47:43.859Z",
+  "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+  "status": "WAITING_FOR_SELLER_RESPONSE",
+  "dispute_life_cycle_stage": "INQUIRY",
+  "dispute_channel": "INTERNAL",
+  "dispute_amount": {
+    "currency_code": "USD",
+    "value": "28.50"
+  },
+  "seller_response_due_date": "2026-11-30T05:44:22.791Z",
+  "disputed_transactions": [
+    {
+      "seller_transaction_id": "2Y342457EJ6187507",
+      "buyer_transaction_id": "1BR6934029297542F",
+      "create_time": "2026-11-10T05:37:44.000Z",
+      "transaction_status": "HELD",
+      "gross_amount": {
+        "currency_code": "USD",
+        "value": "28.50"
+      },
+      "invoice_number": "VRD-1002-mwa9dpgf",
+      "buyer": {
+        "email": "[REDACTED]",
+        "payer_id": "[REDACTED]",
+        "name": "[REDACTED]"
+      },
+      "seller": {
+        "email": "[REDACTED]",
+        "merchant_id": "KNT7TPTCVPK3N",
+        "name": "Test Store"
+      },
+      "items": [
+        {
+          "item_name": "Linen apron",
+          "item_description": "Linen apron",
+          "item_quantity": "1",
+          "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+          "item_type": "PRODUCT"
+        }
+      ],
+      "seller_protection_eligible": true,
+      "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+    }
+  ],
+  "links": [
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/accept-claim",
+      "rel": "accept_claim",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/provide-evidence",
+      "rel": "provide_evidence",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/send-message",
+      "rel": "send_message",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/escalate",
+      "rel": "escalate",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-NXP-10197883/make-offer",
+      "rel": "make_offer",
+      "method": "POST"
+    }
+  ],
+  "dispute_state": "REQUIRED_ACTION",
+  "fund_movements": [
+    {
+      "party": "SELLER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "27.02"
+      },
+      "initiated_time": "2026-11-10T05:47:34.000Z",
+      "type": "DEBIT",
+      "reason": "HOLD_PLACED"
+    }
+  ],
+  "messages": [
+    {
+      "posted_by": "BUYER",
+      "time_posted": "2026-11-10T05:44:22.791Z",
+      "content": "N/A"
+    }
+  ],
+  "extensions": {
+    "buyer_contacted_time": "2026-11-10T05:44:22.280Z"
+  },
+  "evidences": [
+    {
+      "evidence_type": "CREATE",
+      "notes": "N/A",
+      "source": "SUBMITTED_BY_BUYER",
+      "date": "2026-11-10T05:44:22.791Z",
+      "dispute_life_cycle_stage": "INQUIRY"
+    },
+    {
+      "evidence_type": "PROOF_OF_FULFILLMENT",
+      "source": "REQUESTED_FROM_SELLER",
+      "date": "2026-11-10T05:47:43.859Z"
+    }
+  ],
+  "offer": {
+    "buyer_requested_amount": {
+      "currency_code": "USD",
+      "value": "28.50"
+    }
+  },
+  "refund_details": {
+    "allowed_refund_amount": {
+      "currency_code": "USD",
+      "value": "28.50"
+    }
+  },
+  "allowed_response_options": {
+    "accept_claim": {
+      "accept_claim_types": [
+        "PARTIAL_REFUND",
+        "REFUND"
+      ]
+    },
+    "make_offer": {
+      "offer_types": [
+        "REFUND"
+      ]
+    }
+  }
+}

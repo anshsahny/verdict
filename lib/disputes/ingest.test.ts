@@ -15,7 +15,7 @@ const webhookFile = readdirSync('fixtures/webhooks').find((f) => {
   return j.event.event_type === 'CUSTOMER.DISPUTE.UPDATED' && j.event.resource?.dispute_id === DISPUTE_ID;
 })!;
 const realEvent = JSON.parse(readFileSync(`fixtures/webhooks/${webhookFile}`, 'utf8')).event;
-const fullDispute = JSON.parse(readFileSync(`fixtures/disputes/${DISPUTE_ID}.json`, 'utf8')) as PayPalDispute;
+const fullDispute = JSON.parse(readFileSync(`fixtures/disputes/snapshots/2026-11-10-before-gate1/${DISPUTE_ID}.json`, 'utf8')) as PayPalDispute;
 
 // Stand-in for PayPal's verify API: the "signature" is a hash of the exact body it was sent with,
 // so any change to the payload after signing fails verification, as it does with PayPal.

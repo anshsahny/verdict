@@ -1,16 +1,15 @@
 {
   "dispute_id": "PP-R-ERW-10197885",
   "create_time": "2026-11-10T05:49:58.266Z",
-  "update_time": "2026-11-10T05:53:23.694Z",
+  "update_time": "2026-11-10T16:45:03.867Z",
   "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
-  "status": "WAITING_FOR_SELLER_RESPONSE",
+  "status": "WAITING_FOR_BUYER_RESPONSE",
   "dispute_life_cycle_stage": "INQUIRY",
   "dispute_channel": "INTERNAL",
   "dispute_amount": {
     "currency_code": "USD",
     "value": "36.75"
   },
-  "seller_response_due_date": "2026-11-30T05:49:58.266Z",
   "disputed_transactions": [
     {
       "seller_transaction_id": "0WY78334600739500",
@@ -66,14 +65,9 @@
       "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/escalate",
       "rel": "escalate",
       "method": "POST"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/make-offer",
-      "rel": "make_offer",
-      "method": "POST"
     }
   ],
-  "dispute_state": "REQUIRED_ACTION",
+  "dispute_state": "REQUIRED_OTHER_PARTY_ACTION",
   "fund_movements": [
     {
       "party": "SELLER",
@@ -91,6 +85,11 @@
       "posted_by": "BUYER",
       "time_posted": "2026-11-10T05:49:58.266Z",
       "content": "N/A"
+    },
+    {
+      "posted_by": "SELLER",
+      "time_posted": "2026-11-10T16:44:51.875Z",
+      "content": "Sorry the mugs were not what you expected. Glaze varies on handmade pieces; we can refund $15.00 and you keep the mugs."
     }
   ],
   "extensions": {
@@ -105,11 +104,29 @@
       "dispute_life_cycle_stage": "INQUIRY"
     }
   ],
+  "buyer_response_due_date": "2026-11-30T05:49:58.266Z",
   "offer": {
     "buyer_requested_amount": {
       "currency_code": "USD",
       "value": "36.75"
-    }
+    },
+    "seller_offered_amount": {
+      "currency_code": "USD",
+      "value": "15.00"
+    },
+    "offer_type": "REFUND",
+    "history": [
+      {
+        "offer_time": "2026-11-10T16:44:51.875Z",
+        "actor": "SELLER",
+        "event_type": "PROPOSED",
+        "offer_type": "REFUND",
+        "offer_amount": {
+          "currency_code": "USD",
+          "value": "15.00"
+        }
+      }
+    ]
   },
   "refund_details": {
     "allowed_refund_amount": {
@@ -120,15 +137,7 @@
   "allowed_response_options": {
     "accept_claim": {
       "accept_claim_types": [
-        "PARTIAL_REFUND",
-        "REFUND_WITH_RETURN",
         "REFUND"
-      ]
-    },
-    "make_offer": {
-      "offer_types": [
-        "REFUND",
-        "REFUND_WITH_RETURN"
       ]
     }
   }

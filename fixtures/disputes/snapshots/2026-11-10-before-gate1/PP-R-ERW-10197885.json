@@ -1,0 +1,135 @@
+{
+  "dispute_id": "PP-R-ERW-10197885",
+  "create_time": "2026-11-10T05:49:58.266Z",
+  "update_time": "2026-11-10T05:53:23.694Z",
+  "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+  "status": "WAITING_FOR_SELLER_RESPONSE",
+  "dispute_life_cycle_stage": "INQUIRY",
+  "dispute_channel": "INTERNAL",
+  "dispute_amount": {
+    "currency_code": "USD",
+    "value": "36.75"
+  },
+  "seller_response_due_date": "2026-11-30T05:49:58.266Z",
+  "disputed_transactions": [
+    {
+      "seller_transaction_id": "0WY78334600739500",
+      "buyer_transaction_id": "1TS24488L28262124",
+      "create_time": "2026-11-10T05:37:49.000Z",
+      "transaction_status": "HELD",
+      "gross_amount": {
+        "currency_code": "USD",
+        "value": "36.75"
+      },
+      "invoice_number": "VRD-1004-mwa9dts7",
+      "buyer": {
+        "email": "[REDACTED]",
+        "payer_id": "[REDACTED]",
+        "name": "[REDACTED]"
+      },
+      "seller": {
+        "email": "[REDACTED]",
+        "merchant_id": "KNT7TPTCVPK3N",
+        "name": "Test Store"
+      },
+      "items": [
+        {
+          "item_name": "Stoneware mug pair",
+          "item_description": "Stoneware mug pair",
+          "item_quantity": "1",
+          "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+          "notes": "This is a product that I thought would be new but turns out it was very old and is unusable and I do not like it and this was a waste of my money.",
+          "item_type": "PRODUCT"
+        }
+      ],
+      "seller_protection_eligible": true,
+      "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+    }
+  ],
+  "links": [
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/accept-claim",
+      "rel": "accept_claim",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/send-message",
+      "rel": "send_message",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/escalate",
+      "rel": "escalate",
+      "method": "POST"
+    },
+    {
+      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-ERW-10197885/make-offer",
+      "rel": "make_offer",
+      "method": "POST"
+    }
+  ],
+  "dispute_state": "REQUIRED_ACTION",
+  "fund_movements": [
+    {
+      "party": "SELLER",
+      "amount": {
+        "currency_code": "USD",
+        "value": "34.98"
+      },
+      "initiated_time": "2026-11-10T05:53:03.000Z",
+      "type": "DEBIT",
+      "reason": "HOLD_PLACED"
+    }
+  ],
+  "messages": [
+    {
+      "posted_by": "BUYER",
+      "time_posted": "2026-11-10T05:49:58.266Z",
+      "content": "N/A"
+    }
+  ],
+  "extensions": {
+    "buyer_contacted_time": "2026-11-10T05:49:57.731Z"
+  },
+  "evidences": [
+    {
+      "evidence_type": "CREATE",
+      "notes": "N/A",
+      "source": "SUBMITTED_BY_BUYER",
+      "date": "2026-11-10T05:49:58.266Z",
+      "dispute_life_cycle_stage": "INQUIRY"
+    }
+  ],
+  "offer": {
+    "buyer_requested_amount": {
+      "currency_code": "USD",
+      "value": "36.75"
+    }
+  },
+  "refund_details": {
+    "allowed_refund_amount": {
+      "currency_code": "USD",
+      "value": "36.75"
+    }
+  },
+  "allowed_response_options": {
+    "accept_claim": {
+      "accept_claim_types": [
+        "PARTIAL_REFUND",
+        "REFUND_WITH_RETURN",
+        "REFUND"
+      ]
+    },
+    "make_offer": {
+      "offer_types": [
+        "REFUND",
+        "REFUND_WITH_RETURN"
+      ]
+    }
+  }
+}

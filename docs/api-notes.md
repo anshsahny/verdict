@@ -72,7 +72,7 @@ Base URL (sandbox): `https://api-m.sandbox.paypal.com`
 | `adjudicate` (sandbox) | JSON `{ adjudication_outcome: SELLER_FAVOR \| BUYER_FAVOR }` | `status = UNDER_REVIEW` + link |
 
 Sandbox results [S] (fixtures in `fixtures/smoke/lifecycle/`):
-- `require-evidence` and `adjudicate` are **never offered** on Resolution Center disputes, even at `UNDER_REVIEW` (inquiry or chargeback), including after waiting. Calling them anyway → 400 `ACTION_NOT_ALLOWED_IN_CURRENT_DISPUTE_STATE`. So we **can't force a sandbox settlement in the seller's favour**. Buyer-favour settlement through `accept_claim`/`make_offer` is real and still to be tested in Phase 2.
+- **Correction (Phase 2):** `require_evidence` and `adjudicate` links **do appear** on CHARGEBACK/UNDER_REVIEW disputes, about **20 minutes** after the dispute reaches that state. My Phase 0 probe ran too early and wrongly concluded they were never offered. Called before the link appears → 400 `ACTION_NOT_ALLOWED_IN_CURRENT_DISPUTE_STATE`.
 - `provide-supporting-info` on a CHARGEBACK/UNDER_REVIEW dispute: multipart `input = { notes }` → **200**. The state stays CHARGEBACK/UNDER_REVIEW.
 - `provide-evidence` with `evidence_type: OTHER` on an INR inquiry → 400 `EVIDENCE_TYPE_IS_NOT_ALLOWED`. Send the type the dispute requested (`evidences[].source = REQUESTED_FROM_SELLER`).
 
@@ -114,3 +114,19 @@ Sandbox Resolution Center: `https://www.sandbox.paypal.com/disputes/dashboard/` 
 - **Join to orders:** `disputed_transactions[0].seller_transaction_id` = our `orders.paypal_capture_id`.
 - **Live latency** [S, 2026-11-10]: a dispute filed in the Resolution Center at 16:13:31 was published by PayPal as `CUSTOMER.DISPUTE.CREATED` at 16:16:42 (**PayPal holds new disputes ~3 min** before notifying or listing them; earlier disputes showed the same gap). Our webhook stored the full row at 16:16:45: **2.9 s** after PayPal published it. The 20 s poller is the backstop.
 - A dispute on a capture we have no store order for (PP-R-FGG on the $18 probe payment) is stored with `order_id = NULL`. The agent must treat "no matching order" as a reason to escalate.
+
+## Dispute lifecycle in the sandbox (Phase 2 live run, 2026-11-10) [S]
+
+Fixtures: `fixtures/runs/gate1.json`, `fixtures/runs/gate1-hrr-adjudicate.json`. All writes went through `lib/paypal/client.ts` and were verified by re-fetching.
+
+| Action | On | Immediate | Settles to |
+|---|---|---|---|
+| `adjudicate` `SELLER_FAVOR` | CHARGEBACK/UNDER_REVIEW | 200; settle links vanish | **RESOLVED** ~70 s later, `outcome_code: RESOLVED_SELLER_FAVOUR`, `outcome_reason: INELIGIBLE_BUYER_PROTECTION_POLICY` |
+| `require-evidence` `SELLER_EVIDENCE` | CHARGEBACK/UNDER_REVIEW | 200; **WAITING_FOR_SELLER_RESPONSE** at once; requests `PROOF_OF_FULFILLMENT`, `PROOF_OF_REFUND`, `PROOF_OF_DELIVERY_SIGNATURE` | — |
+| `provide-evidence` | CHARGEBACK/WAITING (after require-evidence) | `PROOF_OF_FULFILLMENT` → 400 `EVIDENCE_TYPE_IS_NOT_ALLOWED` **even though requested** (notes only, with `tracking_info`, with a PDF: all rejected). `OTHER` with notes → 200, back to **UNDER_REVIEW** | — |
+| `accept-claim` `REFUND` | INQUIRY/WAITING | 200; UNDER_REVIEW; the note is stored as evidence `OTHER / SUBMITTED_BY_SELLER` | **RESOLVED** ~60 s later, `RESOLVED_BUYER_FAVOUR`, `SELLER_ISSUED_REFUND`, `amount_refunded` |
+| `make-offer` `REFUND` $15 | SNAD INQUIRY/WAITING | 200; **WAITING_FOR_BUYER_RESPONSE**; allowed then: `send_message`, `escalate` | buyer decides |
+
+- Writes accept a `PayPal-Request-Id` header without complaint. Whether PayPal dedupes dispute writes on it is unverified, so the client still never retries a 4xx.
+- Every state change above also arrived through our webhook (`CUSTOMER.DISPUTE.UPDATED`/`RESOLVED`) and updated the ledger without polling.
+- PayPal Agent Toolkit/MCP: not used for Phase 2. Our reads need full HATEOAS links and `allowed_response_options`, which the typed client already returns. Adding an MCP layer for 3 read calls would cost time and a dependency for no user-visible gain. Revisit in Phase 5 if the Studio chat can use it directly.

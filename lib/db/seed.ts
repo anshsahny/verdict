@@ -37,7 +37,7 @@ const PRODUCTS = [
 ] as const;
 
 const CUSTOMERS = [
-  ['c-avery', 'Jordan Avery', 'Columbus', 'OH', 'Sandbox buyer account; placed the VRD-* orders.'],
+  ['c-avery', 'Jordan Avery', 'Columbus', 'OH', null], // the sandbox buyer: placed the VRD-* orders
   ['c-okafor', 'Chidi Okafor', 'Austin', 'TX', null],
   ['c-lindqvist', 'Maja Lindqvist', 'Portland', 'OR', null],
   ['c-reyes', 'Sofia Reyes', 'Phoenix', 'AZ', 'Asked about glaze variation before ordering.'],

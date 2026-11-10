@@ -54,5 +54,6 @@ Entry for the **PayPal AI Hackathon** (Devpost). Solo builder: Ansh. Judges scor
 - `npm run sandbox:orders` — create labelled orders from the vaulted sandbox buyer
 - `npm run sandbox:capture` — save redacted full dispute fixtures to `fixtures/disputes/`
 - `npm run ai:smoke` — Claude tool use + Zod smoke test
+- `npm run sandbox:lifecycle -- --dry-run` — Gate 1 live lifecycle plan (without `--dry-run` it acts on real sandbox disputes)
 - `npm run eval` — defender evaluation harness
 - `npm run arena -- --runs N` — run the arena headless

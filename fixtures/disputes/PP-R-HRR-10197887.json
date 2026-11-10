@@ -1,7 +1,7 @@
 {
   "dispute_id": "PP-R-HRR-10197887",
   "create_time": "2026-11-10T05:51:49.667Z",
-  "update_time": "2026-11-10T06:13:23.973Z",
+  "update_time": "2026-11-10T16:46:24.011Z",
   "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
   "status": "UNDER_REVIEW",
   "dispute_life_cycle_stage": "CHARGEBACK",
@@ -51,21 +51,6 @@
       "method": "GET"
     },
     {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/accept-claim",
-      "rel": "accept_claim",
-      "method": "POST"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/adjudicate",
-      "rel": "adjudicate",
-      "method": "POST"
-    },
-    {
-      "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/require-evidence",
-      "rel": "require_evidence",
-      "method": "POST"
-    },
-    {
       "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/provide-supporting-info",
       "rel": "provide_supporting_info",
       "method": "POST"
@@ -94,6 +79,16 @@
       "source": "SUBMITTED_BY_BUYER",
       "date": "2026-11-10T05:51:49.667Z",
       "dispute_life_cycle_stage": "INQUIRY"
+    },
+    {
+      "evidence_type": "OTHER",
+      "notes": "USPS tracking 9400111899560000100106, shipped 2026-10-31, carrier shows delivered 2026-11-05 to Columbus, OH (postal code differs from the order address by one digit; we are disclosing this). [shipments:ship-VRD-1006] [orders:VRD-1006]",
+      "source": "SUBMITTED_BY_SELLER",
+      "date": "2026-11-10T16:46:12.359Z",
+      "action_info": {
+        "action": "PROVIDE_EVIDENCE"
+      },
+      "dispute_life_cycle_stage": "CHARGEBACK"
     }
   ],
   "offer": {
@@ -106,13 +101,6 @@
     "allowed_refund_amount": {
       "currency_code": "USD",
       "value": "19.25"
-    }
-  },
-  "allowed_response_options": {
-    "accept_claim": {
-      "accept_claim_types": [
-        "REFUND"
-      ]
     }
   }
 }
