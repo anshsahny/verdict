@@ -54,6 +54,8 @@ export type DefenderOptions = {
   model?: string;
   effort?: 'low' | 'medium' | 'high';
   now?: Date;
+  /** Stop and mark the run invalid once input+output tokens exceed this (Arena cost cap). */
+  tokenBudget?: number;
 };
 
 export async function runDefender(opts: DefenderOptions): Promise<DefenderRun> {
@@ -90,10 +92,21 @@ export async function runDefender(opts: DefenderOptions): Promise<DefenderRun> {
       messages,
     });
     let final: Anthropic.Beta.BetaMessage | undefined;
+    let overBudget = false;
     for await (const message of runner) {
       final = message;
       usage.inputTokens += message.usage.input_tokens + (message.usage.cache_read_input_tokens ?? 0) + (message.usage.cache_creation_input_tokens ?? 0);
       usage.outputTokens += message.usage.output_tokens;
+      if (opts.tokenBudget && usage.inputTokens + usage.outputTokens > opts.tokenBudget) {
+        overBudget = true;
+        break;
+      }
+    }
+    if (overBudget) {
+      validation = { errors: [`token budget exceeded (${opts.tokenBudget})`], flags: validation.flags };
+      attemptsLog.push({ output: '', errors: validation.errors });
+      decision = null;
+      break;
     }
     if (!final) break;
 

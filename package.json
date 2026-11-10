@@ -16,7 +16,9 @@
     "sandbox:capture": "tsx scripts/capture-disputes.ts",
     "sandbox:lifecycle": "tsx scripts/sandbox-lifecycle.ts",
     "agent": "tsx scripts/agent.ts",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "arena": "tsx scripts/arena.ts",
+    "arena:bound": "tsx scripts/arena-bound.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.7.0",

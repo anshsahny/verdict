@@ -5,6 +5,7 @@ import Database from 'better-sqlite3';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { MIGRATIONS, SCHEMA, SCHEMA_VERSION } from './schema';
+import { importArenaSampleIfEmpty } from '@/lib/arena/sample';
 import { seedDemoStore } from './seed';
 
 export type Db = Database.Database;
@@ -22,7 +23,10 @@ export function openDb(path: string, { seed = true } = {}): Db {
   db.pragma('foreign_keys = ON');
   db.pragma('busy_timeout = 5000');
   migrate(db);
-  if (seed) seedDemoStore(db);
+  if (seed) {
+    seedDemoStore(db);
+    if (path !== ':memory:') importArenaSampleIfEmpty(db); // the precomputed Arena benchmark
+  }
   return db;
 }
 

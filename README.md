@@ -22,6 +22,7 @@ npm run dev                  # http://localhost:3000
 | `npm run sandbox:lifecycle -- --dry-run` | Shows the Gate 1 live lifecycle plan and what each dispute allows now. Without `--dry-run` it acts on real sandbox disputes (one-shot) |
 | `npm run agent -- <disputeId>` | Defender agent recommendation for a dispute in the ledger (no PayPal action). `-- --approve <decisionId>` executes it after review |
 | `npm run eval` | Defender evaluation on 20 labelled, SIMULATED scenarios: action accuracy, routing, citation validity, injection resistance, latency, cost |
+| `npm run arena -- --runs 10` | Arena: Claude buyer agent vs the defender, scored by the SIMULATED arbiter (docs/arbiter.md). Capped by ARENA_MAX_RUNS_PER_HOUR / ARENA_MAX_TOKENS |
 | `npm run ai:smoke` | Claude tool-use call with a Zod-validated decision |
 | `npm test` | Unit tests (Vitest) |
 

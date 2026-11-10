@@ -10,6 +10,7 @@ import type { PayPalDispute } from '@/lib/paypal/dispute-schema';
 import type { AgentAction } from '../schema';
 
 export const FILED_AT = '2026-11-08T12:00:00.000Z';
+const FILED_AT_DEFAULT = FILED_AT;
 export const EVAL_NOW = new Date('2026-11-11T12:00:00.000Z'); // three days after filing
 
 type Stage = 'INQUIRY' | 'CHARGEBACK';
@@ -84,11 +85,22 @@ const LINKS: Record<string, string[]> = {
   CHARGEBACK: ['accept_claim', 'provide_evidence'],
 };
 
+export type MaterializeOptions = {
+  tag?: string; // numbers the records (default: the scenario's index in SCENARIOS)
+  prefix?: string; // dispute id prefix
+  orderPrefix?: string; // store order id prefix (default 'EV')
+  captureId?: string; // a real PayPal capture id (Arena bound runs)
+  filedAt?: string; // the store timeline is relative to this (default FILED_AT)
+  withDispute?: boolean; // false: store records only; the dispute comes from PayPal
+};
+
 /** Inserts the scenario's records and dispute; returns the dispute id. */
-export function materialize(db: Db, s: Scenario): string {
-  const n = String(SCENARIOS.indexOf(s) + 1).padStart(2, '0');
-  const disputeId = `EVAL-${n}-${s.id}`;
-  const capture = `EVCAP${n}`;
+export function materialize(db: Db, s: Scenario, opts: MaterializeOptions = {}): string {
+  const n = opts.tag ?? String(SCENARIOS.indexOf(s) + 1).padStart(2, '0');
+  const disputeId = `${opts.prefix ?? 'EVAL'}-${n}-${s.id}`;
+  const capture = opts.captureId ?? `EVCAP${n}`;
+  const FILED_AT = opts.filedAt ?? FILED_AT_DEFAULT;
+  const OP = opts.orderPrefix ?? 'EV';
   const product = db.prepare('SELECT id, sku, name, price_cents FROM products WHERE id = ?').get(s.product) as { id: string; sku: string; name: string; price_cents: number };
   const qty = s.qty ?? 1;
 
@@ -151,25 +163,26 @@ export function materialize(db: Db, s: Scenario): string {
   };
 
   for (let i = 0; i < (s.priorOrders ?? 0); i++) {
-    const id = `EV${n}-prior-${i + 1}`;
+    const id = `${OP}${n}-prior-${i + 1}`;
     const created = daysBefore(FILED_AT, 60 + i * 20);
     insertOrder(id, created, 'DELIVERED', null);
     insertShipment(id, { status: 'DELIVERED', tracked: true, deliveredDays: 55 + i * 20, addressMatch: true }, daysBefore(FILED_AT, 59 + i * 20));
   }
 
-  const orderId = `EV${n}`;
+  const orderId = `${OP}${n}`;
   if (!s.noOrder) {
     const refunded = (s.order as { refundedDays?: number } | undefined)?.refundedDays;
     const orderStatus = s.order?.status ?? (s.shipment?.status === 'DELIVERED' ? 'DELIVERED' : 'SHIPPED');
     insertOrder(orderId, orderCreated, orderStatus, capture, { note: s.order?.note, refunded: refunded !== undefined ? daysBefore(FILED_AT, refunded) : undefined });
     if (sp) insertShipment(orderId, sp, daysBefore(FILED_AT, shipDays));
     if (s.siblingOrder) {
-      const sib = `EV${n}-b`;
+      const sib = `${OP}${n}-b`;
       insertOrder(sib, daysBefore(FILED_AT, 9), 'DELIVERED', `${capture}B`);
       insertShipment(sib, { status: 'DELIVERED', tracked: true, deliveredDays: 3, addressMatch: true }, daysBefore(FILED_AT, 8));
     }
   }
 
+  if (opts.withDispute === false) return disputeId;
   const stageKey = LINKS[`${s.stage}:${s.reason}`] ? `${s.stage}:${s.reason}` : s.stage;
   const dispute = {
     dispute_id: disputeId,

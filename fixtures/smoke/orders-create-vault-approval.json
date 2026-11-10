@@ -1,20 +1,20 @@
 {
   "status": 200,
-  "debugId": "f696247394f35",
+  "debugId": "f377115c80b91",
   "body": {
-    "id": "7WW51193B5891014R",
+    "id": "4RK56875KG687531R",
     "status": "PAYER_ACTION_REQUIRED",
     "payment_source": {
       "paypal": {}
     },
     "links": [
       {
-        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/7WW51193B5891014R",
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4RK56875KG687531R",
         "rel": "self",
         "method": "GET"
       },
       {
-        "href": "https://www.sandbox.paypal.com/checkoutnow?token=7WW51193B5891014R",
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=4RK56875KG687531R",
         "rel": "payer-action",
         "method": "GET"
       }

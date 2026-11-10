@@ -57,4 +57,5 @@ Entry for the **PayPal AI Hackathon** (Devpost). Solo builder: Ansh. Judges scor
 - `npm run sandbox:lifecycle -- --dry-run` — Gate 1 live lifecycle plan (without `--dry-run` it acts on real sandbox disputes)
 - `npm run eval` — defender evaluation harness (20 SIMULATED scenarios; `-- --only <id>`)
 - `npm run agent -- <disputeId>` — agent recommendation; `-- --approve <decisionId>` / `-- --override <decisionId> <action> [usd]` executes
-- `npm run arena -- --runs N` — run the arena headless
+- `npm run arena -- --runs N [--seed S] [--export]` — run the arena headless (`--export` rewrites fixtures/arena/sample.json)
+- `npm run arena:bound -- prepare|run|settle` — Arena runs bound to real sandbox disputes
