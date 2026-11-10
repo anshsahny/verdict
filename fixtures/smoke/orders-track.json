@@ -1,0 +1,127 @@
+{
+  "status": 201,
+  "debugId": "ca5828fa92819",
+  "body": {
+    "id": "68G18376SS6985455",
+    "intent": "CAPTURE",
+    "status": "COMPLETED",
+    "payment_source": {
+      "card": {
+        "name": "Sandbox Tester",
+        "last_digits": "1111",
+        "expiry": "2030-12",
+        "brand": "VISA",
+        "type": "UNKNOWN",
+        "bin_details": {}
+      }
+    },
+    "purchase_units": [
+      {
+        "reference_id": "smoke-card-mwa8guz9",
+        "amount": {
+          "currency_code": "USD",
+          "value": "24.00",
+          "breakdown": {}
+        },
+        "payee": {
+          "email_address": "[REDACTED]",
+          "merchant_id": "KNT7TPTCVPK3N"
+        },
+        "soft_descriptor": "TEST STORE",
+        "shipping": {
+          "trackers": [
+            {
+              "id": "5D129389L9402035R-9400111899794287535418",
+              "status": "SHIPPED",
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455",
+                  "rel": "up",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455/trackers/5D129389L9402035R-9400111899794287535418",
+                  "rel": "update",
+                  "method": "PATCH"
+                }
+              ],
+              "notify_payer": false
+            }
+          ]
+        },
+        "supplementary_data": {
+          "risk": {
+            "risk_level_indicator": "HIGH_RISK"
+          }
+        },
+        "payments": {
+          "captures": [
+            {
+              "id": "5D129389L9402035R",
+              "status": "COMPLETED",
+              "amount": {
+                "currency_code": "USD",
+                "value": "24.00"
+              },
+              "final_capture": true,
+              "seller_protection": {
+                "status": "NOT_ELIGIBLE"
+              },
+              "seller_receivable_breakdown": {
+                "gross_amount": {
+                  "currency_code": "USD",
+                  "value": "24.00"
+                },
+                "paypal_fee": {
+                  "currency_code": "USD",
+                  "value": "1.11"
+                },
+                "net_amount": {
+                  "currency_code": "USD",
+                  "value": "22.89"
+                }
+              },
+              "links": [
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/5D129389L9402035R",
+                  "rel": "self",
+                  "method": "GET"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/5D129389L9402035R/refund",
+                  "rel": "refund",
+                  "method": "POST"
+                },
+                {
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455",
+                  "rel": "up",
+                  "method": "GET"
+                }
+              ],
+              "create_time": "2026-11-10T05:12:12Z",
+              "update_time": "2026-11-10T05:12:12Z",
+              "network_transaction_reference": {
+                "id": "058868058687642",
+                "network": "VISA"
+              },
+              "processor_response": {
+                "avs_code": "A",
+                "cvv_code": "M",
+                "response_code": "0000"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "create_time": "2026-11-10T05:12:12Z",
+    "update_time": "2026-11-10T05:12:12Z",
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/68G18376SS6985455",
+        "rel": "self",
+        "method": "GET"
+      }
+    ]
+  }
+}

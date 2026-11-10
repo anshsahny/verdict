@@ -1,0 +1,23 @@
+{
+  "status": 200,
+  "debugId": "ca5828fa23c11",
+  "body": {
+    "id": "8JG71603UK264490V",
+    "status": "PAYER_ACTION_REQUIRED",
+    "payment_source": {
+      "paypal": {}
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/8JG71603UK264490V",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://www.sandbox.paypal.com/checkoutnow?token=8JG71603UK264490V",
+        "rel": "payer-action",
+        "method": "GET"
+      }
+    ]
+  }
+}

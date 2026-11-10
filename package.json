@@ -1,0 +1,39 @@
+{
+  "name": "verdict",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "sandbox:smoke": "tsx scripts/sandbox-smoke.ts",
+    "test": "vitest run",
+    "ai:smoke": "tsx scripts/ai-smoke.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.7.0",
+    "ag-grid-community": "36.2.0",
+    "ag-grid-react": "36.2.0",
+    "ag-studio": "3.0.0",
+    "ag-studio-react": "3.0.0",
+    "next": "16.3.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^18.0.10",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^4.1.12"
+  }
+}

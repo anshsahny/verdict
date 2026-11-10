@@ -1,1 +1,35 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+/test-results
+/playwright-report
+
+# next.js
+/.next/
+/out/
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+
+# env files: only the example is committed
 .env*
+!.env.example
+
+# local state and databases
+*.sqlite
+*.sqlite-journal
+*.db
+.smoke-state.json
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
