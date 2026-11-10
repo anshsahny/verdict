@@ -32,7 +32,18 @@ Base URL (sandbox): `https://api-m.sandbox.paypal.com`
 
 **List:** `GET /v1/customer/disputes`. Params `page_size` (1–50), `page`, `dispute_state`, `create_time_after` (`start_time` deprecated). Items: `dispute_id, create_time, update_time, reason, status, dispute_amount, dispute_life_cycle_stage, dispute_channel, seller_response_due_date, links`. [D] Empty list → `{ items: [], links }` [S]. Fixture: `disputes-list.json`.
 
-**Get:** `GET /v1/customer/disputes/{id}`. Fields depend on the caller. Includes `evidences[]`, `allowed_response_options` (`make_offer.offer_types`, `accept_claim.accept_claim_types`, `acknowledge_return_item.acknowledgement_types`), `links[]` (HATEOAS). [D] **[?] Record a real one at Gate 0.**
+**Get:** `GET /v1/customer/disputes/{id}` [S, fixture `lifecycle/0-before-get.json`]. Real Resolution Center dispute, merchant view:
+- `disputed_transactions[0]`: `buyer_transaction_id` **and** `seller_transaction_id` (= our capture id, which is how we join to orders), `transaction_status: HELD`, `gross_amount`, `invoice_number` (our `invoice_id`), `items[]` (`item_name`, `reason`, `item_type`), `seller_protection_eligible`, `seller_protection_type: EXPANDED_SELLER_PROTECTION`, `buyer {email, payer_id, name}`.
+- `dispute_state: REQUIRED_ACTION`, `dispute_channel: INTERNAL`, `fund_movements[]` (a `HOLD_PLACED` debit on us), `offer.buyer_requested_amount`, `refund_details.allowed_refund_amount`, `extensions.buyer_contacted_time`.
+- **`evidences[]` says what PayPal wants**: `{ evidence_type: PROOF_OF_FULFILLMENT, source: REQUESTED_FROM_SELLER }` alongside the buyer's `{ evidence_type: CREATE, source: SUBMITTED_BY_BUYER }`. Use this to drive the evidence checklist.
+- `allowed_response_options`: INR inquiry → `accept_claim_types [PARTIAL_REFUND, REFUND]`, `offer_types [REFUND]`; SNAD inquiry → `offer_types [REFUND, REFUND_WITH_RETURN]`.
+- **HATEOAS rels use underscores** [S]: `accept_claim, provide_evidence, send_message, escalate, make_offer, provide_supporting_info`. Not hyphens.
+- `seller_response_due_date` = create + 20 days for INQUIRY; absent once `UNDER_REVIEW`.
+
+**Resolution Center behaviour** [S] (8 vaulted orders disputed by the human, 2026-11-10):
+- All 8 show up for the merchant: 4 INR, 3 SNAD, 1 `UNAUTHORISED` (British spelling in the enum). Inquiries arrive as INQUIRY `UNDER_REVIEW`, then move to `WAITING_FOR_SELLER_RESPONSE` within ~3 minutes (with a `CUSTOMER.DISPUTE.UPDATED` webhook). Two INR came in straight as **CHARGEBACK / UNDER_REVIEW** (buyer chose to file a claim). The Unauthorized one arrived as **CHARGEBACK / WAITING_FOR_SELLER_RESPONSE**.
+- After the disputes were filed, **the buyer's vault token was revoked**: vaulted orders and `GET /v3/vault/payment-tokens/{id}` both return 403. Most likely cause: the Unauthorized report (PayPal treats it as a compromised account). If the vault dies, rerun `npm run sandbox:smoke -- --approve`.
+- Which links appear depends on the dispute: the SNAD inquiry offered no `provide_evidence` link; the INR inquiries did.
 
 **Create (sandbox only):** `POST /v1/customer/disputes`, `multipart/form-data`, part `input` (`application/json`):
 `{ disputed_transactions: [{ buyer_transaction_id }], reason, dispute_amount: { currency_code, value }, extensions: {...} }`. Returns 201 + link holding the dispute id. [D]
@@ -60,6 +71,11 @@ Base URL (sandbox): `https://api-m.sandbox.paypal.com`
 | `require-evidence` (sandbox) | JSON `{ action: SELLER_EVIDENCE \| BUYER_EVIDENCE }` | `status = UNDER_REVIEW` + link; moves to `WAITING_FOR_SELLER_RESPONSE` / `WAITING_FOR_BUYER_RESPONSE` |
 | `adjudicate` (sandbox) | JSON `{ adjudication_outcome: SELLER_FAVOR \| BUYER_FAVOR }` | `status = UNDER_REVIEW` + link |
 
+Sandbox results [S] (fixtures in `fixtures/smoke/lifecycle/`):
+- `require-evidence` and `adjudicate` are **never offered** on Resolution Center disputes, even at `UNDER_REVIEW` (inquiry or chargeback), including after waiting. Calling them anyway → 400 `ACTION_NOT_ALLOWED_IN_CURRENT_DISPUTE_STATE`. So we **can't force a sandbox settlement in the seller's favour**. Buyer-favour settlement through `accept_claim`/`make_offer` is real and still to be tested in Phase 2.
+- `provide-supporting-info` on a CHARGEBACK/UNDER_REVIEW dispute: multipart `input = { notes }` → **200**. The state stays CHARGEBACK/UNDER_REVIEW.
+- `provide-evidence` with `evidence_type: OTHER` on an INR inquiry → 400 `EVIDENCE_TYPE_IS_NOT_ALLOWED`. Send the type the dispute requested (`evidences[].source = REQUESTED_FROM_SELLER`).
+
 Enums [D]: `status` OPEN, WAITING_FOR_BUYER_RESPONSE, WAITING_FOR_SELLER_RESPONSE, UNDER_REVIEW, RESOLVED. `dispute_life_cycle_stage` INQUIRY, CHARGEBACK, PRE_ARBITRATION, ARBITRATION. `reason` MERCHANDISE_OR_SERVICE_NOT_RECEIVED, MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED, UNAUTHORISED, CREDIT_NOT_PROCESSED, DUPLICATE_TRANSACTION, INCORRECT_AMOUNT, PAYMENT_BY_OTHER_MEANS, CANCELED_RECURRING_BILLING, OTHER. `evidence_type` includes PROOF_OF_FULFILLMENT, PROOF_OF_REFUND, OTHER (list not exhaustive).
 
 Doc discrepancies to resolve in the sandbox: make-offer stage; accept-claim body format; who may call create.
@@ -70,6 +86,7 @@ Sandbox Resolution Center: `https://www.sandbox.paypal.com/disputes/dashboard/` 
 - **Create:** `POST /v1/notifications/webhooks` `{ url, event_types: [{ name }] }` → 201 with `id` [S]. We subscribe to `CUSTOMER.DISPUTE.CREATED`, `.UPDATED`, `.RESOLVED`. An `https` ngrok URL was accepted.
 - **List:** `GET /v1/notifications/webhooks` → `{ webhooks: [] }` [S].
 - **Simulate:** `POST /v1/notifications/simulate-event` `{ webhook_id, event_type, resource_version: "1.0" }` → 202 [S]. **Works for `CUSTOMER.DISPUTE.CREATED`**, delivered within seconds, with a sample resource (`dispute_id` `PP-000-042-663-135`, not a real dispute in our account).
+- **Real dispute events** [S]: filing in the Resolution Center sends `CUSTOMER.DISPUTE.CREATED` (resource at INQUIRY/UNDER_REVIEW), then `CUSTOMER.DISPUTE.UPDATED` when it moves to WAITING_FOR_SELLER_RESPONSE. All delivered through ngrok within seconds, and all verified `SUCCESS`.
 - **Verify:** `POST /v1/notifications/verify-webhook-signature` with `auth_algo, cert_url, transmission_id, transmission_sig, transmission_time` (from headers `paypal-auth-algo`, `paypal-cert-url`, `paypal-transmission-id`, `paypal-transmission-sig`, `paypal-transmission-time`), `webhook_id`, `webhook_event` (the parsed body). **Simulated events verify as `SUCCESS`** [S]. Fixture: `fixtures/webhooks/`.
 - We reject `cert_url` values that aren't on a paypal.com API host before calling verify.
 

@@ -1,0 +1,95 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-2VR6507513986574T-22A266084K978892U",
+    "event_version": "1.0",
+    "create_time": "2026-11-10T05:55:33.193Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.UPDATED",
+    "summary": "A dispute was updated with case # PP-R-HRR-10197887",
+    "resource": {
+      "dispute_id": "PP-R-HRR-10197887",
+      "create_time": "2026-11-10T05:51:49.667Z",
+      "update_time": "2026-11-10T05:55:23.904Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "0DF21510G2246484R",
+          "seller_transaction_id": "4J264399PV6096257",
+          "transaction_status": "HELD",
+          "invoice_number": "VRD-1006-mwa9dy9j",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Tea towel set",
+              "item_description": "Tea towel set",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "UNDER_REVIEW",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "19.25"
+      },
+      "fund_movements": [
+        {
+          "party": "RECEIVER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "18.09"
+          },
+          "initiated_time": "2026-11-10T05:55:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "19.25"
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-HRR-10197887/provide-supporting-info",
+          "rel": "provide_supporting_info",
+          "method": "POST"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-2VR6507513986574T-22A266084K978892U",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-2VR6507513986574T-22A266084K978892U/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}

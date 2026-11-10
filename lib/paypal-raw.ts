@@ -90,6 +90,14 @@ export function redactValue(value: unknown, key = ''): unknown {
   if (key === 'vault' && value && typeof value === 'object') {
     return { id: '[REDACTED]', status: (value as { status?: unknown }).status };
   }
+  // Dispute payloads carry the buyer's display name as a plain `name` string.
+  if ((key === 'buyer' || key === 'payer') && value && typeof value === 'object' && !Array.isArray(value)) {
+    const v = value as Record<string, unknown>;
+    const out = redactValue({ ...v, name: undefined }) as Record<string, unknown>;
+    if (typeof v.name === 'string') out.name = '[REDACTED]';
+    else if (v.name !== undefined) out.name = redactValue(v.name, 'name');
+    return out;
+  }
   if (PII_KEYS.test(key) && typeof value === 'string') return '[REDACTED]';
   if (Array.isArray(value)) return value.map((v) => redactValue(v));
   if (value && typeof value === 'object') {

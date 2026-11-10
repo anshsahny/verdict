@@ -1,0 +1,134 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-19046092C0401953U-5XC68062H2164741B",
+    "event_version": "1.0",
+    "create_time": "2026-11-10T05:50:33.495Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.UPDATED",
+    "summary": "A dispute was updated with case # PP-R-GSO-10197884",
+    "resource": {
+      "dispute_id": "PP-R-GSO-10197884",
+      "create_time": "2026-11-10T05:47:03.763Z",
+      "update_time": "2026-11-10T05:50:22.661Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "86G80046TH945333R",
+          "seller_transaction_id": "0WK149649L349122E",
+          "transaction_status": "HELD",
+          "invoice_number": "VRD-1003-mwa9dr3t",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Walnut serving board",
+              "item_description": "Walnut serving board",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+              "notes": "This product is broken, useless and does not work. I tried to use this but it did not work and it was a waste of my money.",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+      "status": "WAITING_FOR_SELLER_RESPONSE",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "64.00"
+      },
+      "fund_movements": [
+        {
+          "party": "RECEIVER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "61.28"
+          },
+          "initiated_time": "2026-11-10T05:50:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T05:47:03.763Z",
+          "content": "N/A"
+        }
+      ],
+      "seller_response_due_date": "2026-11-30T05:47:03.763Z",
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "64.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "64.00"
+        }
+      },
+      "allowed_response_options": {
+        "accept_claim": {
+          "accept_claim_types": [
+            "PARTIAL_REFUND",
+            "REFUND_WITH_RETURN",
+            "REFUND"
+          ]
+        },
+        "make_offer": {
+          "offer_types": [
+            "REFUND",
+            "REFUND_WITH_RETURN"
+          ]
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884",
+          "rel": "self",
+          "method": "GET"
+        },
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/escalate",
+          "rel": "escalate",
+          "method": "POST"
+        },
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/send-message",
+          "rel": "send_message",
+          "method": "POST"
+        },
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/make-offer",
+          "rel": "make_offer",
+          "method": "POST"
+        },
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-GSO-10197884/accept-claim",
+          "rel": "accept_claim",
+          "method": "POST"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-19046092C0401953U-5XC68062H2164741B",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-19046092C0401953U-5XC68062H2164741B/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}

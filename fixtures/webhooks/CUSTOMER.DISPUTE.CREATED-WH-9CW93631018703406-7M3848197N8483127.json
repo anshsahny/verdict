@@ -1,0 +1,81 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-9CW93631018703406-7M3848197N8483127",
+    "event_version": "1.0",
+    "create_time": "2026-11-10T05:55:04.114Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.CREATED",
+    "summary": "A new dispute opened with case # PP-R-BFE-10197888",
+    "resource": {
+      "dispute_id": "PP-R-BFE-10197888",
+      "create_time": "2026-11-10T05:52:04.870Z",
+      "update_time": "2026-11-10T05:54:54.415Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "3F9050397A3324013",
+          "seller_transaction_id": "49W901059U322915G",
+          "transaction_status": "HELD",
+          "invoice_number": "VRD-1005-mwa9dwm7",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "UNAUTHORISED",
+      "status": "UNDER_REVIEW",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "89.00"
+      },
+      "fund_movements": [
+        {
+          "party": "RECEIVER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "85.40"
+          },
+          "initiated_time": "2026-11-10T05:55:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "89.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "89.00"
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-BFE-10197888",
+          "rel": "self",
+          "method": "GET"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-9CW93631018703406-7M3848197N8483127",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-9CW93631018703406-7M3848197N8483127/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}

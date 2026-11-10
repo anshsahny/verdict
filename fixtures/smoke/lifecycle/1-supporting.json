@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "debugId": "f6898932a6981",
+  "body": {
+    "links": [
+      {
+        "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882",
+        "rel": "detail",
+        "method": "GET"
+      }
+    ]
+  }
+}

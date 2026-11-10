@@ -1,0 +1,108 @@
+{
+  "status": 200,
+  "debugId": "f40759589f7cc",
+  "body": {
+    "dispute_id": "PP-R-SUQ-10197882",
+    "create_time": "2026-11-10T05:43:45.414Z",
+    "update_time": "2026-11-10T05:54:08.550Z",
+    "disputed_transactions": [
+      {
+        "buyer_transaction_id": "26V924161X633243G",
+        "seller_transaction_id": "0LW23195B1463514N",
+        "create_time": "2026-11-10T05:37:40.000Z",
+        "transaction_status": "HELD",
+        "gross_amount": {
+          "currency_code": "USD",
+          "value": "42.00"
+        },
+        "invoice_number": "VRD-1001-mwa9dm4z",
+        "buyer": {
+          "email": "[REDACTED]",
+          "payer_id": "[REDACTED]",
+          "name": "[REDACTED]"
+        },
+        "seller": {
+          "email": "[REDACTED]",
+          "merchant_id": "KNT7TPTCVPK3N",
+          "name": "Test Store"
+        },
+        "items": [
+          {
+            "item_name": "Ceramic pour-over set",
+            "item_description": "Ceramic pour-over set",
+            "item_quantity": "1",
+            "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+            "item_type": "PRODUCT"
+          }
+        ],
+        "seller_protection_eligible": true,
+        "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+      }
+    ],
+    "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+    "status": "UNDER_REVIEW",
+    "dispute_amount": {
+      "currency_code": "USD",
+      "value": "42.00"
+    },
+    "dispute_state": "UNDER_PAYPAL_REVIEW",
+    "fund_movements": [
+      {
+        "party": "RECEIVER",
+        "amount": {
+          "currency_code": "USD",
+          "value": "40.04"
+        },
+        "initiated_time": "2026-11-10T05:47:04.000Z",
+        "type": "DEBIT",
+        "reason": "HOLD_PLACED"
+      }
+    ],
+    "dispute_life_cycle_stage": "CHARGEBACK",
+    "dispute_channel": "INTERNAL",
+    "extensions": {
+      "merchant_contacted": false,
+      "buyer_contacted_time": "2026-11-10T05:43:44.876Z"
+    },
+    "evidences": [
+      {
+        "evidence_type": "CREATE",
+        "notes": "N/A",
+        "source": "SUBMITTED_BY_BUYER",
+        "date": "2026-11-10T05:43:45.414Z",
+        "dispute_life_cycle_stage": "INQUIRY"
+      }
+    ],
+    "offer": {
+      "buyer_requested_amount": {
+        "currency_code": "USD",
+        "value": "42.00"
+      }
+    },
+    "refund_details": {
+      "allowed_refund_amount": {
+        "currency_code": "USD",
+        "value": "42.00"
+      }
+    },
+    "supporting_info": [
+      {
+        "notes": "Order VRD-1001 shipped via USPS, tracking 9400111899560000100101; carrier shows delivered.",
+        "source": "SUBMITTED_BY_SELLER",
+        "provided_time": "2026-11-10T05:54:08.550Z"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-R-SUQ-10197882/provide-supporting-info",
+        "rel": "provide_supporting_info",
+        "method": "POST"
+      }
+    ]
+  }
+}

@@ -1,8 +1,8 @@
 {
   "status": 201,
-  "debugId": "f37060154955f",
+  "debugId": "f976121a7b2ba",
   "body": {
-    "id": "4P1120135E8306027",
+    "id": "5AY87169UK775224B",
     "intent": "CAPTURE",
     "status": "COMPLETED",
     "payment_source": {
@@ -17,7 +17,7 @@
     },
     "purchase_units": [
       {
-        "reference_id": "smoke-card-mwa9bww1",
+        "reference_id": "smoke-card-mwaa0sh0",
         "amount": {
           "currency_code": "USD",
           "value": "24.00"
@@ -35,7 +35,7 @@
         "payments": {
           "captures": [
             {
-              "id": "0U249818FG4468107",
+              "id": "7PC52523GH1254905",
               "status": "COMPLETED",
               "amount": {
                 "currency_code": "USD",
@@ -61,25 +61,25 @@
               },
               "links": [
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/0U249818FG4468107",
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7PC52523GH1254905",
                   "rel": "self",
                   "method": "GET"
                 },
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/0U249818FG4468107/refund",
+                  "href": "https://api.sandbox.paypal.com/v2/payments/captures/7PC52523GH1254905/refund",
                   "rel": "refund",
                   "method": "POST"
                 },
                 {
-                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4P1120135E8306027",
+                  "href": "https://api.sandbox.paypal.com/v2/checkout/orders/5AY87169UK775224B",
                   "rel": "up",
                   "method": "GET"
                 }
               ],
-              "create_time": "2026-11-10T05:36:22Z",
-              "update_time": "2026-11-10T05:36:22Z",
+              "create_time": "2026-11-10T05:55:43Z",
+              "update_time": "2026-11-10T05:55:43Z",
               "network_transaction_reference": {
-                "id": "875901326299218",
+                "id": "334206090496468",
                 "network": "VISA"
               },
               "processor_response": {
@@ -92,11 +92,11 @@
         }
       }
     ],
-    "create_time": "2026-11-10T05:36:22Z",
-    "update_time": "2026-11-10T05:36:22Z",
+    "create_time": "2026-11-10T05:55:43Z",
+    "update_time": "2026-11-10T05:55:43Z",
     "links": [
       {
-        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/4P1120135E8306027",
+        "href": "https://api.sandbox.paypal.com/v2/checkout/orders/5AY87169UK775224B",
         "rel": "self",
         "method": "GET"
       }

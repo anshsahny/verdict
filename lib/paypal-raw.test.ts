@@ -9,8 +9,10 @@ describe('redactValue', () => {
       items: [{ email_address: 'x@y.z' }],
       payment_source: { paypal: { attributes: { vault: { id: 'tok_1', status: 'VAULTED', customer: { id: 'c1' }, links: [{ href: '/v3/vault/payment-tokens/tok_1' }] } } } },
       merchant_id: 'MERCHANT1',
+      disputed_transactions: [{ buyer: { name: 'John Doe', payer_id: 'P1' }, items: [{ item_name: 'Mug' }] }],
     });
     expect(out).toEqual({
+      disputed_transactions: [{ buyer: { name: '[REDACTED]', payer_id: '[REDACTED]' }, items: [{ item_name: 'Mug' }] }],
       access_token: '[REDACTED]',
       payer: { email_address: '[REDACTED]', name: { given_name: '[REDACTED]', surname: '[REDACTED]' }, payer_id: '[REDACTED]' },
       items: [{ email_address: '[REDACTED]' }],

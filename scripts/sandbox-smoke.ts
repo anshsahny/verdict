@@ -190,6 +190,13 @@ async function stepWalletOrder(): Promise<{ orderId: string; capture: Capture } 
     record('b2 buyer-account order', 'PASS', `vaulted order ${res.body.id} captured ${capture.id}, no interaction`);
     return { orderId: res.body.id, capture };
   }
+  // PayPal revokes the vault when the buyer reports an unauthorized transaction (seen in Phase 0).
+  if (res.status === 403) {
+    delete state.vaultId;
+    saveState();
+    record('b2 buyer-account order', 'FAIL', 'vault revoked (403). Run: npm run sandbox:smoke -- --approve');
+    return;
+  }
   record('b2 buyer-account order', 'FAIL', `vaulted order: ${res.status} ${issue(res)} (status ${res.body?.status})`);
 }
 
@@ -267,55 +274,29 @@ async function stepListAndGet(): Promise<Dispute | undefined> {
 
 // --- e. Sandbox lifecycle helpers ---------------------------------------------------------------
 
-// Walks the newest dispute forward using whatever HATEOAS links it offers:
-// provide-evidence (when waiting for us) -> require-evidence -> adjudicate (when under review).
+// Read-only: reports which actions each open dispute offers (HATEOAS rels use underscores, e.g.
+// provide_evidence). Write actions are exercised by Phase 2's live sandbox run, never here, so a
+// rerun can't spend a demo dispute or submit evidence that isn't backed by a real record.
+// Sandbox finding (Phase 0): Resolution Center disputes never offer require_evidence or
+// adjudicate, and calling them anyway returns ACTION_NOT_ALLOWED_IN_CURRENT_DISPUTE_STATE.
 async function stepLifecycle(start?: Dispute) {
   if (!start) {
-    record('e  evidence + adjudicate', 'SKIP', 'no dispute to walk');
+    record('e  dispute actions', 'SKIP', 'no dispute to inspect');
     return;
   }
-  let d = start;
-  const trail: string[] = [`${d.dispute_life_cycle_stage}/${d.status}`];
-  for (let i = 0; i < 4 && d.status !== 'RESOLVED'; i++) {
-    let res: RawResponse;
-    let action: string;
-    if (hasLink(d, 'provide_evidence') || hasLink(d, 'provide-evidence')) {
-      action = 'provide-evidence';
-      const form = new FormData();
-      const input = {
-        evidences: [
-          {
-            evidence_type: 'PROOF_OF_FULFILLMENT',
-            evidence_info: { tracking_info: [{ carrier_name: 'USPS', tracking_number: '9400111899223334445566' }] },
-            notes: 'Verdict smoke test: shipped with tracking; delivered per carrier record.',
-          },
-        ],
-      };
-      form.append('input', new Blob([JSON.stringify(input)], { type: 'application/json' }));
-      res = await call(merchant, `/v1/customer/disputes/${d.dispute_id}/provide-evidence`, { form });
-    } else if (d.status === 'UNDER_REVIEW' && hasLink(d, 'adjudicate')) {
-      action = 'adjudicate';
-      res = await call(merchant, `/v1/customer/disputes/${d.dispute_id}/adjudicate`, { json: { adjudication_outcome: 'SELLER_FAVOR' } });
-    } else if (hasLink(d, 'require_evidence') || hasLink(d, 'require-evidence')) {
-      action = 'require-evidence';
-      res = await call(merchant, `/v1/customer/disputes/${d.dispute_id}/require-evidence`, { json: { action: 'SELLER_EVIDENCE' } });
-    } else if (hasLink(d, 'escalate')) {
-      action = 'escalate';
-      res = await call(merchant, `/v1/customer/disputes/${d.dispute_id}/escalate`, { json: { note: 'Verdict smoke test: escalating to claim.' } });
-    } else {
-      trail.push('no actionable link');
-      break;
-    }
-    fixture(`disputes-${action}`, res);
-    trail.push(`${action}:${res.status}${res.ok ? '' : ` ${issue(res)}`}`);
-    if (!res.ok) break;
-    const next = await call<Dispute>(merchant, `/v1/customer/disputes/${d.dispute_id}`);
-    if (!next.ok) break;
-    d = next.body;
-    trail.push(`${d.dispute_life_cycle_stage}/${d.status}`);
+  const list = await call<{ items?: Dispute[] }>(merchant, '/v1/customer/disputes?page_size=50');
+  const rels = new Set<string>();
+  for (const item of list.body.items ?? []) {
+    const d = await call<Dispute>(merchant, `/v1/customer/disputes/${item.dispute_id}`);
+    for (const l of d.body.links ?? []) if (l.rel !== 'self') rels.add(l.rel);
   }
-  const ok = trail.some((t) => /^(provide-evidence|require-evidence|adjudicate|escalate):2/.test(t));
-  record('e  evidence + adjudicate', ok ? 'PASS' : 'FAIL', trail.join(' -> '));
+  const settle = ['require_evidence', 'adjudicate'].filter((r) => rels.has(r));
+  const respond = ['provide_evidence', 'make_offer', 'accept_claim'].filter((r) => rels.has(r));
+  record(
+    'e  dispute actions',
+    respond.length ? 'PASS' : 'FAIL',
+    `respond: [${respond.join(',')}]; sandbox settle helpers: [${settle.join(',') || 'none offered'}]`,
+  );
 }
 
 // --- main -------------------------------------------------------------------------------------

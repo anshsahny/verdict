@@ -1,0 +1,85 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-025829473E4355122-1J6895772M737062H",
+    "event_version": "1.0",
+    "create_time": "2026-11-10T05:45:33.133Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.CREATED",
+    "summary": "A new dispute opened with case # PP-R-SLD-10197881",
+    "resource": {
+      "dispute_id": "PP-R-SLD-10197881",
+      "create_time": "2026-11-10T05:42:23.898Z",
+      "update_time": "2026-11-10T05:45:13.700Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "6XV37876DM354674V",
+          "seller_transaction_id": "6VV87013M9548531E",
+          "transaction_status": "COMPLETED",
+          "invoice_number": "VRD-1008-mwa9e3h0",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Espresso cups (4)",
+              "item_description": "Espresso cups (4)",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "UNDER_REVIEW",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "47.40"
+      },
+      "dispute_life_cycle_stage": "INQUIRY",
+      "dispute_channel": "INTERNAL",
+      "messages": [
+        {
+          "posted_by": "BUYER",
+          "time_posted": "2026-11-10T05:42:23.898Z",
+          "content": "N/A"
+        }
+      ],
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "47.40"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "47.40"
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-SLD-10197881",
+          "rel": "self",
+          "method": "GET"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-025829473E4355122-1J6895772M737062H",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-025829473E4355122-1J6895772M737062H/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}
