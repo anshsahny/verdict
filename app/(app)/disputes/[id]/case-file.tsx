@@ -7,7 +7,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
-import { DeadlineRing, StrengthGauge, Timeline, URGENCY, useNow } from '@/components/viz';
+import { DeadlineRing, LocalTime, StrengthGauge, Timeline, URGENCY, useNow } from '@/components/viz';
 import { Badge, Button, Card, usd, useToast } from '@/components/ui';
 import { computeDeadline, formatRemaining } from '@/lib/disputes/deadline';
 import type { AppMode } from '@/lib/mode';
@@ -321,9 +321,9 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
       <HowDecided payload={dec!.payload} />
 
       {decided ? (
-        <p className="mt-5 text-sm text-v-muted" suppressHydrationWarning>
+        <p className="mt-5 text-sm text-v-muted">
           {dec!.status === 'executed' ? 'Approved' : dec!.status === 'escalated' ? 'Kept for manual handling' : dec!.status} by {dec!.decided_by ?? 'the owner'}
-          {dec!.executed_at ? ` on ${new Date(dec!.executed_at).toLocaleString()}` : ''}.
+          {dec!.executed_at ? <> on <LocalTime iso={dec!.executed_at} /></> : ''}.
         </p>
       ) : null}
 
@@ -531,7 +531,7 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
               <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
                 <dt className="text-v-muted">Placed</dt>
                 <dd className="text-v-ink" suppressHydrationWarning>
-                  {cf.order.id} · {new Date(cf.order.createdAt).toLocaleDateString()}
+                  {cf.order.id} · <LocalTime iso={cf.order.createdAt} dateOnly />
                 </dd>
                 <dt className="text-v-muted">Items</dt>
                 <dd className="text-v-ink">{cf.order.items.map((i) => `${i.qty} × ${i.name}`).join(', ')}</dd>
@@ -569,7 +569,7 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
             <Card title="Customer">
               <p className="text-sm font-medium text-v-ink">{cf.customer.name}</p>
               <p className="text-sm text-v-muted" suppressHydrationWarning>
-                {cf.customer.city}, {cf.customer.region} · {cf.customer.orders} order{cf.customer.orders === 1 ? '' : 's'} · customer since {new Date(cf.customer.firstSeen).toLocaleDateString()}
+                {cf.customer.city}, {cf.customer.region} · {cf.customer.orders} order{cf.customer.orders === 1 ? '' : 's'} · customer since <LocalTime iso={cf.customer.firstSeen} dateOnly />
               </p>
             </Card>
           ) : null}

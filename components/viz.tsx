@@ -3,7 +3,7 @@
 // Small visual building blocks shared by the AG Studio custom widgets and the Case File: a
 // deadline ring, an evidence-strength gauge, and a dispute timeline. Pure SVG + tokens.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { computeDeadline, formatRemaining, type DeadlineBucket } from '@/lib/disputes/deadline';
 
 const RESPONSE_WINDOW_MS = 20 * 86_400_000; // PayPal gives sellers 20 days on an inquiry
@@ -29,6 +29,19 @@ export function useNow(ms = 30_000, initialIso?: string) {
     return () => clearInterval(t);
   }, [ms]);
   return now;
+}
+
+const noSubscribe = () => () => {};
+
+/**
+ * A date or time in the viewer's own time zone. The server renders in its time zone (UTC on Render),
+ * so the text is only filled in once the page is running in the browser.
+ */
+export function LocalTime({ iso, dateOnly = false }: { iso: string; dateOnly?: boolean }) {
+  const inBrowser = useSyncExternalStore(noSubscribe, () => true, () => false);
+  if (!inBrowser) return null;
+  const d = new Date(iso);
+  return <>{dateOnly ? d.toLocaleDateString() : d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</>;
 }
 
 export function DeadlineRing({ dueAt, size = 56, now }: { dueAt: string | null; size?: number; now: Date }) {
@@ -87,8 +100,6 @@ const KIND: Record<TimelineItem['kind'], { color: string; label: string }> = {
   system: { color: 'var(--v-faint)', label: 'Store' },
 };
 
-const fmt = (iso: string) => new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-
 export function Timeline({ items, dense = false }: { items: TimelineItem[]; dense?: boolean }) {
   if (!items.length) return <p className="text-sm text-v-muted">No events yet.</p>;
   return (
@@ -99,9 +110,9 @@ export function Timeline({ items, dense = false }: { items: TimelineItem[]; dens
           <span aria-hidden className="mt-1.5 size-[11px] shrink-0 rounded-full border-2 border-v-surface" style={{ background: KIND[it.kind].color }} />
           <div className="min-w-0">
             <p className={`${dense ? 'text-[13px]' : 'text-sm'} font-medium text-v-ink`}>{it.title}</p>
-            <p className="text-xs text-v-muted" suppressHydrationWarning>
+            <p className="text-xs text-v-muted">
               <span className="sr-only">{KIND[it.kind].label}, </span>
-              {fmt(it.at)}
+              <LocalTime iso={it.at} />
               {it.detail ? <> · {it.detail}</> : null}
             </p>
           </div>

@@ -22,6 +22,8 @@ export default async function WarRoomPage() {
     disputes: rows.map((r) => ({
       ...r,
       due48: ['overdue', 'critical', 'urgent'].includes(r.urgency) ? 1 : 0,
+      readyToApprove: r.state === 'Open' && r.decisionStatus === 'proposed' ? 1 : 0,
+      needsJudgment: r.state === 'Open' && r.decisionStatus === 'needs_human' ? 1 : 0,
       queueRank: r.state === 'Resolved' ? 1e6 - Date.parse(r.filedAt) / 1e9 : (r.hoursLeft ?? 1e5),
     })).sort((a, b) => a.queueRank - b.queueRank),
     events,

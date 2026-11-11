@@ -26,6 +26,13 @@ const ai: AgAiHarnessSetup = ({ api }) => createAiHarness(api, { adapter: claude
 
 const noSubscription = () => () => {};
 
+// The assistant panel mounts a moment after edit mode turns on; wait for its message box, then focus it.
+function focusAssistantInput(triesLeft = 20) {
+  const input = document.querySelector<HTMLTextAreaElement>('#studio textarea[placeholder^="Ask the AI"]');
+  if (input) input.focus({ preventScroll: true });
+  else if (triesLeft > 0) setTimeout(() => focusAssistantInput(triesLeft - 1), 100);
+}
+
 export function WarRoom({ data, inbox, recent, licenseKey, aiEnabled }: { data: WarRoomData; inbox: InboxItem[]; recent: RecentItem[]; licenseKey?: string; aiEnabled: boolean }) {
   // Studio needs the browser (layout measurement); render a skeleton on the server.
   const inBrowser = useSyncExternalStore(noSubscription, () => true, () => false);
@@ -34,9 +41,10 @@ export function WarRoom({ data, inbox, recent, licenseKey, aiEnabled }: { data: 
   const atStake = inbox.reduce((s, d) => s + d.amount, 0);
   const next = inbox.find((i) => i.dueAt);
   const nextIn = next?.dueAt ? formatRemaining(Date.parse(next.dueAt) - Date.parse(data.asOf)) : null;
-  const toggleEdit = () => {
+  const toggleEdit = (focusChat = false) => {
     setMode((m) => (m === 'view' ? 'edit' : 'view'));
     document.getElementById('insights')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (focusChat && mode === 'view') focusAssistantInput();
   };
 
   return (
@@ -63,7 +71,7 @@ export function WarRoom({ data, inbox, recent, licenseKey, aiEnabled }: { data: 
               How Verdict works
             </Link>
             {aiEnabled ? (
-              <Button variant="secondary" onClick={toggleEdit} aria-pressed={mode === 'edit'}>
+              <Button variant="secondary" onClick={() => toggleEdit(true)} aria-pressed={mode === 'edit'}>
                 {mode === 'view' ? 'Ask the AI assistant' : 'Close assistant'}
               </Button>
             ) : null}
@@ -78,11 +86,12 @@ export function WarRoom({ data, inbox, recent, licenseKey, aiEnabled }: { data: 
           <h2 className="text-lg font-semibold text-v-ink">Insights</h2>
           <p className="text-sm text-v-muted">Every dispute, live. Built with AG Studio: rearrange it, or ask the AI assistant to add a chart.</p>
         </div>
-        <Button variant="secondary" size="sm" onClick={toggleEdit} aria-pressed={mode === 'edit'}>
+        <Button variant="secondary" size="sm" onClick={() => toggleEdit()} aria-pressed={mode === 'edit'}>
           {mode === 'view' ? 'Customize' : 'Done'}
         </Button>
       </div>
-      <div className="h-[1140px] shrink-0">
+      {/* While editing, fit the studio to the screen so the assistant's message box is visible; the canvas scrolls inside. */}
+      <div id="studio" className={`shrink-0 ${mode === 'edit' ? 'h-[calc(100dvh-5rem)] min-h-[560px]' : 'h-[1140px]'}`}>
         {inBrowser ? (
           <AgStudioProvider licenseKey={licenseKey} modules={aiEnabled ? [AgStudioAiModule] : undefined}>
             <AgStudio

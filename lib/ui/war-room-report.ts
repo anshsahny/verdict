@@ -4,7 +4,7 @@
 import type { AgDataSourcesDefinition, AgFieldDefinition, AgFormat, AgReportState, AgWidgetLayoutState } from 'ag-studio';
 import type { DisputeListRow, TimelineEntry } from '@/lib/views/disputes';
 
-export type WarRoomData = { disputes: (DisputeListRow & { due48: number; queueRank: number })[]; events: (TimelineEntry & { id: string; disputeId: string })[]; asOf: string };
+export type WarRoomData = { disputes: (DisputeListRow & { due48: number; readyToApprove: number; needsJudgment: number; queueRank: number })[]; events: (TimelineEntry & { id: string; disputeId: string })[]; asOf: string };
 
 type FieldSpec = [id: string, name: string, format: AgFormat, hide?: boolean];
 const fields = (specs: FieldSpec[]): AgFieldDefinition[] =>
@@ -49,6 +49,8 @@ export function warRoomData(data: WarRoomData): AgDataSourcesDefinition {
           ['won', 'Won', 'integerFormat'],
           ['resolved', 'Resolved', 'integerFormat'],
           ['due48', 'Due within 48h', 'integerFormat'],
+          ['readyToApprove', 'Ready to approve', 'integerFormat'],
+          ['needsJudgment', 'Needs your judgment', 'integerFormat'],
           ['queueRank', 'Queue order', 'decimalFormat', true],
           ['respondedHours', 'Hours to first response', 'decimalFormat'],
           ['whyRecommended', "Verdict's reasoning", 'textFormat'],
@@ -110,10 +112,10 @@ export const WAR_ROOM_REPORT = {
     {
       id: 'war-room',
       widgets: {
-        'kpi-at-risk': kpi('$ at risk', sum('disputes.atRisk'), 'all open disputes, incl. waiting on buyer'),
-        'kpi-win-rate': kpi('Win rate', { id: 'winRate' }, 'resolved in our favour'),
+        'kpi-at-risk': kpi('$ at risk', sum('disputes.atRisk'), 'open, incl. waiting on buyer'),
+        'kpi-ready': kpi('Ready to approve', sum('disputes.readyToApprove'), 'recommendations waiting on you'),
         'kpi-due': kpi('Due within 48h', sum('disputes.due48'), 'need a response soon'),
-        'kpi-response': kpi('Avg time to respond', { id: 'disputes.respondedHours', aggregation: 'avg' }, 'hours from claim to action'),
+        'kpi-judgment': kpi('Needs your judgment', sum('disputes.needsJudgment'), 'flagged by a Playbook guardrail'),
         clocks: {
           type: 'deadline-clocks',
           dataMapping: { dispute: [{ id: 'disputes.id' }], due: [{ id: 'disputes.dueAt' }], amount: [sum('disputes.amount')] },
@@ -161,9 +163,9 @@ export const WAR_ROOM_REPORT = {
       },
       widgetLayout: {
         'kpi-at-risk': at(0, 0, 6, 7),
-        'kpi-win-rate': at(6, 0, 6, 7),
+        'kpi-ready': at(6, 0, 6, 7),
         'kpi-due': at(12, 0, 6, 7),
-        'kpi-response': at(18, 0, 6, 7),
+        'kpi-judgment': at(18, 0, 6, 7),
         clocks: at(0, 7, 16, 11),
         strength: at(16, 7, 8, 11),
         queue: at(0, 18, 24, 22),
