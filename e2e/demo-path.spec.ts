@@ -4,9 +4,13 @@ import { expect, test, type Page } from '@playwright/test';
 // The demo path: landing page → War Room → open a dispute → see the recommendation → approve → status changes →
 // Arena → see the benchmark. Runs in REPLAY mode (recorded sandbox data), so it's repeatable.
 
+// AG Studio prints its "no licence key" banner as console errors when AG_STUDIO_LICENSE_KEY is unset
+// (a fresh clone). That's the vendor's notice, not a bug on the demo path.
+const AG_LICENCE_BANNER = /^\*+$|AG Studio Core License|License Key Not Found|unlocked for trial|hide the watermark/;
+
 function watchConsole(page: Page) {
   const errors: string[] = [];
-  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  page.on('console', (m) => m.type() === 'error' && !AG_LICENCE_BANNER.test(m.text().replace(/^\*\s*|\s*\*$/g, '').trim() || m.text()) && errors.push(m.text()));
   page.on('pageerror', (e) => errors.push(e.message));
   return errors;
 }
