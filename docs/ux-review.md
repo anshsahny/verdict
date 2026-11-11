@@ -42,3 +42,29 @@ the dashboard appeared. A first-visit welcome card tried to explain everything f
 - **Potential Impact**: small merchants lose disputes through missed deadlines and thin evidence; Verdict tracks both and drafts the response, and the human approves.
 - **Innovation**: the Arena, a wind tunnel that tests the dispute strategy against adversarial simulated buyers before real ones arrive, plus a policy slider that projects the effect of an auto-refund threshold.
 - **Presentation**: the landing page tells the story in under a minute; REPLAY mode makes the hosted demo safe to click through.
+
+## Round 2: judge walkthrough on the REPLAY build (2026-11-11)
+
+Walked landing → War Room → Case File → Arena → Playbook on a production REPLAY build, the way the
+hosted URL will run, asking two things: does a judge understand the product, and do they understand
+the agent?
+
+| Finding | Change |
+| --- | --- |
+| Headline "Win the PayPal disputes you should win." reads as a riddle | "An AI clerk for your PayPal disputes"; the problem (deadlines slip, tracking never sent) moves to the line below |
+| The agent's work was invisible: a recommendation appeared, but not what Claude looked at or what stopped it from being wrong | Case File: "How Verdict decided" shows the sources the agent actually queried (recorded from its tool calls), the 6 checks its answer went through (passed or flagged), the model, retries and time. Landing: "Inside the agent" (what it can see, what it can't do, how it stays honest) |
+| An escalated case said "all checks passed" without saying why it still needs the owner | A sixth check, "Your Playbook gives a clear answer for this case", is flagged when Verdict hands the call to the owner |
+| The timeline leaked internals ("Verdict recommended: accept", "REPLAY.DISPUTE.LOADED via replay") | Plain actions ("refund in full", "your call") and plain sources ("PayPal webhook", "recorded sandbox data") |
+| "How it works" repeated the hero line; "9s … and about $0.03 per dispute review" was hard to parse | New lead line; "9 s to review a dispute, about $0.03 in model cost" |
+
+### Self-grade (1–5), with what would move it
+
+| Criterion | Grade | Why | To raise it |
+| --- | --- | --- | --- |
+| Technological Implementation | 4.5 | Real sandbox Disputes/Orders/Tracking and signed webhooks; tool-using agent with schema validation, retries, guardrails and an audit log; an eval; the Arena | Show one live sandbox action in the video (webhook arriving, PayPal status changing) |
+| Design | 4.5 | One job per screen, plain language, themed AG Studio, light/dark, accessible | — |
+| Potential Impact | 4 | Clear user and pain (missed deadlines, thin evidence); the Playbook makes it the merchant's policy, not the AI's | A one-line market fact in the README/video (cited), not a made-up number |
+| Innovation | 4.5 | The Arena: test the dispute strategy against adversarial simulated buyers, and a policy slider that prices an auto-refund threshold | Show a weak spot found in the Arena, then the Playbook change that fixes it |
+| Presentation | 3 → 4.5 | Depends on what is not built yet: the deployed URL, README and video | Phase 6 (Render deploy, README) and Phase 7 (video, Devpost text) |
+
+Remaining risk is not the UI: it is shipping the hosted URL, README and video before the deadline.

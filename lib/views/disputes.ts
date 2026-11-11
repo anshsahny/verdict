@@ -128,9 +128,12 @@ export type CaseFile = {
   shipment: { carrier: string; tracking: string | null; status: string; shippedAt: string | null; deliveredAt: string | null; signedBy: string | null; events: { at: string; status: string; location: string }[] } | null;
   customer: { id: string; name: string; city: string; region: string; firstSeen: string; orders: number } | null;
   packet: EvidencePacket;
-  decision: (LatestDecision & { payload: { decision: Decision | null; validation: { errors: string[]; flags: string[] }; model: string } ; result: unknown }) | null;
+  decision: (LatestDecision & { payload: { decision: Decision | null; validation: { errors: string[]; flags: string[] }; model: string; trace?: { tools: string[]; attempts: number; latencyMs: number } }; result: unknown }) | null;
   timeline: TimelineEntry[];
 };
+
+const ACTION_WORDS: Record<string, string> = { accept: 'refund in full', offer_refund: 'partial refund', contest: 'contest with evidence', escalate_to_human: 'your call' };
+const EVENT_SOURCE: Record<string, string> = { webhook: 'PayPal webhook', poll: 'sync with PayPal', replay: 'recorded sandbox data' };
 
 export function getCaseFile(db: Db, id: string, now = new Date()): CaseFile | null {
   const d = getDispute(db, id);
@@ -154,11 +157,11 @@ export function getCaseFile(db: Db, id: string, now = new Date()): CaseFile | nu
   timeline.push({ at: d.created_at, kind: 'paypal', title: `Buyer opened ${/^[aeiou]/.test(reasonText) ? 'an' : 'a'} ${reasonText} claim`, detail: `$${(d.amount_cents / 100).toFixed(2)}` });
   for (const e of db.prepare('SELECT event_type, source, status, received_at FROM dispute_events WHERE dispute_id = ? ORDER BY received_at').all(id) as { event_type: string; source: string; status: string | null; received_at: string }[]) {
     if (e.event_type === 'POLL.DISPUTE.DISCOVERED') continue;
-    timeline.push({ at: e.received_at, kind: 'paypal', title: `PayPal: ${(STATUS_LABEL[e.status ?? ''] ?? e.status ?? '').toLowerCase()}`, detail: `${e.event_type} via ${e.source}` });
+    timeline.push({ at: e.received_at, kind: 'paypal', title: `PayPal: ${(STATUS_LABEL[e.status ?? ''] ?? e.status ?? '').toLowerCase()}`, detail: EVENT_SOURCE[e.source] ?? e.source });
   }
   for (const x of db.prepare('SELECT action, status, created_at, decided_by, executed_at FROM decisions WHERE dispute_id = ? ORDER BY created_at').all(id) as LatestDecision[]) {
-    timeline.push({ at: x.created_at, kind: 'agent', title: `Verdict recommended: ${x.action.replace(/_/g, ' ')}`, detail: x.status === 'needs_human' ? 'flagged for review' : undefined });
-    if (x.executed_at) timeline.push({ at: x.executed_at, kind: 'human', title: `${x.decided_by ?? 'Owner'} ${x.status === 'escalated' ? 'kept it for manual handling' : x.status === 'failed' ? 'approved; PayPal call failed' : 'approved'}`, detail: x.action.replace(/_/g, ' ') });
+    timeline.push({ at: x.created_at, kind: 'agent', title: `Verdict recommended: ${ACTION_WORDS[x.action] ?? x.action}`, detail: x.status === 'needs_human' ? 'asked for your judgment' : undefined });
+    if (x.executed_at) timeline.push({ at: x.executed_at, kind: 'human', title: `${x.decided_by ?? 'Owner'} ${x.status === 'escalated' ? 'kept it for manual handling' : x.status === 'failed' ? 'approved; PayPal call failed' : 'approved'}`, detail: ACTION_WORDS[x.action] ?? x.action });
   }
   timeline.sort((a, b) => a.at.localeCompare(b.at));
 

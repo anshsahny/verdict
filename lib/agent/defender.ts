@@ -163,7 +163,15 @@ export async function runDefender(opts: DefenderOptions): Promise<DefenderRun> {
       decision?.action ?? 'escalate_to_human',
       decision?.amount != null ? Math.round(decision.amount * 100) : null,
       decision?.confidence ?? null,
-      JSON.stringify({ decision, validation, model, promptVersion: PROMPT_VERSION, packet: { strength: packet.strength, rating: packet.rating, gaps: packet.gaps } }),
+      JSON.stringify({
+        decision,
+        validation,
+        model,
+        promptVersion: PROMPT_VERSION,
+        packet: { strength: packet.strength, rating: packet.rating, gaps: packet.gaps },
+        // What the Case File shows under "How Verdict decided"; the full trace is in the audit log.
+        trace: { tools: calls.map((c) => c.name), attempts: attemptsLog.length, latencyMs: Date.now() - started },
+      }),
       status,
       nowIso(),
     );

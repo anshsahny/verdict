@@ -24,7 +24,7 @@ test('demo path: landing → War Room → Case File → approve → Arena', asyn
   const errors = watchConsole(page);
 
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Win the PayPal disputes you should win.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'An AI clerk for your PayPal disputes' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What’s simulated' })).toBeVisible();
   const landingA11y = await a11y(page);
   await page.getByRole('link', { name: 'Open the demo' }).first().click();
@@ -43,6 +43,8 @@ test('demo path: landing → War Room → Case File → approve → Arena', asyn
   await expect(page.getByText('Refund in full', { exact: false }).first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Your evidence' })).toBeVisible();
   await expect(page.getByRole('list', { name: 'Dispute progress' })).toBeVisible();
+  await page.getByText('How Verdict decided').click();
+  await expect(page.getByText('Every piece of evidence points to a real record in your store')).toBeVisible();
   const caseA11y = await a11y(page);
 
   await page.getByRole('button', { name: /^Approve: refund in full/ }).click();

@@ -35,6 +35,12 @@ const SCREENS = [
   ['/playbook', 'Playbook', 'Your refund rules and guardrails in plain language. Verdict follows them and asks you first when a guardrail is hit.'],
 ];
 
+const AGENT = [
+  ['What it can see', 'Read-only tools for the PayPal dispute, the order, shipping and tracking, the customer’s history, your Playbook, and the evidence on file. It looks things up the way a clerk would, then answers.'],
+  ['What it can’t do', 'It has no way to act on PayPal. Its answer is a proposal: you approve it, edit it or choose something else, and only then does Verdict re-check the dispute with PayPal and send your response.'],
+  ['How it stays honest', 'Every answer is checked before you see it: a valid response for this dispute, evidence that points to real records, your Playbook thresholds, and a screen for buyers who try to give the AI instructions. Failures go back to Claude with the reason. Every step is logged.'],
+];
+
 const pct = (x: number | null | undefined) => (x == null ? '—' : `${Math.round(x * 100)}%`);
 
 export default async function Landing() {
@@ -51,7 +57,7 @@ export default async function Landing() {
     ev && { value: pct(ev.actionAccuracy), label: `right response on ${ev.scenarios} labelled test disputes`, note: 'agent eval' },
     ev && { value: pct(ev.citationValidity), label: 'of evidence cites a real store record', note: 'agent eval' },
     injections.length ? { value: `${injectionsFlagged}/${injections.length}`, label: 'prompt-injection attempts by simulated buyers flagged for review', note: 'Arena' } : null,
-    ev && { value: `${Math.round(ev.avgLatencySec)}s`, label: `and about $${ev.avgCostUsd.toFixed(2)} per dispute review`, note: 'agent eval' },
+    ev && { value: `${Math.round(ev.avgLatencySec)} s`, label: `to review a dispute, about $${ev.avgCostUsd.toFixed(2)} in model cost`, note: 'agent eval' },
   ].filter(Boolean) as { value: string; label: string; note: string }[];
 
   return (
@@ -77,9 +83,9 @@ export default async function Landing() {
       <main id="main">
         <section className="mx-auto max-w-6xl px-6 pb-12 pt-10 text-center sm:pt-16">
           <p className="text-sm font-semibold text-v-accent">For small shops that sell with PayPal</p>
-          <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-v-ink sm:text-5xl">Win the PayPal disputes you should win.</h1>
+          <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-v-ink sm:text-5xl">An AI clerk for your PayPal disputes</h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-v-muted">
-            Verdict is an AI dispute clerk. It tracks every PayPal dispute and its deadline, builds the case from your own order and shipping records, and drafts the response. You approve every action.
+            Small shops lose disputes they should win: a deadline slips, or the tracking number never gets sent. Verdict tracks every dispute, gathers the evidence from your own order and shipping records, and recommends whether to refund, make an offer or fight. You approve every action.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/war-room" className="rounded-lg bg-v-accent px-6 py-3 text-[15px] font-semibold text-v-accent-ink shadow-sm hover:brightness-110">
@@ -114,7 +120,7 @@ export default async function Landing() {
         <section id="how" className="border-y border-v-border bg-v-surface py-16">
           <div className="mx-auto max-w-6xl px-6">
             <h2 className="text-2xl font-semibold tracking-tight text-v-ink">How it works</h2>
-            <p className="mt-2 max-w-2xl text-v-muted">Small shops lose disputes they should win because a deadline slips or the evidence is thin. Verdict does the legwork; you keep the final say.</p>
+            <p className="mt-2 max-w-2xl text-v-muted">From PayPal’s notification to your answer, in three steps. Verdict does the legwork; you keep the final say.</p>
             <ol className="mt-10 grid gap-8 md:grid-cols-3">
               {STEPS.map(([title, body], i) => (
                 <li key={title}>
@@ -140,6 +146,19 @@ export default async function Landing() {
                 </h3>
                 <p className="mt-1.5 text-[15px] leading-relaxed text-v-muted">{body}</p>
               </Link>
+            ))}
+          </div>
+        </section>
+
+        <section id="agent" className="mx-auto max-w-6xl px-6 pb-16">
+          <h2 className="text-2xl font-semibold tracking-tight text-v-ink">Inside the agent</h2>
+          <p className="mt-2 max-w-2xl text-v-muted">Verdict’s clerk is Claude with a small set of tools and firm limits. Each Case File shows what it looked at and which checks it passed.</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {AGENT.map(([title, body]) => (
+              <div key={title} className="rounded-2xl border border-v-border bg-v-surface p-6">
+                <h3 className="font-semibold text-v-ink">{title}</h3>
+                <p className="mt-1.5 text-[15px] leading-relaxed text-v-muted">{body}</p>
+              </div>
             ))}
           </div>
         </section>

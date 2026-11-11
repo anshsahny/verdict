@@ -47,6 +47,76 @@ function plainFlag(f: string): string {
   return f;
 }
 
+// "How Verdict decided": what the agent looked at (its tool calls) and the guardrails its answer went
+// through. Every decision shown here already passed validation, so those checks are always met; the
+// Playbook checks can flag it for the owner.
+const LOOKED_AT: Record<string, string> = {
+  get_dispute: 'The PayPal dispute',
+  get_order: 'The order',
+  get_tracking: 'Shipping and tracking',
+  get_customer_history: 'Customer history',
+  get_merchant_policy: 'Your Playbook',
+  list_available_evidence: 'Evidence on file',
+  build_evidence_packet: 'Evidence strength',
+};
+
+function HowDecided({ payload }: { payload: NonNullable<CaseFile['decision']>['payload'] }) {
+  const flags = payload.validation.flags;
+  const flagged = (re: RegExp) => flags.some((f) => re.test(f));
+  const checks: [string, boolean][] = [
+    ['The response is one PayPal allows right now, for no more than the disputed amount', true],
+    ['Every piece of evidence points to a real record in your store', true],
+    ['The buyer’s message was screened for instructions aimed at the AI', !flagged(/injection/i)],
+    ['The amount is within your Playbook’s review threshold', !flagged(/approval threshold/)],
+    ['Verdict is as sure as your Playbook requires', !flagged(/Confidence/)],
+    ['Your Playbook gives a clear answer for this case', !flagged(/escalated/)],
+  ];
+  const looked = [...new Set(payload.trace?.tools ?? [])].map((t) => LOOKED_AT[t]).filter(Boolean);
+  const passed = checks.filter(([, ok]) => ok).length;
+  const t = payload.trace;
+  return (
+    <details className="mt-5 rounded-xl border border-v-border bg-v-raised px-4 py-3">
+      <summary className="cursor-pointer text-sm font-medium text-v-ink">
+        How Verdict decided
+        <span className="ml-2 font-normal text-v-muted">
+          {looked.length ? `checked ${looked.length} sources · ` : ''}
+          {passed} of {checks.length} checks passed
+        </span>
+      </summary>
+      {looked.length ? (
+        <div className="mt-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-v-faint">Looked at</p>
+          <ul className="mt-1.5 flex flex-wrap gap-1.5">
+            {looked.map((l) => (
+              <li key={l} className="rounded-md bg-v-surface px-2 py-0.5 text-xs text-v-ink ring-1 ring-v-border">
+                {l}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-v-faint">Checks before you see it</p>
+      <ul className="mt-1.5 space-y-1 text-sm">
+        {checks.map(([label, ok]) => (
+          <li key={label} className={`flex gap-2 ${ok ? 'text-v-ink' : 'text-v-warn'}`}>
+            <span aria-hidden className={ok ? 'text-v-win' : ''}>
+              {ok ? '✓' : '⚑'}
+            </span>
+            <span>
+              {label}
+              <span className="sr-only">{ok ? ' (passed)' : ' (flagged for you)'}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-xs text-v-muted">
+        Claude ({payload.model}) with read-only tools: it can look things up but cannot act on PayPal.
+        {t ? ` ${t.attempts === 1 ? 'Valid on the first try' : `Fixed after ${t.attempts - 1} failed check${t.attempts > 2 ? 's' : ''}`}, ${Math.round(t.latencyMs / 1000)} s.` : ''} Every step is in the audit log.
+      </p>
+    </details>
+  );
+}
+
 const SUCCESS: Record<string, string> = {
   accept_claim: 'Refund sent to PayPal. PayPal closes the dispute in about a minute.',
   make_offer: 'Offer sent. The buyer can accept or decline it in PayPal.',
@@ -247,6 +317,8 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
       <Section label="Message to the buyer">
         <blockquote className="rounded-xl border-l-2 border-v-accent bg-v-raised p-3 text-sm text-v-ink">{d.draftMessageToBuyer}</blockquote>
       </Section>
+
+      <HowDecided payload={dec!.payload} />
 
       {decided ? (
         <p className="mt-5 text-sm text-v-muted" suppressHydrationWarning>
