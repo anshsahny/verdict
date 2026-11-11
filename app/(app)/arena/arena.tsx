@@ -59,7 +59,7 @@ function PolicySlider({ policy }: { policy: PolicyProjection[] }) {
           <dd className="text-lg font-semibold tabular text-v-ink">{usd(p.savedVsAlwaysRefundUsd)}</dd>
         </div>
         <div>
-          <dt className="text-v-muted">vs Verdict only</dt>
+          <dt className="text-v-muted" title="Compared with letting Verdict handle every dispute">vs Verdict</dt>
           <dd className={`text-lg font-semibold tabular ${p.deltaVsAgentUsd < 0 ? 'text-v-danger' : 'text-v-win'}`}>
             {p.deltaVsAgentUsd >= 0 ? '+' : '−'}
             {usd(Math.abs(p.deltaVsAgentUsd))}

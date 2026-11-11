@@ -142,7 +142,7 @@ function Progress({ status, outcome }: { status: string; outcome: string | null 
             >
               {done ? '✓' : i + 1}
             </span>
-            <span className={`text-sm ${now ? 'font-semibold text-v-ink' : done ? 'text-v-ink' : 'text-v-muted'}`}>
+            <span className={`text-sm ${now ? 'font-semibold text-v-ink' : done ? 'text-v-ink max-sm:sr-only' : 'text-v-muted max-sm:sr-only'}`}>
               {i === 3 && outcome ? outcome : s}
               <span className="sr-only">{done ? ' (done)' : now ? ' (current)' : ''}</span>
             </span>

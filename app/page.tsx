@@ -62,10 +62,10 @@ export default async function Landing() {
 
   return (
     <div className="min-h-full bg-v-canvas">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <header className="mx-auto flex max-w-[1440px] items-center justify-between px-6 lg:px-12 py-5">
         <Logo />
-        <nav aria-label="Main" className="flex items-center gap-6 text-sm">
-          <a href="#how" className="text-v-muted hover:text-v-ink">
+        <nav aria-label="Main" className="flex items-center gap-4 whitespace-nowrap text-sm sm:gap-6">
+          <a href="#how" className="hidden text-v-muted hover:text-v-ink sm:inline">
             How it works
           </a>
           <a href="#screens" className="hidden text-v-muted hover:text-v-ink sm:inline">
@@ -81,10 +81,10 @@ export default async function Landing() {
       </header>
 
       <main id="main">
-        <section className="mx-auto max-w-6xl px-6 pb-12 pt-10 text-center sm:pt-16">
+        <section className="mx-auto max-w-[1440px] px-6 lg:px-12 pb-12 pt-10 text-center sm:pt-16">
           <p className="text-sm font-semibold text-v-accent">For small shops that sell with PayPal</p>
-          <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-v-ink sm:text-5xl">An AI clerk for your PayPal disputes</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-v-muted">
+          <h1 className="mx-auto mt-3 max-w-4xl text-4xl font-semibold tracking-tight text-v-ink sm:text-5xl lg:text-6xl">An AI clerk for your PayPal disputes</h1>
+          <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-v-muted">
             Small shops lose disputes they should win: a deadline slips, or the tracking number never gets sent. Verdict tracks every dispute, gathers the evidence from your own order and shipping records, and recommends whether to refund, make an offer or fight. You approve every action.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -95,12 +95,12 @@ export default async function Landing() {
               How it works
             </a>
           </div>
-          <p className="mx-auto mt-4 max-w-xl text-sm text-v-muted">
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-v-muted">
             The demo runs on the PayPal sandbox for a fictional pottery shop, Kiln &amp; Co.
-            {mode === 'replay' ? ' Disputes here are recorded sandbox data with dates moved to today, so you can approve responses safely.' : ''} No sign-in needed.
+            {mode === 'replay' ? ' Disputes here are recorded sandbox data with dates moved to today, so you can approve responses safely.' : ''} <span className="whitespace-nowrap">No sign-in needed.</span>
           </p>
           {hasShot ? (
-            <div className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl border border-v-border bg-v-surface shadow-[0_20px_60px_-20px_rgba(16,24,40,0.25)]">
+            <div className="mx-auto mt-14 overflow-hidden rounded-2xl border border-v-border bg-v-surface shadow-[0_20px_60px_-20px_rgba(16,24,40,0.25)]">
               {/* One screenshot per theme; the theme is a data attribute, not a media query. */}
               {(['light', 'dark'] as const).map((t) => (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -118,8 +118,8 @@ export default async function Landing() {
         </section>
 
         <section id="how" className="border-y border-v-border bg-v-surface py-16">
-          <div className="mx-auto max-w-6xl px-6">
-            <h2 className="text-2xl font-semibold tracking-tight text-v-ink">How it works</h2>
+          <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+            <h2 className="text-2xl font-semibold tracking-tight text-v-ink lg:text-3xl">How it works</h2>
             <p className="mt-2 max-w-2xl text-v-muted">From PayPal’s notification to your answer, in three steps. Verdict does the legwork; you keep the final say.</p>
             <ol className="mt-10 grid gap-8 md:grid-cols-3">
               {STEPS.map(([title, body], i) => (
@@ -135,8 +135,8 @@ export default async function Landing() {
           </div>
         </section>
 
-        <section id="screens" className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-semibold tracking-tight text-v-ink">What’s inside</h2>
+        <section id="screens" className="mx-auto max-w-[1440px] px-6 lg:px-12 py-16">
+          <h2 className="text-2xl font-semibold tracking-tight text-v-ink lg:text-3xl">What’s inside</h2>
           <p className="mt-2 text-v-muted">Four screens. Start in the War Room.</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {SCREENS.map(([href, title, body]) => (
@@ -150,8 +150,8 @@ export default async function Landing() {
           </div>
         </section>
 
-        <section id="agent" className="mx-auto max-w-6xl px-6 pb-16">
-          <h2 className="text-2xl font-semibold tracking-tight text-v-ink">Inside the agent</h2>
+        <section id="agent" className="mx-auto max-w-[1440px] px-6 lg:px-12 pb-16">
+          <h2 className="text-2xl font-semibold tracking-tight text-v-ink lg:text-3xl">Inside the agent</h2>
           <p className="mt-2 max-w-2xl text-v-muted">Verdict’s clerk is Claude with a small set of tools and firm limits. Each Case File shows what it looked at and which checks it passed.</p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {AGENT.map(([title, body]) => (
@@ -165,8 +165,8 @@ export default async function Landing() {
 
         {stats.length ? (
           <section className="border-y border-v-border bg-v-surface py-16">
-            <div className="mx-auto max-w-6xl px-6">
-              <h2 className="text-2xl font-semibold tracking-tight text-v-ink">Measured, not promised</h2>
+            <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+              <h2 className="text-2xl font-semibold tracking-tight text-v-ink lg:text-3xl">Measured, not promised</h2>
               <p className="mt-2 max-w-2xl text-v-muted">From the agent evaluation and the Arena. Both use simulated disputes, so they show how reliably Verdict applies your rules, not how often PayPal would rule for you.</p>
               <dl className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map((s) => (
@@ -187,7 +187,7 @@ export default async function Landing() {
           </section>
         ) : null}
 
-        <section className="mx-auto grid max-w-6xl gap-6 px-6 py-16 md:grid-cols-2">
+        <section className="mx-auto grid max-w-[1440px] gap-6 px-6 lg:px-12 py-16 md:grid-cols-2">
           <div className="rounded-2xl border border-v-border bg-v-surface p-6">
             <h2 className="font-semibold text-v-ink">What’s real</h2>
             <ul className="mt-3 space-y-2 text-[15px] text-v-muted">
@@ -208,7 +208,7 @@ export default async function Landing() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-6 pb-20 text-center">
+        <section className="mx-auto max-w-[1440px] px-6 lg:px-12 pb-20 text-center">
           <Link href="/war-room" className="inline-block rounded-lg bg-v-accent px-6 py-3 text-[15px] font-semibold text-v-accent-ink shadow-sm hover:brightness-110">
             Open the demo
           </Link>
@@ -217,7 +217,7 @@ export default async function Landing() {
       </main>
 
       <footer className="border-t border-v-border">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-sm text-v-muted">
+        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-6 lg:px-12 py-6 text-sm text-v-muted">
           <span>Built with the PayPal REST APIs, Claude by Anthropic, AG Studio and AG Grid, Next.js and Render.</span>
           <span>
             <a href={REPO} className="hover:text-v-ink">
