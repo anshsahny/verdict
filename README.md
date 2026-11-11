@@ -4,7 +4,7 @@
 
 Built for the PayPal AI Hackathon with the **PayPal REST APIs** (sandbox), **Claude** by Anthropic, and **AG Studio / AG Grid**.
 
-**Live demo:** _URL added after deploy_ · **Video:** _link added after upload_ · [MIT licence](LICENSE)
+**Live demo:** [verdict-0bbi.onrender.com](https://verdict-0bbi.onrender.com) (REPLAY mode) · **Video:** _link added after upload_ · [MIT licence](LICENSE)
 
 ![The War Room: disputes waiting for a decision, each with its deadline and Verdict's suggestion](public/screens/war-room-light.png)
 

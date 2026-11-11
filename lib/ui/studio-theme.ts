@@ -25,6 +25,8 @@ export const verdictStudioTheme = studioTheme.withParams({
   iconColor: token('muted'),
   rowHoverColor: token('highlight'),
 
+  // The default 600px minimum widens the whole page on phones; let the canvas scroll inside the studio instead.
+  studioMinWidth: 0,
   studioWrapperBorder: false,
   studioWrapperBorderRadius: 0,
   studioWrapperSpacing: 0,
