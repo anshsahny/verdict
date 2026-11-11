@@ -12,7 +12,7 @@ const fields = (specs: FieldSpec[]): AgFieldDefinition[] =>
     id,
     name,
     format,
-    ...(format === 'currencyFormat' && { formatOptions: { currency: 'USD', decimalPlaces: 2 } }),
+    ...(format === 'currencyFormat' && { formatOptions: { format: '$#,##0.00' } }),
     ...(hide && { hide }),
   }));
 const sum = (id: string) => ({ id, aggregation: 'sum' as const });
@@ -110,9 +110,9 @@ export const WAR_ROOM_REPORT = {
     {
       id: 'war-room',
       widgets: {
-        'kpi-at-risk': kpi('$ at risk', sum('disputes.atRisk'), 'open disputes'),
+        'kpi-at-risk': kpi('$ at risk', sum('disputes.atRisk'), 'all open disputes, incl. waiting on buyer'),
         'kpi-win-rate': kpi('Win rate', { id: 'winRate' }, 'resolved in our favour'),
-        'kpi-due': kpi('Due within 48h', sum('disputes.due48'), 'need a response now'),
+        'kpi-due': kpi('Due within 48h', sum('disputes.due48'), 'need a response soon'),
         'kpi-response': kpi('Avg time to respond', { id: 'disputes.respondedHours', aggregation: 'avg' }, 'hours from claim to action'),
         clocks: {
           type: 'deadline-clocks',
@@ -141,7 +141,7 @@ export const WAR_ROOM_REPORT = {
           // One sort field per grid: Waiting on us > Waiting on buyer > Under review > Resolved. Rows
           // arrive pre-ordered by deadline (page.tsx), which holds within each status.
           sort: [{ field: { id: 'disputes.status' }, direction: 'desc' }],
-          format: title('Dispute queue', 'Open a dispute for its Case File. Select a row to focus the other widgets.'),
+          format: title('All disputes', 'Click an id to open its Case File. Select a row to focus the other widgets on it.'),
         },
         timeline: {
           type: 'dispute-timeline',

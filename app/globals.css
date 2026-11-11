@@ -128,3 +128,9 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Landing page hero: show the screenshot that matches the theme. */
+.shot-light { display: block; }
+.shot-dark { display: none; }
+:root[data-theme="dark"] .shot-light { display: none; }
+:root[data-theme="dark"] .shot-dark { display: block; }

@@ -1,9 +1,8 @@
 'use client';
 
 // The top of the War Room: what needs the merchant today, in plain language, one card per dispute
-// waiting on them, plus a first-visit welcome. The analytics (AG Studio) sit below this.
+// waiting on them. The analytics (AG Studio) sit below this.
 
-import { useEffect, useState } from 'react';
 import { DeadlineRing, URGENCY, useNow } from '@/components/viz';
 import { Badge, ButtonLink, Card, usd, type Tone } from '@/components/ui';
 import { computeDeadline, formatRemaining } from '@/lib/disputes/deadline';
@@ -17,7 +16,7 @@ export type InboxItem = {
   rating: string;
   recommendation: { action: string; amount: number | null; status: string; summary: string } | null;
 };
-export type RecentItem = { id: string; reason: string; amount: number; outcome: string; won: boolean; closedAt: string };
+export type RecentItem = { id: string; reason: string; amount: number; outcome: string; won: boolean; orderId: string };
 
 const SUGGEST: Record<string, (amount: number | null) => string> = {
   accept: (a) => `Refund ${usd(a)} in full`,
@@ -26,55 +25,6 @@ const SUGGEST: Record<string, (amount: number | null) => string> = {
   escalate_to_human: () => 'Needs your judgment',
 };
 const RATING_TONE: Record<string, Tone> = { strong: 'win', moderate: 'warn', weak: 'danger', none: 'muted' };
-
-export function Welcome() {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    try {
-      setShow(localStorage.getItem('verdict-welcome-dismissed') !== '1');
-    } catch {
-      setShow(true);
-    }
-  }, []);
-  if (!show) return null;
-  const dismiss = () => {
-    try {
-      localStorage.setItem('verdict-welcome-dismissed', '1');
-    } catch {
-      /* fine: it just shows again next time */
-    }
-    setShow(false);
-  };
-  const steps = [
-    ['Watches PayPal', 'Every new dispute arrives here within seconds, with its response deadline.'],
-    ['Builds your case', 'Verdict reads the order, tracking, customer history and your Playbook, then drafts a response with the evidence.'],
-    ['You decide', 'Approve, edit or override with one click. Nothing is sent to PayPal without you.'],
-  ];
-  return (
-    <section className="relative overflow-hidden rounded-2xl border border-v-border bg-gradient-to-br from-v-info-soft to-v-surface p-6" aria-labelledby="welcome-title">
-      <button type="button" onClick={dismiss} className="absolute right-4 top-4 rounded-md px-2 text-lg text-v-muted hover:bg-v-highlight hover:text-v-ink" aria-label="Dismiss welcome">
-        ×
-      </button>
-      <h2 id="welcome-title" className="text-lg font-semibold text-v-ink">
-        Your AI dispute clerk for PayPal
-      </h2>
-      <p className="mt-1 max-w-2xl text-sm text-v-muted">Small shops lose disputes they should win: deadlines slip and evidence is thin. Verdict handles the busywork; you keep the final say.</p>
-      <ol className="mt-5 grid gap-4 sm:grid-cols-3">
-        {steps.map(([t, d], i) => (
-          <li key={t} className="flex gap-3">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-v-accent text-sm font-bold text-v-accent-ink" aria-hidden>
-              {i + 1}
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-v-ink">{t}</p>
-              <p className="text-sm text-v-muted">{d}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
 
 export function Inbox({ items, recent, asOf }: { items: InboxItem[]; recent: RecentItem[]; asOf: string }) {
   const now = useNow(30_000, asOf);
@@ -115,7 +65,7 @@ export function Inbox({ items, recent, asOf }: { items: InboxItem[]; recent: Rec
                           {rec.summary ? <> · {rec.summary}</> : null}
                         </>
                       ) : (
-                        'Not reviewed yet. Verdict can review it in about 10 seconds.'
+                        'Not reviewed yet'
                       )}
                     </p>
                   </div>
@@ -146,6 +96,7 @@ export function Inbox({ items, recent, asOf }: { items: InboxItem[]; recent: Rec
                     <span className="block truncate text-sm font-medium text-v-ink">
                       {r.reason} · <span className="tabular">{usd(r.amount)}</span>
                     </span>
+                    {r.orderId && r.orderId !== '—' ? <span className="block text-xs text-v-muted">order {r.orderId}</span> : null}
                   </span>
                   <Badge tone={r.won ? 'win' : 'muted'}>{r.won ? 'Won' : r.outcome}</Badge>
                 </a>

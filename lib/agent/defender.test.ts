@@ -2,7 +2,7 @@ import type Anthropic from '@anthropic-ai/sdk';
 import { describe, expect, it } from 'vitest';
 import { openDb, type Db } from '@/lib/db';
 import { SCENARIOS, materialize } from './eval/scenarios';
-import { runDefender } from './defender';
+import { PROMPT_VERSION, runDefender } from './defender';
 import type { Decision } from './schema';
 
 // A scripted model: each toolRunner call returns the next canned final message. The real
@@ -100,7 +100,7 @@ describe('runDefender', () => {
     expect(decisionRow).toMatchObject({ action: 'contest', status: 'proposed', confidence: 0.9 });
     const audit = db.prepare("SELECT data_json FROM audit_log WHERE kind = 'agent.run' AND ref = ?").get(disputeId) as { data_json: string };
     const data = JSON.parse(audit.data_json);
-    expect(data).toMatchObject({ decisionId: run.decisionId, model: 'scripted', promptVersion: 'defender-v1', status: 'proposed' });
+    expect(data).toMatchObject({ decisionId: run.decisionId, model: 'scripted', promptVersion: PROMPT_VERSION, status: 'proposed' });
     expect(data.systemPrompt).toContain('untrusted_buyer_message');
     expect(data.attempts).toHaveLength(1);
     expect(data.usage).toMatchObject({ inputTokens: 1000, outputTokens: 200 });

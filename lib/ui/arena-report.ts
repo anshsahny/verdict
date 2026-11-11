@@ -66,7 +66,7 @@ const fields = (specs: FieldSpec[]): AgFieldDefinition[] =>
     id,
     name,
     format,
-    ...(format === 'currencyFormat' && { formatOptions: { currency: 'USD', decimalPlaces: 2 } }),
+    ...(format === 'currencyFormat' && { formatOptions: { format: '$#,##0.00' } }),
     ...(hide && { hide }),
   }));
 const sum = (id: string) => ({ id, aggregation: 'sum' as const });
@@ -82,12 +82,12 @@ const ratio = (id: string, name: string, description: string, num: string, den: 
 export function arenaData(rows: ArenaRow[]): AgDataSourcesDefinition {
   return {
     description:
-      'Arena runs: a Claude buyer agent files a SIMULATED dispute against the Verdict defender; a rule-based SIMULATED arbiter (not PayPal) decides. ' +
+      'Arena runs: a Claude buyer agent files a simulated dispute against the Verdict defender; a rule-based simulated arbiter (not PayPal) decides. ' +
       'rightCall = the response served the merchant given the hidden truth. saved = disputed amount kept vs an always-refund shop.',
     sources: [
       {
         id: 'runs',
-        description: 'One row per Arena run. All outcomes are SIMULATED.',
+        description: 'One row per Arena run. All outcomes are simulated.',
         data: rows,
         fields: fields([
           ['id', 'Run', 'textFormat', true],
@@ -97,7 +97,7 @@ export function arenaData(rows: ArenaRow[]): AgDataSourcesDefinition {
           ['truth', 'Who was at fault', 'textFormat'],
           ['amount', 'Disputed', 'currencyFormat'],
           ['action', 'Verdict response', 'textFormat'],
-          ['outcome', 'SIMULATED outcome', 'textFormat'],
+          ['outcome', 'Outcome (simulated)', 'textFormat'],
           ['rightCall', 'Right call', 'integerFormat'],
           ['contested', 'Contested', 'integerFormat'],
           ['won', 'Won', 'integerFormat'],
@@ -141,12 +141,12 @@ export const ARENA_REPORT = {
       widgets: {
         'kpi-runs': kpi('Runs', sum('runs.one'), 'simulated disputes'),
         'kpi-right': kpi('Right call', { id: 'rightCallRate' }, 'given the hidden truth'),
-        'kpi-won': kpi('Contests won', { id: 'contestWinRate' }, 'SIMULATED arbiter'),
+        'kpi-won': kpi('Contests won', { id: 'contestWinRate' }, 'by the simulated arbiter'),
         'kpi-saved': kpi('Saved', sum('runs.saved'), 'vs an always-refund shop'),
         'by-type': {
           type: 'column-chart-stacked',
           dataMapping: { categoryKey: [{ id: 'runs.type' }], valueKey: [sum('runs.one')], legendKey: [{ id: 'runs.outcome' }] },
-          format: { ...title('Outcomes by dispute type', 'SIMULATED'), ...legend },
+          format: { ...title('Outcomes by dispute type', 'simulated arbiter rulings'), ...legend },
         },
         'by-persona': {
           type: 'column-chart-stacked',
@@ -156,14 +156,14 @@ export const ARENA_REPORT = {
         money: {
           type: 'bar-chart-grouped',
           dataMapping: { categoryKey: [{ id: 'runs.type' }], valueKey: [sum('runs.retained'), sum('runs.refunded'), sum('runs.fees')] },
-          format: { ...title('Money by dispute type', 'kept, refunded and SIMULATED fees'), ...legend },
+          format: { ...title('Money by dispute type', 'kept, refunded and simulated fees'), ...legend },
         },
         runs: {
           type: 'grid',
           dataMapping: {
             cols: [{ id: 'runs.type' }, { id: 'runs.variant' }, { id: 'runs.persona' }, { id: 'runs.truth' }, sum('runs.amount'), { id: 'runs.action' }, { id: 'runs.outcome' }, sum('runs.rightCall'), { id: 'runs.mode' }, { id: 'runs.claim' }],
           },
-          format: title('Every run', 'Buyer claims are written live by a Claude buyer agent. Outcomes are SIMULATED.'),
+          format: title('Every run', 'Buyer claims are written live by a Claude buyer agent. Outcomes are simulated.'),
         },
       },
       widgetLayout: {

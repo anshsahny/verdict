@@ -3,12 +3,13 @@
 // The War Room: one AG Studio instance over the dispute ledger, with Verdict's custom widgets and
 // cell renderers. View mode by default; the owner can switch to edit to build their own widgets.
 
+import Link from 'next/link';
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import { AgStudioAiModule, createAiHarness, type AgAiHarnessSetup, type AgStudioMode } from 'ag-studio';
 import { AgStudio, AgStudioProvider } from 'ag-studio-react';
 import { Button, usd } from '@/components/ui';
 import { formatRemaining } from '@/lib/disputes/deadline';
-import { Inbox, Welcome, type InboxItem, type RecentItem } from './inbox';
+import { Inbox, type InboxItem, type RecentItem } from './inbox';
 import { verdictStudioTheme } from '@/lib/ui/studio-theme';
 import { WAR_ROOM_REPORT, warRoomData, type WarRoomData } from '@/lib/ui/war-room-report';
 import { verdictWidgets } from '@/lib/ui/widgets';
@@ -57,27 +58,31 @@ export function WarRoom({ data, inbox, recent, licenseKey, aiEnabled }: { data: 
               )}
             </p>
           </div>
-          {aiEnabled ? (
-            <Button variant="secondary" onClick={toggleEdit} aria-pressed={mode === 'edit'}>
-              {mode === 'view' ? 'Ask the AI assistant' : 'Close assistant'}
-            </Button>
-          ) : null}
+          <div className="flex items-center gap-3">
+            <Link href="/#how" className="text-sm font-medium text-v-muted hover:text-v-ink">
+              How Verdict works
+            </Link>
+            {aiEnabled ? (
+              <Button variant="secondary" onClick={toggleEdit} aria-pressed={mode === 'edit'}>
+                {mode === 'view' ? 'Ask the AI assistant' : 'Close assistant'}
+              </Button>
+            ) : null}
+          </div>
         </div>
       </div>
       <div className="space-y-5 p-6">
-        <Welcome />
         <Inbox items={inbox} recent={recent} asOf={data.asOf} />
       </div>
       <div id="insights" className="flex flex-wrap items-end justify-between gap-3 px-6 pb-1 pt-2">
         <div>
           <h2 className="text-lg font-semibold text-v-ink">Insights</h2>
-          <p className="text-sm text-v-muted">Live analytics on every dispute. Built with AG Studio: customize it, or ask the AI assistant to add a chart.</p>
+          <p className="text-sm text-v-muted">Every dispute, live. Built with AG Studio: rearrange it, or ask the AI assistant to add a chart.</p>
         </div>
         <Button variant="secondary" size="sm" onClick={toggleEdit} aria-pressed={mode === 'edit'}>
           {mode === 'view' ? 'Customize' : 'Done'}
         </Button>
       </div>
-      <div className="min-h-[900px] flex-1">
+      <div className="h-[1140px] shrink-0">
         {inBrowser ? (
           <AgStudioProvider licenseKey={licenseKey} modules={aiEnabled ? [AgStudioAiModule] : undefined}>
             <AgStudio

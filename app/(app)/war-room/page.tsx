@@ -43,13 +43,13 @@ export default async function WarRoomPage() {
         customer: r.customer,
         dueAt: r.dueAt,
         rating: r.rating,
-        recommendation: dec ? { action: dec.action, amount: dec.amount_cents != null ? dec.amount_cents / 100 : null, status: dec.status, summary: dec.status === 'needs_human' ? 'flagged for your review' : `${Math.round((dec.confidence ?? 0) * 100)}% confident` } : null,
+        recommendation: dec ? { action: dec.action, amount: dec.amount_cents != null ? dec.amount_cents / 100 : null, status: dec.status, summary: dec.status === 'needs_human' ? '' : `${Math.round((dec.confidence ?? 0) * 100)}% confident` } : null,
       };
     });
   const recent: RecentItem[] = rows
     .filter((r) => r.state === 'Resolved')
     .slice(0, 5)
-    .map((r) => ({ id: r.id, reason: r.reason, amount: r.amount, outcome: r.outcome, won: r.won === 1, closedAt: r.filedAt }));
+    .map((r) => ({ id: r.id, reason: r.reason, amount: r.amount, outcome: r.outcome, won: r.won === 1, orderId: r.orderId }));
   return (
     <WarRoom data={data} inbox={inbox} recent={recent} licenseKey={process.env.AG_STUDIO_LICENSE_KEY} aiEnabled={Boolean(process.env.ANTHROPIC_API_KEY)} />
   );

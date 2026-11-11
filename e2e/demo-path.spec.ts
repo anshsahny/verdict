@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
-// The demo path: War Room → open a dispute → see the recommendation → approve → status changes →
+// The demo path: landing page → War Room → open a dispute → see the recommendation → approve → status changes →
 // Arena → see the benchmark. Runs in REPLAY mode (recorded sandbox data), so it's repeatable.
 
 function watchConsole(page: Page) {
@@ -20,10 +20,16 @@ async function a11y(page: Page) {
   return { ours, studio: bad.filter((v) => !ours.includes(v)) };
 }
 
-test('demo path: War Room → Case File → approve → Arena', async ({ page }) => {
+test('demo path: landing → War Room → Case File → approve → Arena', async ({ page }) => {
   const errors = watchConsole(page);
 
-  await page.goto('/war-room');
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Win the PayPal disputes you should win.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'What’s simulated' })).toBeVisible();
+  const landingA11y = await a11y(page);
+  await page.getByRole('link', { name: 'Open the demo' }).first().click();
+
+  await expect(page).toHaveURL(/\/war-room$/);
   await expect(page.getByRole('heading', { name: 'War Room' })).toBeVisible();
   await expect(page.getByText('REPLAY · recorded sandbox disputes')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Needs your decision' })).toBeVisible();
@@ -51,16 +57,16 @@ test('demo path: War Room → Case File → approve → Arena', async ({ page })
 
   await page.getByRole('link', { name: 'Arena' }).first().click();
   await expect(page.getByRole('heading', { name: 'Arena', exact: true })).toBeVisible();
-  await expect(page.getByText('Outcomes come from a', { exact: false }).first()).toBeVisible();
+  await expect(page.getByRole('note').filter({ hasText: 'not real-world results' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Weak spots' })).toBeVisible();
   await expect(page.getByText('Right call').first()).toBeVisible();
   const arenaA11y = await a11y(page);
 
-  for (const [name, r] of Object.entries({ warRoom: warRoomA11y, caseFile: caseA11y, playbook: playbookA11y, arena: arenaA11y })) {
+  for (const [name, r] of Object.entries({ landing: landingA11y, warRoom: warRoomA11y, caseFile: caseA11y, playbook: playbookA11y, arena: arenaA11y })) {
     console.log(`[a11y] ${name}: ours ${r.ours.map((v) => v.id).join(', ') || 'none'}; AG Studio ${r.studio.map((v) => v.id).join(', ') || 'none'}`);
     for (const v of r.ours) for (const n of v.nodes.slice(0, 12)) console.log(`   ${v.id}: ${n.target.join(' ')} :: ${(n.failureSummary ?? '').split('\n').slice(1, 2).join(' ').slice(0, 160)}`);
   }
-  for (const [name, r] of Object.entries({ warRoom: warRoomA11y, caseFile: caseA11y, playbook: playbookA11y, arena: arenaA11y })) {
+  for (const [name, r] of Object.entries({ landing: landingA11y, warRoom: warRoomA11y, caseFile: caseA11y, playbook: playbookA11y, arena: arenaA11y })) {
     expect(r.ours.map((v) => v.id), `${name}: serious/critical accessibility issues`).toEqual([]);
   }
   expect(errors, 'console errors on the demo path').toEqual([]);

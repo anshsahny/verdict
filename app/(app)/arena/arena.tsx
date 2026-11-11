@@ -39,9 +39,8 @@ function PolicySlider({ policy }: { policy: PolicyProjection[] }) {
         <h2 id="policy-title" className="text-sm font-semibold text-v-ink">
           Policy: auto-refund small disputes
         </h2>
-        <SimulatedBadge />
       </div>
-      <p className="mt-1 text-sm text-v-muted">Refund every dispute under a threshold without review, and let Verdict handle the rest. Recomputed from the stored runs: no model calls.</p>
+      <p className="mt-1 text-sm text-v-muted">Refund every dispute under a threshold without review, and let Verdict handle the rest. Recomputed instantly from the stored runs.</p>
       <label htmlFor="threshold" className="mt-4 block text-sm text-v-ink">
         Auto-refund under <strong className="tabular">{usd(p.autoRefundUnderUsd)}</strong>
       </label>
@@ -123,10 +122,9 @@ function LiveRun({ caps }: { caps: { perRequest: number; perHour: number } }) {
         <h2 id="live-title" className="text-sm font-semibold text-v-ink">
           Run the Arena
         </h2>
-        <SimulatedBadge />
       </div>
       <p className="mt-1 text-sm text-v-muted">
-        A Claude buyer agent (honest, mistaken, opportunistic or aggressive) writes a claim. Verdict investigates and responds; the SIMULATED arbiter rules. Up to {caps.perRequest} runs per click, {caps.perHour} per hour.
+        A Claude buyer agent (honest, mistaken, opportunistic or aggressive) writes a claim. Verdict investigates and responds; the simulated arbiter rules. Up to {caps.perRequest} runs per click, {caps.perHour} per hour.
       </p>
       <div className="mt-4 flex items-center gap-3">
         <label className="text-sm text-v-ink" htmlFor="runs">
@@ -170,7 +168,7 @@ function LiveRun({ caps }: { caps: { perRequest: number; perHour: number } }) {
               {r.reply ? <p className="mt-1 text-v-muted">Buyer replies: “{r.reply}”</p> : null}
               {r.outcome ? (
                 <p className={`mt-1 font-semibold ${r.right ? 'text-v-win' : 'text-v-danger'}`}>
-                  SIMULATED arbiter: {r.outcome} · {r.right ? 'right call' : 'wrong call'}
+                  Simulated ruling: {r.outcome} · {r.right ? 'right call' : 'wrong call'}
                 </p>
               ) : null}
             </li>
@@ -210,7 +208,10 @@ export function Arena({ rows, bench, policy, caps, licenseKey }: { rows: ArenaRo
         }
       />
       <div className="border-b border-v-border bg-v-warn-soft px-6 py-2 text-sm text-v-warn" role="note">
-        Outcomes come from a <strong>SIMULATED</strong> rule-based arbiter, a stand-in for PayPal&apos;s reviewers. They are not real-world results. Rules: docs/arbiter.md.
+        <strong>How it works:</strong> a Claude buyer agent disputes a fictional order, Verdict responds as it would to a real dispute, and a rule-based arbiter, a stand-in for PayPal&apos;s reviewers, rules on it. Outcomes are <strong>simulated</strong>, not real-world results.{' '}
+        <a href="https://github.com/anshsahny/verdict/blob/main/docs/arbiter.md" className="font-medium underline">
+          Arbiter rules
+        </a>
       </div>
       <div className="grid gap-5 p-6 xl:grid-cols-3">
         <LiveRun caps={caps} />
@@ -220,7 +221,6 @@ export function Arena({ rows, bench, policy, caps, licenseKey }: { rows: ArenaRo
             <h2 id="weak-title" className="text-sm font-semibold text-v-ink">
               Weak spots
             </h2>
-            <SimulatedBadge />
           </div>
           {bench.weakSpots.length ? (
             <ul className="mt-3 space-y-2 text-sm text-v-ink">
