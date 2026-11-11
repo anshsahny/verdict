@@ -7,9 +7,15 @@ export async function register() {
   const { appMode } = await import('./lib/mode');
   if (appMode() === 'replay') {
     // Recorded sandbox data, no live PayPal calls (no poller).
-    const [{ getDb }, { importReplayIfEmpty }] = await Promise.all([import('./lib/db'), import('./lib/replay/seed')]);
+    const [{ getDb }, { importReplayIfEmpty, replayNeedsReset, resetReplay }] = await Promise.all([import('./lib/db'), import('./lib/replay/seed')]);
     const n = importReplayIfEmpty(getDb());
     console.log(`[replay] REPLAY mode${n ? `: loaded ${n} recorded sandbox disputes` : ''}`);
+    // The hosted demo is shared: reset it once it has been idle after someone used it, and keep the
+    // shifted dates fresh.
+    setInterval(() => {
+      const db = getDb();
+      if (replayNeedsReset(db)) console.log(`[replay] reset: reloaded ${resetReplay(db)} recorded sandbox disputes`);
+    }, 5 * 60_000).unref();
     return;
   }
   const { startDisputePoller } = await import('./lib/disputes/poller');

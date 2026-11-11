@@ -4,7 +4,8 @@ import { executeDecision } from '@/lib/agent/executor';
 import { getDispute } from '@/lib/disputes/store';
 import { PayPalClient } from '@/lib/paypal/client';
 import { replayFetch } from '@/lib/paypal/replay';
-import { importReplayIfEmpty } from './seed';
+import { defaultPlaybook, getPlaybook, savePlaybook } from '@/lib/settings';
+import { importReplayIfEmpty, replayNeedsReset, resetReplay } from './seed';
 
 const NOW = new Date('2026-12-05T15:00:00.000Z');
 
@@ -50,5 +51,34 @@ describe('REPLAY mode', () => {
     const e = await client.request('POST', '/v1/customer/disputes/PP-R-SUQ-10197882/make-offer', { json: {} }).catch((x) => x);
     expect(String(e)).toMatch(/400/);
     expect(suq.status).toBe('UNDER_REVIEW');
+  });
+
+  it('the shared demo resets once idle after use: disputes, recommendations and Playbook go back to the start', async () => {
+    const db = openDb(':memory:');
+    const now = Date.now();
+    importReplayIfEmpty(db, new Date(now));
+    const client = new PayPalClient({ clientId: 'replay', clientSecret: 'replay', fetch: replayFetch(db), sleep: async () => {} });
+    const { id } = db.prepare("SELECT id FROM decisions WHERE dispute_id = 'PP-R-SLD-10197881'").get() as { id: string };
+    await executeDecision(db, client, id, { by: 'judge' });
+    savePlaybook(db, { ...defaultPlaybook(), approvalThresholdUsd: 10 }, 'judge');
+
+    expect(replayNeedsReset(db, new Date(now + 60_000))).toBe(false); // someone is still using it
+    expect(replayNeedsReset(db, new Date(now + 21 * 60_000))).toBe(true);
+    const audits = (db.prepare('SELECT COUNT(*) AS n FROM audit_log').get() as { n: number }).n;
+
+    expect(resetReplay(db)).toBe(9);
+    expect(getDispute(db, 'PP-R-SLD-10197881')?.status).toBe('WAITING_FOR_SELLER_RESPONSE');
+    expect(db.prepare("SELECT status FROM decisions WHERE dispute_id = 'PP-R-SLD-10197881'").all()).toEqual([{ status: 'proposed' }]);
+    expect(getPlaybook(db)).toEqual(defaultPlaybook());
+    expect((db.prepare('SELECT COUNT(*) AS n FROM audit_log').get() as { n: number }).n).toBe(audits); // rate limits still count
+    expect(replayNeedsReset(db, new Date(Date.now() + 21 * 60_000))).toBe(false);
+  });
+
+  it('an untouched demo only resets once its shifted dates have drifted', () => {
+    const db = openDb(':memory:');
+    const now = Date.now();
+    importReplayIfEmpty(db, new Date(now));
+    expect(replayNeedsReset(db, new Date(now + 60 * 60_000))).toBe(false);
+    expect(replayNeedsReset(db, new Date(now + 7 * 3_600_000))).toBe(true);
   });
 });

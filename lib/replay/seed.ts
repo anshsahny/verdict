@@ -5,6 +5,7 @@
 
 import { existsSync, readFileSync } from 'node:fs';
 import type { Db } from '@/lib/db';
+import { MERCHANT_POLICY } from '@/lib/db/seed';
 import { recordDisputeEvent, upsertDispute } from '@/lib/disputes/store';
 import type { PayPalDispute } from '@/lib/paypal/dispute-schema';
 
@@ -38,4 +39,32 @@ export function importReplayIfEmpty(db: Db, now = new Date(), path = REPLAY_SEED
     }
   })();
   return seed.disputes.length;
+}
+
+// Puts the REPLAY demo back to its recorded starting point: disputes, their events and the agent's
+// recommendations reload with fresh dates, and the Playbook returns to the store default. The audit
+// log stays (rate limits count it), and so do Arena runs (the benchmark).
+export function resetReplay(db: Db, now = new Date(), path = REPLAY_SEED): number {
+  db.transaction(() => {
+    for (const table of ['decisions', 'evidence_items', 'dispute_events', 'disputes']) db.prepare(`DELETE FROM ${table}`).run();
+    db.prepare('UPDATE merchants SET policy_json = ?').run(JSON.stringify(MERCHANT_POLICY));
+  })();
+  return importReplayIfEmpty(db, now, path);
+}
+
+const IDLE_MS = 20 * 60_000;
+const STALE_MS = 6 * 3_600_000;
+
+// The public demo is shared, so it resets itself once nobody has used it for a while: after someone
+// approved, overrode or edited the Playbook, or once the shifted dates have drifted (deadlines would
+// otherwise creep towards overdue).
+export function replayNeedsReset(db: Db, now = new Date()): boolean {
+  const last = (db.prepare('SELECT MAX(at) AS at FROM audit_log').get() as { at: string | null }).at;
+  if (last && now.getTime() - Date.parse(last) < IDLE_MS) return false;
+  const acted = (db.prepare("SELECT COUNT(*) AS n FROM decisions WHERE status NOT IN ('proposed', 'needs_human')").get() as { n: number }).n > 0;
+  const policy = (db.prepare('SELECT policy_json FROM merchants LIMIT 1').get() as { policy_json: string } | undefined)?.policy_json;
+  const edited = policy !== undefined && policy !== JSON.stringify(MERCHANT_POLICY);
+  const loaded = (db.prepare("SELECT MIN(received_at) AS at FROM dispute_events WHERE event_type = 'REPLAY.DISPUTE.LOADED'").get() as { at: string | null }).at;
+  const stale = !loaded || now.getTime() - Date.parse(loaded) > STALE_MS;
+  return acted || edited || stale;
 }

@@ -1,0 +1,43 @@
+# Render Blueprint for the public demo (https://render.com/docs/blueprint-spec).
+# The hosted app runs in REPLAY mode: recorded PayPal sandbox disputes, no PayPal credentials, and a
+# shared demo that resets itself when idle. The filesystem is ephemeral, which suits it: the SQLite
+# demo store is created and seeded on every boot. Secrets (sync: false) are entered in the dashboard.
+services:
+  - type: web
+    name: verdict
+    runtime: node
+    plan: 0.5c-512mb # paid, always on (no cold start for judges)
+    region: oregon
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: REPLAY_MODE
+        value: "1"
+      - key: SYNC_POLL_SECONDS
+        value: "0"
+      - key: DATABASE_PATH
+        value: data/verdict.sqlite
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-sonnet-5-5
+      - key: AG_STUDIO_LICENSE_KEY
+        sync: false
+      # Cost and abuse caps for the public URL (lower than the local defaults)
+      - key: AGENT_MAX_RUNS_PER_HOUR
+        value: "20"
+      - key: ARENA_MAX_RUNS_PER_HOUR
+        value: "10"
+      - key: ARENA_MAX_RUNS_PER_REQUEST
+        value: "3"
+      - key: ARENA_MAX_TOKENS
+        value: "60000"
+      - key: AI_CHAT_MAX_TURNS_PER_HOUR
+        value: "60"
+      - key: EXECUTIONS_MAX_PER_HOUR
+        value: "60"
+      - key: PAYPAL_LOG
+        value: "off"

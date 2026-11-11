@@ -5,11 +5,11 @@
 // says LIVE (PayPal sandbox) or REPLAY (recorded sandbox data) and that Arena outcomes are SIMULATED.
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import type { AppMode } from '@/lib/mode';
 import { Logo } from './logo';
-import { ToastProvider } from './ui';
+import { ToastProvider, useToast } from './ui';
 
 const NAV = [
   { href: '/war-room', label: 'War Room', icon: 'M4 13h4l2-6 4 12 2-6h4', badge: true, match: ['/war-room', '/disputes'] },
@@ -63,6 +63,32 @@ export function ModeBadge({ mode }: { mode: AppMode }) {
       <span className="size-1.5 rounded-full bg-v-warn" aria-hidden />
       REPLAY · recorded sandbox disputes, dates shifted to today
     </span>
+  );
+}
+
+// REPLAY only: anyone can put the shared demo back to where it started.
+function ResetDemo() {
+  const router = useRouter();
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  async function reset() {
+    setBusy(true);
+    try {
+      const res = await fetch('/api/demo/reset', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? `Request failed (${res.status})`);
+      toast({ tone: 'win', title: 'Demo reset', body: 'Every dispute is back where it started.' });
+      router.refresh();
+    } catch (e) {
+      toast({ tone: 'danger', title: 'Couldn’t reset the demo', body: (e as Error).message });
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <button type="button" onClick={reset} disabled={busy} className="font-medium text-v-accent hover:underline disabled:opacity-60">
+      {busy ? 'Resetting…' : 'Reset demo'}
+    </button>
   );
 }
 
@@ -152,7 +178,10 @@ export function Shell({ mode, merchant, waiting, children }: { mode: AppMode; me
             {children}
           </main>
           <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-v-border bg-v-surface px-5 py-2 text-xs text-v-muted">
-            <ModeBadge mode={mode} />
+            <span className="flex items-center gap-3">
+              <ModeBadge mode={mode} />
+              {mode === 'replay' ? <ResetDemo /> : null}
+            </span>
             <span>
               Verdict suggests; you decide. Arena outcomes use a <strong className="font-semibold text-v-sim">SIMULATED</strong> arbiter, not PayPal.
             </span>
