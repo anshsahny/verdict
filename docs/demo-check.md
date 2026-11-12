@@ -10,7 +10,7 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 
 - [x] Open a **private window** (no extensions, no saved state). A laptop at 1280–1440 px wide is closest to what judges use.
 - [x] Open https://verdict-0bbi.onrender.com/api/health. **Expect** `{"ok":true,"mode":"replay","disputes":9,"commit":"<latest>"}`, where `<latest>` is the short id of the newest commit on GitHub `main` (shown next to the latest commit message on the repo page, or run `git rev-parse --short origin/main`). An older id means Render hasn't finished deploying the last push.
-- [x] In the footer of any app page, click **Reset demo**. **Expect** a toast and 7 disputes in the War Room. That's the starting state judges will see.
+- [x] In the footer of any app page, click **Reset demo**. **Expect** a toast and 9 disputes in the War Room. That's the starting state judges will see.
 
 - Reset demo puts back disputes, recommendations and the Playbook. It **keeps Arena runs**, so the Arena headline only returns to 60 runs after a redeploy (each deploy starts a fresh database).
 
@@ -27,7 +27,7 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 
 ## 2. War Room `/war-room`
 
-- [x] Header: **"7 disputes need a decision · $401.65 at stake · next deadline in ~19h"**. The countdown ticks down live.
+- [x] Header: **"9 disputes need a decision · $462.90 at stake · next deadline in ~19h"**. The countdown ticks down live.
 - [x] **Needs your decision**, soonest first. Top row: red clock, **Unauthorized · $89.00**, "Not reviewed yet", *weak evidence*, **Open**.
 - [x] Three rows say **Review** (have a recommendation): $47.40 "Refund $47.40 in full · 85% confident", $64.00 and $118.00 "Needs your judgment". The rest say "Not reviewed yet" / **Open**.
 - [x] **Recently closed**: "No closed disputes yet." (fills after you approve one in step 3).
@@ -36,7 +36,7 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 - [x] **Customize** opens only the editing tools on the right (**Compose** and **Data**; no assistant, no filters). Drag or resize a widget; select one to see its settings. **Done** leaves it.
 - [x] KPI tiles: **$ at risk $462.90 · Ready to approve 1 · Due within 48h 1 · Needs your judgment 2**. After you approve the $47.40 refund, "Ready to approve" drops to 0.
 
-- **Known, not a failure**: KPI "$ at risk" says **$462.90** while the header says $401.65. The KPI includes the two disputes that are waiting on the buyer or under review; its caption says "incl. waiting on buyer".
+- Since 2026-11-12 the header and the KPI "$ at risk" agree ($462.90): claims PayPal is reviewing count as needing a decision until the merchant responds.
 
 ### 2a. AI assistant (Claude through the AG Studio Agent Framework)
 
