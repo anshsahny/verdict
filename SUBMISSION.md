@@ -24,19 +24,8 @@ Hackathon: https://paypalaihackathon.devpost.com/ · Deadline **Thu Nov 12, 12:0
 ## Prize angles (a project can win one main prize + one sponsor prize)
 Best Use of PayPal + AI · Most Impactful · Best Demo Delivery · Best Use of Agentic Commerce · AG Grid prize (polish, custom widgets/theming, Studio Agent Framework use) · Render (hosting) · APIMatic (only claim it if you really use it).
 
-## Video script (target 2:45; record screen + voiceover; no music, or royalty-free music you own the rights to)
-| Time | Show | Say |
-|---|---|---|
-| 0:00–0:15 | War Room, a red deadline clock | "Small merchants lose PayPal disputes they should win. They miss deadlines and send weak evidence. Verdict is an AI dispute clerk, built on PayPal and Claude." |
-| 0:15–0:50 | Open a new sandbox dispute → Case File | "A buyer files an item-not-received dispute in the PayPal sandbox. Verdict's agent pulls the order, tracking and customer history, and builds a case." Show reasoning + evidence meter |
-| 0:50–1:20 | Approve → evidence submitted → status change in PayPal | "I approve. Verdict submits the evidence through PayPal's dispute API." Show the live sandbox state |
-| 1:20–1:50 | Guardrails | "Large refunds and low confidence go to a human. Every evidence item cites a real record. Buyer messages can't hijack the agent." Flash the injection test |
-| 1:50–2:30 | Arena | "But how good is the clerk? The Arena unleashes simulated buyers, honest, mistaken and opportunistic. Results: win rate by type, the weak spots. A simulated arbiter stands in for PayPal's reviewers." Move the policy slider; $ saved changes |
-| 2:30–2:50 | Dashboard chat | "Built with AG Grid Studio. Ask in plain English and it builds a widget." |
-| 2:50–3:00 | Repo + URL card | "Open source, MIT. Verdict: win the disputes you should win." |
-
-Recording rules: do 2–3 takes of each segment from `npm run demo:reset`; 1080p; hide notifications; zoom the browser to 125% for legibility; captions on key numbers; export under 3:00 (aim 2:50).
-Upload **Wed evening** as Public, because YouTube processing takes time. Then paste the link into Devpost.
+## Video script
+The full script, shot list, prep, editing and upload steps are in [docs/video/script.md](docs/video/script.md), with title cards in [docs/video/cards](docs/video/cards). Upload as **Public** as early as possible: YouTube processing takes time.
 
 ## Devpost text (fill from the repo's README; keep the headings)
 - **Inspiration**: the dispute problem for small merchants, with one real-feeling stat or story (don't invent statistics: cite a source or omit).
