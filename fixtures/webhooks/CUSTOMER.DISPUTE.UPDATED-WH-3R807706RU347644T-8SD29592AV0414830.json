@@ -1,0 +1,97 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-3R807706RU347644T-8SD29592AV0414830",
+    "event_version": "1.0",
+    "create_time": "2026-11-12T17:24:03.322Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.UPDATED",
+    "summary": "A dispute was updated with case # PP-R-FOO-10200301",
+    "resource": {
+      "dispute_id": "PP-R-FOO-10200301",
+      "create_time": "2026-11-12T17:20:16.272Z",
+      "update_time": "2026-11-12T17:23:53.692Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "816629747V0262036",
+          "seller_transaction_id": "0A3810530Y293132D",
+          "transaction_status": "HELD",
+          "invoice_number": "VRD-1009-mwdsocp0",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Glazed dinner plates (set of 4)",
+              "item_description": "Glazed dinner plates (set of 4)",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "UNDER_REVIEW",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "96.00"
+      },
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "92.16"
+          },
+          "initiated_time": "2026-11-12T17:23:34.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        }
+      ],
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "96.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "96.00"
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-FOO-10200301",
+          "rel": "self",
+          "method": "GET",
+          "encType": "application/json"
+        },
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-FOO-10200301/provide-supporting-info",
+          "rel": "provide_supporting_info",
+          "method": "POST",
+          "encType": "application/json"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-3R807706RU347644T-8SD29592AV0414830",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-3R807706RU347644T-8SD29592AV0414830/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}

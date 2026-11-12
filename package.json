@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "sandbox:orders": "tsx scripts/sandbox-orders.ts",
     "demo:orders": "tsx scripts/sandbox-orders.ts --demo",
+    "sync:one": "tsx scripts/sync-one.ts",
     "seed": "tsx scripts/seed.ts",
     "sandbox:capture": "tsx scripts/capture-disputes.ts",
     "sandbox:lifecycle": "tsx scripts/sandbox-lifecycle.ts",

@@ -53,6 +53,7 @@ Entry for the **PayPal AI Hackathon** (Devpost). Solo builder: Ansh. Judges scor
 - `npm run seed` — seed the demo store (`-- --reset` to recreate the DB)
 - `npm run sandbox:orders` — create labelled orders from the vaulted sandbox buyer
 - `npm run demo:orders` — create the 2 video orders (VRD-1009, VRD-1010) and add their store records
+- `npm run sync:one -- <disputeId>` — sync one dispute on cue (filming, with SYNC_POLL_SECONDS=0)
 - `npm run sandbox:capture` — save redacted full dispute fixtures to `fixtures/disputes/`
 - `npm run ai:smoke` — Claude tool use + Zod smoke test
 - `npm run e2e` — Playwright demo-path test (REPLAY production build, own DB; fails on console errors or serious a11y issues)
