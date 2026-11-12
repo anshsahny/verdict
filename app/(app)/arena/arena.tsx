@@ -10,7 +10,7 @@ import { PageHeader } from '@/components/page-header';
 import type { PolicyProjection } from '@/lib/arena/benchmark';
 import type { ArenaEvent } from '@/lib/arena/run';
 import { ARENA_REPORT, arenaData, type ArenaRow } from '@/lib/ui/arena-report';
-import { verdictStudioTheme } from '@/lib/ui/studio-theme';
+import { verdictStudioLocale, verdictStudioTheme } from '@/lib/ui/studio-theme';
 
 type Bench = { runs: number; rightCallRate: number; contestWinRate: number | null; saved: number; escalated: number; avgDecisionSec: number; avgCostUsd: number; weakSpots: string[]; live: number };
 type LiveRound = { id: string; label: string; claim?: string; decision?: string; flagged?: boolean; reply?: string; outcome?: string; right?: boolean };
@@ -241,7 +241,7 @@ export function Arena({ rows, bench, policy, caps, licenseKey }: { rows: ArenaRo
       <div className="min-h-[1000px] flex-1">
         {inBrowser ? (
           <AgStudioProvider licenseKey={licenseKey}>
-            <AgStudio style={{ height: '100%', width: '100%' }} theme={verdictStudioTheme} data={data} initialState={ARENA_REPORT} mode="view" />
+            <AgStudio style={{ height: '100%', width: '100%' }} theme={verdictStudioTheme} localeText={verdictStudioLocale} data={data} initialState={ARENA_REPORT} mode="view" />
           </AgStudioProvider>
         ) : null}
       </div>

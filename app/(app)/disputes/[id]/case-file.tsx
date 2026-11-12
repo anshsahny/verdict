@@ -124,6 +124,14 @@ const SUCCESS: Record<string, string> = {
   provide_supporting_info: 'Information submitted to PayPal’s review.',
 };
 
+// REPLAY applies PayPal's recorded transitions locally, so it must never claim something was sent.
+const REPLAY_SUCCESS: Record<string, string> = {
+  accept_claim: 'Refund applied to the recorded dispute, the way PayPal resolved it. Nothing was sent to PayPal.',
+  make_offer: 'Offer applied: the recorded dispute now waits on the buyer. Nothing was sent to PayPal.',
+  provide_evidence: 'Evidence applied: the recorded dispute is now under review. Nothing was sent to PayPal.',
+  provide_supporting_info: 'Information applied to the recorded dispute. Nothing was sent to PayPal.',
+};
+
 // --- Progress -------------------------------------------------------------------------------------
 
 function Progress({ status, outcome }: { status: string; outcome: string | null }) {
@@ -175,6 +183,7 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
   const dec = cf.decision;
   const d = dec?.payload.decision ?? null;
   const resolved = cf.raw.status === 'RESOLVED';
+  const replay = mode === 'replay';
   const decided = dec && !['proposed', 'needs_human'].includes(dec.status);
   const [amount, setAmount] = useState<string>(d?.amount != null ? String(d.amount) : '');
   const [message, setMessage] = useState<string>(d?.draftMessageToBuyer ?? '');
@@ -205,10 +214,10 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
     try {
       const r = await call(`/api/decisions/${dec!.id}/execute`, body);
       if (r.status === 'failed') {
-        setError(`PayPal didn’t accept that: ${r.error}`);
+        setError(`${replay ? 'PayPal wouldn’t allow that' : 'PayPal didn’t accept that'}: ${r.error}`);
         toast({ tone: 'danger', title: 'Nothing was changed', body: r.error });
       } else {
-        toast({ tone: 'win', title: r.status === 'escalated' ? 'Kept for you to handle' : 'Done', body: SUCCESS[r.paypalAction] ?? 'Saved.' });
+        toast({ tone: 'win', title: r.status === 'escalated' ? 'Kept for you to handle' : 'Done', body: (replay ? REPLAY_SUCCESS : SUCCESS)[r.paypalAction] ?? 'Saved.' });
       }
       setPanel(null);
       router.refresh();
@@ -332,7 +341,7 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
           <div className="flex flex-wrap gap-2">
             {d.action !== 'escalate_to_human' ? (
               <Button size="lg" onClick={() => execute({ mode: 'approve' })} disabled={busy !== null}>
-                {busy === 'execute' ? 'Sending to PayPal…' : `Approve: ${ACTION_SHORT[d.action].toLowerCase()}`}
+                {busy === 'execute' ? (replay ? 'Applying…' : 'Sending to PayPal…') : `Approve: ${ACTION_SHORT[d.action].toLowerCase()}`}
               </Button>
             ) : null}
             {d.action === 'accept' || d.action === 'offer_refund' ? (
@@ -379,7 +388,7 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
               }}
             >
               <fieldset className="grid gap-2 text-sm">
-                <legend className="mb-1 text-v-muted">What should Verdict send to PayPal?</legend>
+                <legend className="mb-1 text-v-muted">{replay ? 'Which response should Verdict apply?' : 'What should Verdict send to PayPal?'}</legend>
                 {choices.map((a) => (
                   <label key={a} className="flex items-center gap-2">
                     <input type="radio" name="override" value={a} checked={overrideAction === a} onChange={() => setOverrideAction(a)} />
@@ -395,13 +404,13 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
               ) : null}
               <div>
                 <Button type="submit" variant="dark" disabled={busy !== null}>
-                  Send to PayPal
+                  {replay ? 'Apply this response' : 'Send to PayPal'}
                 </Button>
               </div>
             </form>
           ) : null}
           <p className="mt-3 text-xs text-v-muted">
-            {mode === 'replay'
+            {replay
               ? 'REPLAY: this acts on recorded sandbox data using the transitions PayPal showed us. Nothing is sent to PayPal.'
               : 'Verdict re-checks the dispute with PayPal right before acting. Nothing happens without your click.'}
           </p>

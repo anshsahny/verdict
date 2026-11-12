@@ -53,7 +53,8 @@ test('demo path: landing → War Room → Case File → approve → Arena', asyn
 
   await page.getByRole('button', { name: /^Approve: refund in full/ }).click();
   await expect(page.getByText('Approved', { exact: true })).toBeVisible();
-  await expect(page.getByText('Refund sent to PayPal', { exact: false })).toBeVisible(); // toast
+  await expect(page.getByText('Refund applied to the recorded dispute', { exact: false })).toBeVisible(); // toast
+  await expect(page.getByText('Refund sent to PayPal', { exact: false })).toHaveCount(0); // REPLAY never claims a send
   await expect(page.getByText('Lost / refunded').first()).toBeVisible(); // status changed to resolved
   await expect(page.getByText(/owner \(web\) approved/)).toBeVisible(); // on the timeline
 

@@ -66,8 +66,8 @@ From the War Room, click **Review** on **Not received · $47.40** (`/disputes/PP
 - [ ] **Your evidence**: strength gauge + Helps / Hurts items. **Show sources** reveals the record id behind each item.
 - [ ] Buttons: **Approve: refund in full**, **Edit amount or message**, **Do something else**. Below them: "**REPLAY**: this acts on recorded sandbox data… Nothing is sent to PayPal."
 - [ ] Optional: **Edit amount or message** opens a form (amount up to $47.40, message to the buyer) with **Approve with my changes**. Close it again without submitting if you want to do the plain approve next.
-- [ ] Click **Approve: refund in full**. The button briefly reads "Sending to PayPal…". **Expect**:
-  - a toast **Done** · "Refund sent to PayPal. PayPal closes the dispute in about a minute." (see issue 5 in §8);
+- [ ] Click **Approve: refund in full**. The button briefly reads "Applying…". **Expect**:
+  - a toast **Done** · "Refund applied to the recorded dispute, the way PayPal resolved it. Nothing was sent to PayPal." (In LIVE mode, locally, it says "Refund sent to PayPal…" instead.)
   - the badge **Approved** and the status **Lost / refunded**;
   - the progress bar at Closed;
   - "owner (web) approved" on the History.
@@ -79,9 +79,10 @@ From the War Room, click **Review** on **Not received · $47.40** (`/disputes/PP
 Open **Not as described · $64.00** (`PP-R-GSO-10197884`).
 
 - [ ] **Handle this one yourself · Needs your judgment**, ~60% confident. The Why explains the buyer only wrote "N/A" and tracking shows delivery. **How Verdict decided** shows **5 of 6** checks, with the Playbook check flagged.
-- [ ] Click **Choose a response**. A panel asks "What should Verdict send to PayPal?" with radio buttons, only for actions PayPal allows on this dispute (e.g. Refund in full, Offer a partial refund, Contest with evidence).
-  - Pick **Offer a partial refund**, set Amount to 20, and click **Send to PayPal**.
-  - **Expect** the toast "Offer sent. The buyer can accept or decline it in PayPal." and the status **Waiting on buyer** (PayPal's recorded transition).
+- [ ] Click **Choose a response**. A panel asks "Which response should Verdict apply?" with radio buttons, only for actions PayPal allows on this dispute (here **Refund in full** and **Offer a partial refund**). In LIVE mode the question reads "What should Verdict send to PayPal?" and the button **Send to PayPal**.
+  - Pick **Offer a partial refund**, set Amount to 20, and click **Apply this response**.
+  - **Expect** the toast "Offer applied: the recorded dispute now waits on the buyer. Nothing was sent to PayPal."
+  - The History adds **PayPal: waiting on buyer**, and the progress bar moves to **Buyer's reply** (PayPal's recorded transition).
   - The dispute leaves "Needs your decision" in the War Room.
   - This shows a human override going through the same executor.
 - [ ] Optional: on the $89.00 Unauthorized dispute (no recommendation yet), click **Review this dispute**. **Expect** a live Claude review in ~15–20 s. On the live site I got "Handle this one yourself", 70%, with a clear Why and a polite buyer message. It costs ~$0.03 of Anthropic credit and counts toward the hourly cap (20/h).
@@ -98,7 +99,7 @@ Open **Not as described · $64.00** (`PP-R-GSO-10197884`).
   I ran 3 on the live site: all right calls, and the headline went to 63 runs. Each run costs a few cents, and there are 10 runs per hour across everyone.
 - [ ] **Policy** slider: drag "Auto-refund under $…" up. **Expect** the numbers to change instantly. At **$20** I got: Auto-refunded 3, Saved $1,649, **vs Verdict −$58**, right calls 93%. In other words, auto-refunding small disputes costs more than letting Verdict decide, which is a good line for the video.
 - [ ] **Weak spots**: "Late-delivery claims with a parcel that arrived after the claim: wrong call in 1 of 5…". It's honest and good to point at in the video.
-- [ ] Charts: outcomes by dispute type, response by persona, money by type. **Every run** grid lists each run's facts, persona, response and simulated outcome.
+- [ ] Charts: outcomes by dispute type, response by persona, money by type. **Every run** grid lists each run's facts, persona, response and simulated outcome. Column headers read **Disputed** and **Right call**, with no "(sum)" anywhere on the page.
 
 - **Flag**: any place a number appears without "simulated" nearby, or a run that errors or hangs past 60 s.
 
@@ -124,10 +125,10 @@ Open **Not as described · $64.00** (`PP-R-GSO-10197884`).
 | 1 | Case File **History times rendered in UTC** (server time). A California judge saw "PayPal: waiting on us" stamped hours in the future. | Anyone who reads the History | Times are formatted in the browser, in the viewer's time zone | **Fixed** (c8777cd), checked live |
 | 2 | **"No data to display"** on two KPI tiles (Win rate, Avg time to respond) in REPLAY | Every judge, and the video | Replaced by **Ready to approve** and **Needs your judgment**; the Win rate measure stays for the assistant | **Fixed** (c8777cd), checked live |
 | 3 | **Ask the AI assistant**: message box below the fold on a laptop | Judges trying the chat | Studio fits the screen while editing; message box focused | **Fixed** (c8777cd), checked live |
-| 4 | Arena grid headers read **"Disputed (sum)"** and **"Right call (sum)"** (AG Studio's auto-labels) | Sharp-eyed judges | Set display names in the Arena report config | Open (optional, ~5 min) |
-| 5 | In **REPLAY** the Case File says "**Sending to PayPal…**", "**Send to PayPal**" and toasts "**Refund sent to PayPal**", directly under the note "Nothing is sent to PayPal" | Judges checking the honesty claims | In REPLAY, word them as "Approve (replay)" / "Refund applied to the recorded dispute"; LIVE keeps the current wording | Open (~15 min + e2e update) |
+| 4 | Arena grid headers read **"Disputed (sum)"** and **"Right call (sum)"** (AG Studio's auto-labels) | Sharp-eyed judges | Studio's "${name} (sum)" label overridden to the plain name, on both studios | **Fixed**, checked locally |
+| 5 | In **REPLAY** the Case File said "**Sending to PayPal…**", "**Send to PayPal**" and toasted "**Refund sent to PayPal**", directly under the note "Nothing is sent to PayPal" | Judges checking the honesty claims | REPLAY now says "Applying…", "Apply this response" and "…applied to the recorded dispute… Nothing was sent to PayPal". LIVE keeps the PayPal wording. The e2e test now fails if REPLAY ever claims a send | **Fixed**, checked locally |
 
-All of these are polish on the demo path, not new features. 5 matters most of the open ones, because the project's pitch leans on being honest about what's real.
+All of these are polish on the demo path, not new features.
 
 ---
 

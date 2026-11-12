@@ -1,7 +1,7 @@
 // AG Studio theme for Verdict. Every value points at a design token in app/globals.css, so Studio
 // (canvas, widgets, grids, charts) renders as part of the page and follows light/dark with it.
 
-import { studioTheme } from 'ag-studio';
+import { studioTheme, type AgStudioLocaleText } from 'ag-studio';
 
 const token = (name: string) => `var(--v-${name})`;
 const line = (color: string) => ({ width: 1, color: token(color) });
@@ -90,3 +90,6 @@ export const verdictStudioTheme = studioTheme.withParams({
   chartGridLineColor: token('gridline'),
   ...palette,
 });
+
+// Studio labels summed columns "Amount (sum)"; our measures are already totals, so show the plain name.
+export const verdictStudioLocale: AgStudioLocaleText = { aggregationSumFieldName: '${name}' };

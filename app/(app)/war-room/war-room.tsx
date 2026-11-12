@@ -10,7 +10,7 @@ import { AgStudio, AgStudioProvider } from 'ag-studio-react';
 import { Button, usd } from '@/components/ui';
 import { formatRemaining } from '@/lib/disputes/deadline';
 import { Inbox, type InboxItem, type RecentItem } from './inbox';
-import { verdictStudioTheme } from '@/lib/ui/studio-theme';
+import { verdictStudioLocale, verdictStudioTheme } from '@/lib/ui/studio-theme';
 import { WAR_ROOM_REPORT, warRoomData, type WarRoomData } from '@/lib/ui/war-room-report';
 import { verdictWidgets } from '@/lib/ui/widgets';
 import { claudeAdapter } from '@/lib/ui/claude-adapter';
@@ -97,6 +97,7 @@ export function WarRoom({ data, inbox, recent, licenseKey, aiEnabled }: { data: 
             <AgStudio
               style={{ height: '100%', width: '100%' }}
               theme={verdictStudioTheme}
+              localeText={verdictStudioLocale}
               data={studioData}
               initialState={WAR_ROOM_REPORT}
               widgets={verdictWidgets}
