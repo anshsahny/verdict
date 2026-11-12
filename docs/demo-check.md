@@ -1,6 +1,6 @@
 # Demo check: click-through, video and Devpost
 
-Written 2026-11-11 evening, after a full pass over the live site (https://verdict-0bbi.onrender.com, commit b027300) and the Devpost overview, rules, resources, FAQs, updates and the AG Grid and Render sponsor pages.
+Written 2026-11-11 evening, after a full pass over the live site (https://verdict-0bbi.onrender.com) and the Devpost overview, rules, resources, FAQs, updates and the AG Grid and Render sponsor pages.
 
 Tick each box as you go. **Expect** is what should be on screen. **Flag** is what counts as a failure, so stop there and tell me.
 
@@ -9,7 +9,7 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 ## 0. Before you start (5 min)
 
 - [ ] Open a **private window** (no extensions, no saved state). A laptop at 1280–1440 px wide is closest to what judges use.
-- [ ] Open https://verdict-0bbi.onrender.com/api/health. **Expect** `{"ok":true,"mode":"replay","disputes":9,"commit":"b027300"}` (or a newer commit if we push again).
+- [ ] Open https://verdict-0bbi.onrender.com/api/health. **Expect** `{"ok":true,"mode":"replay","disputes":9,"commit":"<latest>"}`, where `<latest>` is the short id of the newest commit on GitHub `main` (shown next to the latest commit message on the repo page, or run `git rev-parse --short origin/main`). An older id means Render hasn't finished deploying the last push.
 - [ ] In the footer of any app page, click **Reset demo**. **Expect** a toast and 7 disputes in the War Room. That's the starting state judges will see.
 
 ## 1. Landing page `/` (judge's first 30 seconds)
@@ -20,6 +20,7 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 - [ ] **Measured, not promised**: 95%, 100%, 12/12, 9 s. The sentence under them says the numbers come from simulated disputes.
 - [ ] **What's real / What's simulated** both present. Only the simulated column mentions the arbiter.
 - [ ] Nav "How it works" jumps to the section. **Open the demo** goes to `/war-room`.
+
 - **Flag**: a broken image, a stat with no "simulated" wording near it, or a link that 404s.
 
 ## 2. War Room `/war-room`
@@ -32,6 +33,7 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 - [ ] Select a grid row: the other widgets focus on that dispute (cross-filtering). Click the row again or clear the filter to undo.
 - [ ] **Customize** turns on edit mode (panels for Widgets, Data). **Done** leaves it.
 - [ ] KPI tiles: **$ at risk $462.90 · Ready to approve 1 · Due within 48h 1 · Needs your judgment 2**. After you approve the $47.40 refund, "Ready to approve" drops to 0.
+
 - **Known, not a failure**: KPI "$ at risk" says **$462.90** while the header says $401.65. The KPI includes the two disputes that are waiting on the buyer or under review; its caption says "incl. waiting on buyer".
 
 ### 2a. AI assistant (Claude through the AG Studio Agent Framework)
@@ -40,6 +42,7 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 - [ ] Click the starter **What needs me first?** **Expect** within ~10 s: "Delegated to Data agent", a table of 9 open disputes with deadlines and amounts, BFE as most urgent, totals $462.90 / $401.65. I got exactly this on the live site.
 - [ ] Type **"Add a bar chart of disputed amount by reason"** and press Enter. **Expect** "Delegated to Page agent / Widget agent" and "I added **Disputed Amount by Reason**". The chart appears on the canvas. I got this on the live site too.
 - [ ] Try one of ours: **"Add deadline clocks for the not-as-described disputes"** (uses our custom widget). If it works, it's the best AG Grid prize moment for the video.
+
 - **Flag**: an error bubble, no reply after 30 s, or raw `@field[...]` text visible in the chat.
 
 ## 3. Case File: approve a refund (the core loop)
@@ -71,6 +74,7 @@ Open **Not as described · $64.00** (`PP-R-GSO-10197884`).
 - [ ] **Policy** slider: drag "Auto-refund under $…" up. **Expect** "Auto-refunded", "Saved" and "vs Verdict" to change instantly.
 - [ ] **Weak spots**: "Late-delivery claims with a parcel that arrived after the claim: wrong call in 1 of 5…". It's honest and good to point at in the video.
 - [ ] Charts: outcomes by dispute type, response by persona, money by type. **Every run** grid lists each run's facts, persona, response and simulated outcome.
+
 - **Flag**: any place a number appears without "simulated" nearby, or a run that errors or hangs past 60 s.
 
 ## 6. Playbook `/playbook`
@@ -119,6 +123,7 @@ Devpost's own video advice: under 3:00, public on YouTube, **open with the probl
 | (missing) Render | Optional | One line: "Hosted on Render." Costs nothing and supports the Render tick box. |
 
 Recording notes:
+
 - Film the hosted screens **after Reset demo**.
 - Hide the bookmarks bar, other tabs and notifications.
 - Avoid showing other companies' logos.
@@ -129,26 +134,26 @@ Recording notes:
 
 ## 10. Devpost requirements: do we have them?
 
-| Requirement (Devpost wording, shortened) | Status | Notes / action |
-|---|---|---|
-| Meaningfully uses a PayPal technology | ✅ | Disputes API (list, get, accept-claim, make-offer, provide-evidence, provide-supporting-info, sandbox settle), Orders v2, Shipment Tracking, verified webhooks. Disputes is on Devpost's own "useful capabilities" list. |
-| Meaningfully uses AI | ✅ | Claude defender agent (tools, Zod, guardrails, audit), Claude buyer agent, Claude adapter for AG Studio's agents. |
-| Working prototype | ✅ | Verified live today: e2e, 10/10 loads, live agent, live Arena, live assistant. |
-| Documented enough to evaluate | ✅ | README for judges. Rules say judging may include **automated AI-driven analysis**, so a clear README matters even more. |
-| Text description of features | ⬜ | Write it on Devpost (draft in §11). |
-| Functional demo: hosted URL **or** run instructions | ✅✅ | Both. Say clearly in the description that the hosted demo **replays recorded sandbox data** and the video shows the live sandbox. The rules require it to "function as depicted in the video". |
-| **Tools: name the model/AI service and explain how it's used** | ⬜ | A separate field/section on the form. Name **Claude (Anthropic API, `claude-sonnet-5-5`)** and the three uses; also AG Studio Agent Framework. |
-| Public repo, all source + instructions | ✅ | github.com/anshsahny/verdict, public. |
-| Open-source licence visible in About | ✅ | MIT shows in About. Re-check in a logged-out window. |
-| Video < 3:00, public on YouTube, shows it working on its device | ⬜ | Not recorded yet. **Upload as Public tonight if at all possible**: processing can take hours. |
-| No third-party trademarks / copyrighted music | ⬜ | No music (or music you own). PayPal named in text and voice, as the rules and updates ask. |
-| Sponsor tools ticked on the form | ⬜ | Tick **AG Grid** and **Render**. Don't tick APIMatic (not used). |
-| New project, or significantly updated | ✅ | New. Say "built during the hackathon, starting from PayPal's AG Grid boilerplate" (already in the README attribution). |
-| Eligibility | ✅ | Ontario is eligible (Quebec is excluded, Ontario isn't). |
-| English | ✅ | |
-| Keep it running and free until judging ends (Dec 15) / winners (Dec 21) | ⚠️ | Render paid instance stays on. AG Studio trial key is valid until **25 Dec 2026** (checked). Set an **Anthropic spend limit** (worst-case abuse at the current caps is a few dollars an hour). Leave the PayPal sandbox app alone. |
-| Don't touch repo/video after the deadline | ✅ plan | No commits after submitting. |
-| Submit early, refine later | ⬜ | Devpost lets you edit until the deadline. Submit the form tonight as soon as the video link exists, then refine. Click **Submit**, not just save, and check for the confirmation email. |
+| Requirement (Devpost wording, shortened)                                | Status | Notes / action                                                                                                                                                                                                                     |
+| ----------------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Meaningfully uses a PayPal technology                                   | ✅      | Disputes API (list, get, accept-claim, make-offer, provide-evidence, provide-supporting-info, sandbox settle), Orders v2, Shipment Tracking, verified webhooks. Disputes is on Devpost's own "useful capabilities" list.           |
+| Meaningfully uses AI                                                    | ✅      | Claude defender agent (tools, Zod, guardrails, audit), Claude buyer agent, Claude adapter for AG Studio's agents.                                                                                                                  |
+| Working prototype                                                       | ✅      | Verified live today: e2e, 10/10 loads, live agent, live Arena, live assistant.                                                                                                                                                     |
+| Documented enough to evaluate                                           | ✅      | README for judges. Rules say judging may include **automated AI-driven analysis**, so a clear README matters even more.                                                                                                            |
+| Text description of features                                            | ⬜      | Write it on Devpost (draft in §11).                                                                                                                                                                                                |
+| Functional demo: hosted URL **or** run instructions                     | ✅✅     | Both. Say clearly in the description that the hosted demo **replays recorded sandbox data** and the video shows the live sandbox. The rules require it to "function as depicted in the video".                                     |
+| **Tools: name the model/AI service and explain how it's used**          | ⬜      | A separate field/section on the form. Name **Claude (Anthropic API,** `claude-sonnet-5-5`**)** and the three uses; also AG Studio Agent Framework.                                                                                 |
+| Public repo, all source + instructions                                  | ✅      | github.com/anshsahny/verdict, public.                                                                                                                                                                                              |
+| Open-source licence visible in About                                    | ✅      | MIT shows in About. Re-check in a logged-out window.                                                                                                                                                                               |
+| Video < 3:00, public on YouTube, shows it working on its device         | ⬜      | Not recorded yet. **Upload as Public tonight if at all possible**: processing can take hours.                                                                                                                                      |
+| No third-party trademarks / copyrighted music                           | ⬜      | No music (or music you own). PayPal named in text and voice, as the rules and updates ask.                                                                                                                                         |
+| Sponsor tools ticked on the form                                        | ⬜      | Tick **AG Grid** and **Render**. Don't tick APIMatic (not used).                                                                                                                                                                   |
+| New project, or significantly updated                                   | ✅      | New. Say "built during the hackathon, starting from PayPal's AG Grid boilerplate" (already in the README attribution).                                                                                                             |
+| Eligibility                                                             | ✅      | Ontario is eligible (Quebec is excluded, Ontario isn't).                                                                                                                                                                           |
+| English                                                                 | ✅      |                                                                                                                                                                                                                                    |
+| Keep it running and free until judging ends (Dec 15) / winners (Dec 21) | ⚠️     | Render paid instance stays on. AG Studio trial key is valid until **25 Dec 2026** (checked). Set an **Anthropic spend limit** (worst-case abuse at the current caps is a few dollars an hour). Leave the PayPal sandbox app alone. |
+| Don't touch repo/video after the deadline                               | ✅ plan | No commits after submitting.                                                                                                                                                                                                       |
+| Submit early, refine later                                              | ⬜      | Devpost lets you edit until the deadline. Submit the form tonight as soon as the video link exists, then refine. Click **Submit**, not just save, and check for the confirmation email.                                            |
 
 ---
 
@@ -162,6 +167,7 @@ Recording notes:
 - **Best Use of Render**: the page favours **Render Workflows**, which we don't use. We're a Blueprint-deployed web service with a health check and auto-deploy. Tick Render anyway, but expect AG Grid to be the realistic sponsor prize.
 
 ### Devpost text, extra points beyond SUBMISSION.md
+
 - First paragraph: who it's for (small PayPal sellers), the problem (missed deadlines, missing evidence), and what Verdict does, in that order.
 - A **"Tools used"** section naming Claude and AG Studio's Agent Framework, with what each does.
 - A **"What's real vs simulated"** section (copy the landing page's two lists). Judges reward that honesty, and it protects the "functions as depicted" rule.
