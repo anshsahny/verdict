@@ -1,0 +1,79 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-7E624990F6034510L-7U38435374517334L",
+    "event_version": "1.0",
+    "create_time": "2026-11-12T17:11:03.330Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.CREATED",
+    "summary": "A new dispute opened with case # PP-R-OWO-10200299",
+    "resource": {
+      "dispute_id": "PP-R-OWO-10200299",
+      "create_time": "2026-11-12T17:07:54.163Z",
+      "update_time": "2026-11-12T17:10:43.714Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "2MU318287H667694N",
+          "seller_transaction_id": "75576002X4599753Y",
+          "transaction_status": "COMPLETED",
+          "invoice_number": "VRD-1010-mwdsofiy",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Matcha whisk set",
+              "item_description": "Matcha whisk set",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "UNDER_REVIEW",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "34.00"
+      },
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "34.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "34.00"
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-OWO-10200299",
+          "rel": "self",
+          "method": "GET",
+          "encType": "application/json"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-7E624990F6034510L-7U38435374517334L",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-7E624990F6034510L-7U38435374517334L/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}

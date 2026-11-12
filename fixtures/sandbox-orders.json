@@ -98,5 +98,15 @@
     "tracking": "9400111899560000100110",
     "suggestedReason": "Item not received",
     "createdAt": "2026-11-12T17:01:17.408Z"
+  },
+  {
+    "ref": "VRD-1011",
+    "item": "Cast-iron trivet",
+    "amount": "26.00",
+    "orderId": "37K85796F4469622F",
+    "captureId": "6GU9595887680240W",
+    "tracking": "9400111899560000100111",
+    "suggestedReason": "Item not received",
+    "createdAt": "2026-11-12T17:14:30.241Z"
   }
 ]
