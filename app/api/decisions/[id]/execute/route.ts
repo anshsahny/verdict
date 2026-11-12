@@ -7,7 +7,7 @@ import { getDb } from '@/lib/db';
 import { executeDecision } from '@/lib/agent/executor';
 import { AGENT_ACTIONS } from '@/lib/agent/schema';
 import { paypal } from '@/lib/paypal/client';
-import { assertHourlyLimit, RateLimitError } from '@/lib/rate-limit';
+import { hourlyLimitHit } from '@/lib/rate-limit';
 
 const Body = z.discriminatedUnion('mode', [
   z.object({ mode: z.literal('approve') }),
@@ -22,8 +22,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const db = getDb();
   const body = parsed.data;
+  const limited = hourlyLimitHit(db, 'decision.executed', Number(process.env.EXECUTIONS_MAX_PER_HOUR ?? 20));
+  if (limited) return Response.json({ error: limited }, { status: 429 });
   try {
-    assertHourlyLimit(db, 'decision.executed', Number(process.env.EXECUTIONS_MAX_PER_HOUR ?? 20));
     const result = await executeDecision(db, paypal(), id, {
       by: 'owner (web)',
       ...(body.mode === 'edit' ? { edits: { amount: body.amount, message: body.message } } : {}),
@@ -31,7 +32,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     });
     return Response.json(result, { status: result.status === 'failed' ? 422 : 200 });
   } catch (e) {
-    if (e instanceof RateLimitError) return Response.json({ error: e.message }, { status: 429 });
     const msg = (e as Error).message;
     // Known, user-facing refusals from the executor (already decided, no decision to approve).
     if (/only proposed or needs_human|no decision|no agent decision/.test(msg)) return Response.json({ error: msg }, { status: 409 });

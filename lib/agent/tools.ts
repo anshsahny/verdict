@@ -14,7 +14,7 @@ import { availableAgentActions } from './guardrails';
 
 export type ToolCall = { name: string; input: unknown; output: string; ms: number };
 
-export type ToolContext = {
+type ToolContext = {
   db: Db;
   disputeId: string;
   now?: Date;

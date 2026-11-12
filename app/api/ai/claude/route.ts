@@ -6,7 +6,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { AgAiConversationItem, AgAiEvent, AgAiOutputItem, AgAiToolSchema, AgLlmRequest, AgLlmResponse } from 'ag-studio';
 import { audit, getDb } from '@/lib/db';
-import { assertHourlyLimit, RateLimitError } from '@/lib/rate-limit';
+import { hourlyLimitHit } from '@/lib/rate-limit';
 
 const MAX_TOKENS = 8000;
 type Msg = Anthropic.MessageParam;
@@ -63,12 +63,8 @@ export async function POST(req: Request) {
     return Response.json({ error: { message: 'Request body must be JSON.' } }, { status: 400 });
   }
   const db = getDb();
-  try {
-    assertHourlyLimit(db, 'ai.chat.turn', Number(process.env.AI_CHAT_MAX_TURNS_PER_HOUR ?? 120));
-  } catch (e) {
-    if (e instanceof RateLimitError) return Response.json({ error: { message: e.message } }, { status: 429 });
-    throw e;
-  }
+  const limited = hourlyLimitHit(db, 'ai.chat.turn', Number(process.env.AI_CHAT_MAX_TURNS_PER_HOUR ?? 120));
+  if (limited) return Response.json({ error: { message: limited } }, { status: 429 });
   audit(db, 'human', 'ai.chat.turn', null, { tools: request.tools?.length ?? 0, items: request.input.length });
 
   const { system, messages, tools } = toClaude(request);

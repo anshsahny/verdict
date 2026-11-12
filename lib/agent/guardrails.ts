@@ -6,9 +6,6 @@ import type { PayPalDispute } from '@/lib/paypal/dispute-schema';
 import type { EvidencePacket } from '@/lib/evidence/packet';
 import { AGENT_TO_PAYPAL, type AgentAction, type Decision } from './schema';
 
-export const approvalThreshold = () => Number(process.env.APPROVAL_THRESHOLD ?? 250); // USD
-export const minConfidence = () => Number(process.env.MIN_CONFIDENCE ?? 0.6);
-
 /** The agent actions this dispute allows now (escalate_to_human always). */
 export function availableAgentActions(dispute: Pick<PayPalDispute, 'status' | 'dispute_life_cycle_stage' | 'links'>): AgentAction[] {
   const paypal = allowedActions(dispute);
@@ -21,7 +18,7 @@ export type Validation = { errors: string[]; flags: string[] };
 
 export function validateDecision(
   d: Decision,
-  ctx: { dispute: PayPalDispute; packet: EvidencePacket; disputeAmount: number; buyerText: string; thresholds?: { approvalUsd: number; minConfidence: number } },
+  ctx: { dispute: PayPalDispute; packet: EvidencePacket; disputeAmount: number; buyerText: string; thresholds: { approvalUsd: number; minConfidence: number } },
 ): Validation {
   const errors: string[] = [];
   const flags: string[] = [];
@@ -52,9 +49,8 @@ export function validateDecision(
 
   // (c) route to a human
   // Judge by what's at stake (the disputed amount), not the size of the response.
-  // Thresholds come from the merchant's Playbook (defender.ts); env defaults otherwise.
-  const approvalUsd = ctx.thresholds?.approvalUsd ?? approvalThreshold();
-  const minConf = ctx.thresholds?.minConfidence ?? minConfidence();
+  // Thresholds come from the merchant's Playbook (defender.ts).
+  const { approvalUsd, minConfidence: minConf } = ctx.thresholds;
   if (ctx.disputeAmount > approvalUsd) flags.push(`Disputed amount $${ctx.disputeAmount.toFixed(2)} is above the approval threshold ($${approvalUsd}).`);
   if (d.confidence < minConf) flags.push(`Confidence ${d.confidence} is below ${minConf}.`);
   if (d.action === 'escalate_to_human') flags.push('Agent escalated to a human.');

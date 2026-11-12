@@ -20,11 +20,11 @@
     "arena": "tsx scripts/arena.ts",
     "arena:bound": "tsx scripts/arena-bound.ts",
     "replay:export": "tsx scripts/export-replay.ts",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "screens": "tsx scripts/screenshot.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.7.0",
-    "ag-grid-community": "36.2.0",
     "ag-grid-react": "36.2.0",
     "ag-studio": "3.0.0",
     "ag-studio-react": "3.0.0",

@@ -10,13 +10,13 @@ import { PayPalApiError, type PayPalClient } from '@/lib/paypal/client';
 import { redactValue } from '@/lib/paypal-raw';
 import type { AgentAction, Decision } from './schema';
 
-export type ExecuteOptions = {
+type ExecuteOptions = {
   by: string; // who approved; recorded in decisions.decided_by
   edits?: { amount?: number; message?: string };
   override?: { action: AgentAction; amount: number | null; message?: string };
 };
 
-export type ExecuteResult = {
+type ExecuteResult = {
   decisionId: string;
   action: AgentAction;
   paypalAction: string | null;

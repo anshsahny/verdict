@@ -1,5 +1,6 @@
 // SQLite schema for Verdict. Money is stored in integer cents; times are ISO-8601 UTC strings.
-// Bump SCHEMA_VERSION and add a migration step in lib/db/index.ts when this changes.
+// The demo database is rebuilt from seed (Render's disk is fresh on every deploy; locally run
+// `npm run seed -- --reset`), so a schema change bumps SCHEMA_VERSION instead of migrating.
 
 export const SCHEMA_VERSION = 2;
 
@@ -63,8 +64,7 @@ CREATE TABLE IF NOT EXISTS shipments (
   signed_by          TEXT,
   delivered_to_json  TEXT,                     -- where the carrier says it went: { city, region, postal }
   address_match      INTEGER,                  -- 1 if delivered_to matches the order's ship_to
-  events_json        TEXT NOT NULL,            -- carrier scan history [{ at, status, location }]
-  synced_to_paypal   INTEGER NOT NULL DEFAULT 0
+  events_json        TEXT NOT NULL             -- carrier scan history [{ at, status, location }]
 );
 CREATE INDEX IF NOT EXISTS shipments_order ON shipments(order_id);
 
@@ -103,16 +103,6 @@ CREATE TABLE IF NOT EXISTS dispute_events (
   received_at      TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS dispute_events_dispute ON dispute_events(dispute_id, received_at);
-
-CREATE TABLE IF NOT EXISTS evidence_items (
-  id            TEXT PRIMARY KEY,
-  dispute_id    TEXT NOT NULL REFERENCES disputes(id),
-  type          TEXT NOT NULL,
-  record_table  TEXT NOT NULL,                 -- every item cites a real row
-  record_id     TEXT NOT NULL,
-  summary       TEXT NOT NULL,
-  created_at    TEXT NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS decisions (
   id            TEXT PRIMARY KEY,
@@ -157,10 +147,3 @@ CREATE TABLE IF NOT EXISTS audit_log (
   data_json TEXT NOT NULL
 );
 `;
-
-// Upgrades for databases created by an older SCHEMA_VERSION (index = target version).
-export const MIGRATIONS: Record<number, string> = {
-  2: `ALTER TABLE orders ADD COLUMN note TEXT;
-      ALTER TABLE orders ADD COLUMN refunded_cents INTEGER;
-      ALTER TABLE orders ADD COLUMN refunded_at TEXT;`,
-};

@@ -1,13 +1,13 @@
-// Minimal PayPal REST helper (smoke test, fixture capture, webhook verification). The app's typed client
-// arrives in Phase 2 (lib/paypal/client.ts); this one stays deliberately thin so the smoke test
-// shows raw sandbox behaviour. Secrets are never printed.
+// Minimal PayPal REST helper for the sandbox scripts and webhook verification, plus the redaction
+// used everywhere before logging or saving. The app's dispute client is lib/paypal/client.ts; this
+// one stays deliberately thin so the scripts show raw sandbox behaviour. Secrets are never printed.
 
 import { randomUUID } from 'node:crypto';
 
 export const BASE_URL =
   process.env.PAYPAL_ENV === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
 
-export type Creds = { id: string; secret: string };
+type Creds = { id: string; secret: string };
 
 export type RawResponse<T = unknown> = {
   status: number;

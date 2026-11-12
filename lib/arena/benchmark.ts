@@ -5,7 +5,7 @@
 import type { ArenaRunResult } from './run';
 import type { ArenaType, Persona } from './scenarios';
 
-export type Slice = {
+type Slice = {
   runs: number;
   contested: number;
   contestsWon: number;
@@ -19,9 +19,9 @@ export type Slice = {
   feesUsd: number;
 };
 
-export type WeakSpot = { type: ArenaType; variant: string; runs: number; wrong: number; costUsd: number; text: string };
+type WeakSpot = { type: ArenaType; variant: string; runs: number; wrong: number; costUsd: number; text: string };
 
-export type Benchmark = {
+type Benchmark = {
   runs: number;
   totals: Slice;
   byType: Record<string, Slice>;

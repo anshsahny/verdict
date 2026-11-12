@@ -7,13 +7,13 @@ import { getDispute, recordDisputeEvent, upsertDispute } from './store';
 
 type Summary = { dispute_id: string; update_time: string; status: string; dispute_life_cycle_stage: string };
 
-export type SyncDeps = {
+type SyncDeps = {
   db: Db;
   listDisputes: () => Promise<Summary[]>;
   fetchDispute: (id: string) => Promise<PayPalDispute | null | undefined>;
 };
 
-export type SyncReport = { listed: number; fetched: number; inserted: number; updated: number; failed: number };
+type SyncReport = { listed: number; fetched: number; inserted: number; updated: number; failed: number };
 
 export async function syncDisputes(deps: SyncDeps): Promise<SyncReport> {
   const report: SyncReport = { listed: 0, fetched: 0, inserted: 0, updated: 0, failed: 0 };

@@ -9,7 +9,7 @@ import { MERCHANT_POLICY } from '@/lib/db/seed';
 import { recordDisputeEvent, upsertDispute } from '@/lib/disputes/store';
 import type { PayPalDispute } from '@/lib/paypal/dispute-schema';
 
-export const REPLAY_SEED = 'fixtures/replay/seed.json';
+const REPLAY_SEED = 'fixtures/replay/seed.json';
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
 
 function shiftDates<T>(value: T, ms: number): T {
@@ -46,7 +46,7 @@ export function importReplayIfEmpty(db: Db, now = new Date(), path = REPLAY_SEED
 // log stays (rate limits count it), and so do Arena runs (the benchmark).
 export function resetReplay(db: Db, now = new Date(), path = REPLAY_SEED): number {
   db.transaction(() => {
-    for (const table of ['decisions', 'evidence_items', 'dispute_events', 'disputes']) db.prepare(`DELETE FROM ${table}`).run();
+    for (const table of ['decisions', 'dispute_events', 'disputes']) db.prepare(`DELETE FROM ${table}`).run();
     db.prepare('UPDATE merchants SET policy_json = ?').run(JSON.stringify(MERCHANT_POLICY));
   })();
   return importReplayIfEmpty(db, now, path);

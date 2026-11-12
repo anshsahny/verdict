@@ -5,7 +5,7 @@ import { nowIso, type Db } from '@/lib/db';
 import { MERCHANT_ID } from '@/lib/db/seed';
 import { toCents, type PayPalDispute } from '@/lib/paypal/dispute-schema';
 
-export type DisputeSource = 'webhook' | 'poll' | 'replay';
+type DisputeSource = 'webhook' | 'poll' | 'replay';
 
 export type DisputeRow = {
   id: string;

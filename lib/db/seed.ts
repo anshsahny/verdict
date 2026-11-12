@@ -11,7 +11,7 @@ import type { Db } from './index';
 export const MERCHANT_ID = 'kilnco';
 const SEED = 20261112;
 const SEED_NOW = '2026-11-09T12:00:00.000Z'; // dates are relative to this, not the wall clock
-export const SANDBOX_TIME_SHIFT_DAYS = 10;
+const SANDBOX_TIME_SHIFT_DAYS = 10;
 
 export const MERCHANT_POLICY = {
   shipping: 'Orders ship within 2 business days. Tracked shipping on all orders over $30; signature required over $100.',
@@ -116,7 +116,6 @@ type ShipmentRow = {
   delivered_to_json: string | null;
   address_match: number | null;
   events_json: string;
-  synced_to_paypal: number;
 };
 
 function shipment(
@@ -124,7 +123,6 @@ function shipment(
   shipTo: { city: string; region: string; postal: string },
   createdAt: string,
   spec: { status: string; tracking: string | null; transitDays: number; signedBy?: string | null; addressMatch?: boolean },
-  synced: boolean,
 ): ShipmentRow {
   const shippedAt = later(createdAt, 1, 3);
   const events: { at: string; status: string; location: string }[] = [];
@@ -151,7 +149,6 @@ function shipment(
     delivered_to_json: deliveredTo ? JSON.stringify(deliveredTo) : null,
     address_match: spec.status === 'DELIVERED' ? (spec.addressMatch === false ? 0 : 1) : null,
     events_json: JSON.stringify(events),
-    synced_to_paypal: synced ? 1 : 0,
   };
 }
 
@@ -167,8 +164,8 @@ export function seedDemoStore(db: Db) {
      VALUES (@id, @merchant_id, @customer_id, @status, 'USD', @total_cents, @items_json, @ship_to_json, @created_at, @paypal_order_id, @paypal_capture_id, @source)`,
   );
   const insertShipment = db.prepare(
-    `INSERT OR IGNORE INTO shipments (id, order_id, carrier, tracking_number, status, shipped_at, delivered_at, signed_by, delivered_to_json, address_match, events_json, synced_to_paypal)
-     VALUES (@id, @order_id, @carrier, @tracking_number, @status, @shipped_at, @delivered_at, @signed_by, @delivered_to_json, @address_match, @events_json, @synced_to_paypal)`,
+    `INSERT OR IGNORE INTO shipments (id, order_id, carrier, tracking_number, status, shipped_at, delivered_at, signed_by, delivered_to_json, address_match, events_json)
+     VALUES (@id, @order_id, @carrier, @tracking_number, @status, @shipped_at, @delivered_at, @signed_by, @delivered_to_json, @address_match, @events_json)`,
   );
 
   const products = new Map<string, { id: string; sku: string; name: string; price: number }>(
@@ -223,7 +220,7 @@ export function seedDemoStore(db: Db) {
           transitDays: 2 + Math.floor(rand() * 3),
           signedBy: total > 10000 && status === 'DELIVERED' ? 'RESIDENT' : null,
           addressMatch: status !== 'DELIVERED_WRONG',
-        }, false),
+        }),
       );
     }
 
@@ -256,7 +253,7 @@ export function seedDemoStore(db: Db) {
           transitDays: spec.days,
           signedBy: spec.signedBy ?? null,
           addressMatch: spec.addressMatch,
-        }, Boolean(o.tracking)),
+        }),
       );
     }
   })();

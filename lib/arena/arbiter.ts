@@ -22,12 +22,12 @@ export type Verdict = {
   rightCall: boolean; // did the response serve the merchant, given the hidden truth
 };
 
-export type BuyerOfferReply = { accept: boolean; reply: string } | null;
+type BuyerOfferReply = { accept: boolean; reply: string } | null;
 
 const has = (kinds: Set<string>, k: EvidenceKind) => kinds.has(k);
 
 /** Rules for a contest: does the cited evidence, in light of all records, beat the claim? */
-export function judgeContest(s: ArenaScenario, cited: Decision['evidence'], packet: EvidencePacket): RuleResult[] {
+function judgeContest(s: ArenaScenario, cited: Decision['evidence'], packet: EvidencePacket): RuleResult[] {
   // Only citations that match a real record of that kind count.
   const citedKinds = new Set(cited.filter((c) => packet.items.some((i) => i.recordId === c.recordId && i.kind === c.type && i.helps)).map((c) => c.type));
   const hurting = packet.items.filter((i) => !i.helps);

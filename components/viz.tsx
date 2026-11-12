@@ -23,10 +23,14 @@ export const URGENCY: Record<DeadlineBucket, { color: string; soft: string; labe
  */
 export function useNow(ms = 30_000, initialIso?: string) {
   const [now, setNow] = useState(() => (initialIso ? new Date(initialIso) : new Date()));
-  useEffect(() => setNow(new Date()), []);
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), ms);
-    return () => clearInterval(t);
+    const tick = () => setNow(new Date());
+    const first = setTimeout(tick, 0); // catch up right after hydration
+    const t = setInterval(tick, ms);
+    return () => {
+      clearTimeout(first);
+      clearInterval(t);
+    };
   }, [ms]);
   return now;
 }

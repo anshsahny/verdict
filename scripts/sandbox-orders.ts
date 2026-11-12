@@ -30,7 +30,7 @@ const PLAN: Plan[] = [
   const m = merchantCreds();
   const out = [];
   for (const p of PLAN) {
-    const res = await call<any>(m, '/v2/checkout/orders', {
+    const res = await call<{ id: string; name?: string; details?: { issue?: string }[]; purchase_units?: { payments?: { captures?: { id: string; status: string }[] } }[] }>(m, '/v2/checkout/orders', {
       json: {
         intent: 'CAPTURE',
         purchase_units: [

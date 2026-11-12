@@ -67,7 +67,7 @@ const VARIANTS: Record<ArenaType, VariantDef[]> = {
   ],
 };
 
-export const ARENA_TYPES = Object.keys(VARIANTS) as ArenaType[];
+const ARENA_TYPES = Object.keys(VARIANTS) as ArenaType[];
 
 const PRODUCTS: [id: string, priceUsd: number][] = [
   ['p-pourover', 42], ['p-apron', 28.5], ['p-board', 64], ['p-mugs', 36.75], ['p-vase', 89], ['p-towels', 19.25],

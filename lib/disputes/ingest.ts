@@ -13,7 +13,7 @@ export type IngestDeps = {
   fetchDispute: (id: string) => Promise<PayPalDispute | null | undefined>;
 };
 
-export type IngestResult =
+type IngestResult =
   | { status: 200; outcome: 'ingested'; disputeId: string; upsert: UpsertResult; full: boolean }
   | { status: 200; outcome: 'duplicate' | 'ignored' | 'not_ours'; disputeId?: string }
   | { status: 400 | 503; outcome: 'rejected'; reason: string };

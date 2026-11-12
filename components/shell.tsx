@@ -6,7 +6,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AppMode } from '@/lib/mode';
 import { Logo } from './logo';
 import { ToastProvider, useToast } from './ui';
@@ -25,9 +25,15 @@ function Icon({ d, className = 'size-[18px]' }: { d: string; className?: string 
   );
 }
 
+// The theme lives on <html data-theme> (set before paint by app/layout.tsx); follow it from there.
+function subscribeTheme(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  return () => observer.disconnect();
+}
+
 function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark' | null>(null);
-  useEffect(() => setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'), []);
+  const theme = useSyncExternalStore(subscribeTheme, () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'), () => null);
   const flip = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
@@ -37,7 +43,6 @@ function ThemeToggle() {
     } catch {
       /* private mode: the toggle still works for this page */
     }
-    setTheme(next);
   };
   return (
     <button
@@ -52,7 +57,7 @@ function ThemeToggle() {
   );
 }
 
-export function ModeBadge({ mode }: { mode: AppMode }) {
+function ModeBadge({ mode }: { mode: AppMode }) {
   return mode === 'live' ? (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-v-win-soft px-2.5 py-0.5 text-xs font-semibold text-v-win">
       <span className="size-1.5 rounded-full bg-v-win" aria-hidden />

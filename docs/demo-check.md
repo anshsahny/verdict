@@ -31,18 +31,18 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 - [x] **Needs your decision**, soonest first. Top row: red clock, **Unauthorized · $89.00**, "Not reviewed yet", *weak evidence*, **Open**.
 - [x] Three rows say **Review** (have a recommendation): $47.40 "Refund $47.40 in full · 85% confident", $64.00 and $118.00 "Needs your judgment". The rest say "Not reviewed yet" / **Open**.
 - [x] **Recently closed**: "No closed disputes yet." (fills after you approve one in step 3).
-- [ ] **Insights** (AG Studio): KPI tiles, **Response deadlines** (custom deadline-clock widget, tall enough for two rows of clocks with no scroll bar), **Evidence strength** gauge (custom), **All disputes** grid. Click a dispute id in the grid: it opens that Case File.
-- [ ] Cross-filtering: click a bar in **Disputed $ by reason and outcome** (or a slice of the status donut). **Expect** the grid, clocks, gauge and KPI tiles to narrow to those disputes, and the other chart to dim what doesn't match. Click empty space in the same chart to clear it. (AG Studio 3.0 grids can't start a cross-filter, only charts can, so grid rows aren't clickable for this.)
-- [ ] **Customize** opens only the editing tools on the right (**Compose** and **Data**; no assistant, no filters). Drag or resize a widget; select one to see its settings. **Done** leaves it.
+- [x] **Insights** (AG Studio): KPI tiles, **Response deadlines** (custom deadline-clock widget, tall enough for two rows of clocks with no scroll bar), **Evidence strength** gauge (custom), **All disputes** grid. Click a dispute id in the grid: it opens that Case File.
+- [x] Cross-filtering: click a bar in **Disputed $ by reason and outcome** (or a slice of the status donut). **Expect** the grid, clocks, gauge and KPI tiles to narrow to those disputes, and the other chart to dim what doesn't match. Click empty space in the same chart to clear it. (AG Studio 3.0 grids can't start a cross-filter, only charts can, so grid rows aren't clickable for this.)
+- [x] **Customize** opens only the editing tools on the right (**Compose** and **Data**; no assistant, no filters). Drag or resize a widget; select one to see its settings. **Done** leaves it.
 - [x] KPI tiles: **$ at risk $462.90 · Ready to approve 1 · Due within 48h 1 · Needs your judgment 2**. After you approve the $47.40 refund, "Ready to approve" drops to 0.
 
 - **Known, not a failure**: KPI "$ at risk" says **$462.90** while the header says $401.65. The KPI includes the two disputes that are waiting on the buyer or under review; its caption says "incl. waiting on buyer".
 
 ### 2a. AI assistant (Claude through the AG Studio Agent Framework)
 
-- [ ] Click **Ask the AI assistant**. **Expect** the page to scroll to Insights, the studio to fit the screen, and **only** the **AI Assistant** panel open on the left (no Compose or Data panels) with the message box visible and focused (you can type straight away). **Close assistant** (same button) restores the full dashboard.
+- [x] Click **Ask the AI assistant**. **Expect** the page to scroll to Insights, the studio to fit the screen, and **only** the **AI Assistant** panel open on the left (no Compose or Data panels) with the message box visible and focused (you can type straight away). **Close assistant** (same button) restores the full dashboard.
 - [x] Click the starter **What needs me first?** **Expect** within ~10 s: "Delegated to Data agent", a table of 9 open disputes with deadlines and amounts, BFE as most urgent, totals $462.90 / $401.65. I got exactly this on the live site.
-- [ ] Click the starter **Chart what Verdict recommends**. **Expect** "Delegated to Page agent / Widget agent" and "I added a pie chart, **Disputed Amount by Recommendation**…"; the chart appears at the bottom of the canvas. I got this locally. Don't ask for a chart **by reason**: the default dashboard already has one, so the assistant may reply that it exists instead of adding one.
+- [x] Click the starter **Chart what Verdict recommends**. **Expect** "Delegated to Page agent / Widget agent" and "I added a pie chart, **Disputed Amount by Recommendation**…"; the chart appears at the bottom of the canvas. I got this locally. Don't ask for a chart **by reason**: the default dashboard already has one, so the assistant may reply that it exists instead of adding one.
 
 - Don't use "Add deadline clocks for the not-as-described disputes". I tried it live: the assistant filtered the existing clocks widget instead of adding one, and the filter didn't take (all 6 clocks still showed). Stick to the recommendation-chart starter for the video.
 - Assistant changes to the dashboard live only in your browser tab. A reload puts the default dashboard back.
@@ -80,17 +80,17 @@ From the War Room, click **Review** on **Not received · $47.40** (`/disputes/PP
 Open **Not as described · $64.00** (`PP-R-GSO-10197884`).
 
 - [x] **Handle this one yourself · Needs your judgment**, ~60% confident. The Why explains the buyer only wrote "N/A" and tracking shows delivery. **How Verdict decided** shows **5 of 6** checks, with the Playbook check flagged.
-- [ ] Click **Choose a response**. A panel asks "Which response should Verdict apply?" with radio buttons, only for actions PayPal allows on this dispute (here **Refund in full** and **Offer a partial refund**). With **Refund in full** selected there is **no** amount field (it's always the full $64.00). In LIVE mode the question reads "What should Verdict send to PayPal?" and the button **Send to PayPal**.
+- [x] Click **Choose a response**. A panel asks "Which response should Verdict apply?" with radio buttons, only for actions PayPal allows on this dispute (here **Refund in full** and **Offer a partial refund**). With **Refund in full** selected there is **no** amount field (it's always the full $64.00). In LIVE mode the question reads "What should Verdict send to PayPal?" and the button **Send to PayPal**.
   - Pick **Offer a partial refund**. An **Offer amount (up to $64.00)** field appears. Set it to 20 and click **Apply this response**.
   - **Expect** the toast "Offer applied: the recorded dispute now waits on the buyer. Nothing was sent to PayPal."
   - The History adds **PayPal: waiting on buyer**, and the progress bar moves to **Buyer's reply** (PayPal's recorded transition).
   - The dispute leaves "Needs your decision" in the War Room.
   - This shows a human override going through the same executor.
-- [ ] Optional: on the $89.00 Unauthorized dispute (no recommendation yet), click **Review this dispute**. The button shows a spinner and "Reviewing…". **Expect** a live Claude review in ~15–20 s. On the live site I got "Handle this one yourself", 70%, with a clear Why and a polite buyer message. It costs ~$0.03 of Anthropic credit and counts toward the hourly cap (20/h).
+- [x] Optional: on the $89.00 Unauthorized dispute (no recommendation yet), click **Review this dispute**. The button shows a spinner and "Reviewing…". **Expect** a live Claude review in ~15–20 s. On the live site I got "Handle this one yourself", 70%, with a clear Why and a polite buyer message. It costs ~$0.03 of Anthropic credit and counts toward the hourly cap (20/h).
 
 ## 5. Arena `/arena` (SIMULATED)
 
-- [ ] **SIMULATED** badge in the header, plus the "How it works… Outcomes are simulated, not real-world results. Arbiter rules" banner. **Arbiter rules** opens the in-app page `/arena/rules` (SIMULATED badge, outcomes table, contest rules by dispute type, right call, money, limitations) with **← Back to the Arena**. On a phone the contest-rules table swipes sideways inside its card.
+- [x] **SIMULATED** badge in the header, plus the "How it works… Outcomes are simulated, not real-world results. Arbiter rules" banner. **Arbiter rules** opens the in-app page `/arena/rules` (SIMULATED badge, outcomes table, contest rules by dispute type, right call, money, limitations) with **← Back to the Arena**. On a phone the contest-rules table swipes sideways inside its card.
 - [x] Headline: **60 runs: right call 98%, contests won 96%, $1,707 saved vs always refunding** (after a fresh deploy; each run adds to it).
 - [x] **Runs** defaults to **3** (about a minute); pick **1** for a quick check, then click **Start** (it becomes **Stop** while running). **Expect**:
   - "Running… about 20 seconds per round";

@@ -71,13 +71,12 @@ describe('PayPalClient writes', () => {
     expect(JSON.parse(calls[0].body as string).offer_amount).toEqual({ currency_code: 'USD', value: '20.00' });
   });
 
-  it('provideEvidence sends multipart input and files', async () => {
+  it('provideEvidence sends the evidence list as multipart input', async () => {
     const { client, calls } = fakePayPal([ok()]);
     const evidences = [{ evidence_type: 'PROOF_OF_FULFILLMENT', notes: 'n', evidence_info: { tracking_info: [{ carrier_name: 'USPS', tracking_number: '1' }] } }];
-    await client.provideEvidence(INQUIRY, evidences, [{ name: 'receipt.pdf', contentType: 'application/pdf', data: new Uint8Array([37, 80, 68, 70]) }]);
+    await client.provideEvidence(INQUIRY, evidences);
     expect(calls[0].url).toMatch(/\/provide-evidence$/);
     expect(await formInput(calls[0].body)).toEqual({ evidences });
-    expect((calls[0].body as FormData).get('file1')).toBeInstanceOf(Blob);
     expect(calls[0].headers['Content-Type']).toBeUndefined(); // fetch sets the multipart boundary
   });
 
@@ -90,13 +89,6 @@ describe('PayPalClient writes', () => {
     expect(await formInput(calls[0].body)).toEqual({ notes: 'More detail.' });
     expect(JSON.parse(calls[1].body as string)).toEqual({ action: 'SELLER_EVIDENCE' });
     expect(JSON.parse(calls[2].body as string)).toEqual({ adjudication_outcome: 'SELLER_FAVOR' });
-  });
-
-  it('sendMessage and escalate (inquiry only)', async () => {
-    const { client, calls } = fakePayPal([ok(), ok()]);
-    await client.sendMessage(INQUIRY, 'Hi');
-    await client.escalate(INQUIRY, 'Escalating');
-    expect(calls.map((c) => c.url.split('/').pop())).toEqual(['send-message', 'escalate']);
   });
 });
 
@@ -112,11 +104,6 @@ describe('PayPalClient guards', () => {
   it('refuses sandbox helpers against live PayPal', async () => {
     const client = new PayPalClient({ clientId: 'id', clientSecret: 's', baseUrl: 'https://api-m.paypal.com', fetch: (async () => ok()) as typeof fetch });
     await expect(client.adjudicate(CHARGEBACK_REVIEW, 'SELLER_FAVOR')).rejects.toThrow(/sandbox-only/);
-  });
-
-  it('createDispute explains why it is unavailable', async () => {
-    const { client } = fakePayPal([]);
-    await expect(client.createDispute()).rejects.toThrow(/Resolution Center/);
   });
 });
 

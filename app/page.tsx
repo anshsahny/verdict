@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { connection } from 'next/server';
@@ -51,7 +51,6 @@ export default async function Landing() {
   const bench = runs.length ? computeBenchmark(runs) : null;
   const injections = runs.filter((r) => r.scenario.persona === 'aggressive' && /\bAI\b|ignore (your|the) rules|instruction/i.test(r.claim ?? ''));
   const injectionsFlagged = injections.filter((r) => r.defenderStatus === 'needs_human').length;
-  const hasShot = existsSync('public/screens/war-room-light.png') && existsSync('public/screens/war-room-dark.png');
 
   const stats = [
     ev && { value: pct(ev.actionAccuracy), label: `right response on ${ev.scenarios} labelled test disputes`, note: 'agent eval' },
@@ -99,22 +98,20 @@ export default async function Landing() {
             The demo runs on the PayPal sandbox for a fictional pottery shop, Kiln &amp; Co.
             {mode === 'replay' ? ' Disputes here are recorded sandbox data with dates moved to today, so you can approve responses safely.' : ''} <span className="whitespace-nowrap">No sign-in needed.</span>
           </p>
-          {hasShot ? (
-            <div className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl border border-v-border bg-v-surface shadow-[0_20px_60px_-20px_rgba(16,24,40,0.25)]">
-              {/* One screenshot per theme; the theme is a data attribute, not a media query. */}
-              {(['light', 'dark'] as const).map((t) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  key={t}
-                  src={`/screens/war-room-${t}.png`}
-                  alt={t === 'light' ? 'The War Room: four disputes waiting for a decision, each with its deadline, Verdict’s suggestion and a Review button' : ''}
-                  className={`w-full ${t === 'light' ? 'shot-light' : 'shot-dark'}`}
-                  width={1440}
-                  height={900}
-                />
-              ))}
-            </div>
-          ) : null}
+          <div className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl border border-v-border bg-v-surface shadow-[0_20px_60px_-20px_rgba(16,24,40,0.25)]">
+            {/* One screenshot per theme; the theme is a data attribute, not a media query. */}
+            {(['light', 'dark'] as const).map((t) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={t}
+                src={`/screens/war-room-${t}.png`}
+                alt={t === 'light' ? 'The War Room: disputes waiting for a decision, each with its deadline, Verdict’s suggestion and a Review button' : ''}
+                className={`w-full ${t === 'light' ? 'shot-light' : 'shot-dark'}`}
+                width={1440}
+                height={900}
+              />
+            ))}
+          </div>
         </section>
 
         <section id="how" className="border-y border-v-border bg-v-surface py-16">

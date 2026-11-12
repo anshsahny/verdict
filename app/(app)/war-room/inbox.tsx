@@ -3,6 +3,7 @@
 // The top of the War Room: what needs the merchant today, in plain language, one card per dispute
 // waiting on them. The analytics (AG Studio) sit below this.
 
+import Link from 'next/link';
 import { DeadlineRing, URGENCY, useNow } from '@/components/viz';
 import { Badge, ButtonLink, Card, usd, type Tone } from '@/components/ui';
 import { computeDeadline, formatRemaining } from '@/lib/disputes/deadline';
@@ -91,7 +92,7 @@ export function Inbox({ items, recent, asOf }: { items: InboxItem[]; recent: Rec
           <ul className="space-y-3">
             {recent.map((r) => (
               <li key={r.id}>
-                <a href={`/disputes/${r.id}`} className="flex items-center justify-between gap-3 rounded-lg px-1 py-1 hover:bg-v-highlight">
+                <Link href={`/disputes/${r.id}`} className="flex items-center justify-between gap-3 rounded-lg px-1 py-1 hover:bg-v-highlight">
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-medium text-v-ink">
                       {r.reason} · <span className="tabular">{usd(r.amount)}</span>
@@ -99,7 +100,7 @@ export function Inbox({ items, recent, asOf }: { items: InboxItem[]; recent: Rec
                     {r.orderId && r.orderId !== '—' ? <span className="block text-xs text-v-muted">order {r.orderId}</span> : null}
                   </span>
                   <Badge tone={r.won ? 'win' : 'muted'}>{r.won ? 'Won' : r.outcome}</Badge>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

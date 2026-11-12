@@ -1,6 +1,6 @@
 // Captures the War Room for the landing page hero, in both themes (public/screens/war-room-{light,dark}.png).
 //   npm run dev   (or any running instance), then:
-//   npx tsx scripts/screenshot.ts [baseUrl]
+//   npm run screens -- [baseUrl]
 
 import { mkdirSync } from 'node:fs';
 import { chromium } from '@playwright/test';

@@ -11,10 +11,10 @@ import { allowedActions, type DisputeAction } from './actions';
 import { PayPalDispute } from './dispute-schema';
 import { getDb } from '@/lib/db';
 import { appMode } from '@/lib/mode';
-import { redactValue } from '@/lib/paypal-raw';
+import { BASE_URL, redactValue } from '@/lib/paypal-raw';
 import { replayFetch } from './replay';
 
-export type Money = { currency_code: string; value: string };
+type Money = { currency_code: string; value: string };
 
 export type RequestLogEntry = {
   method: string;
@@ -26,7 +26,7 @@ export type RequestLogEntry = {
   requestId?: string;
 };
 
-export type PayPalClientOptions = {
+type PayPalClientOptions = {
   clientId: string;
   clientSecret: string;
   baseUrl?: string;
@@ -73,7 +73,6 @@ export type EvidenceInput = {
   notes?: string;
   evidence_info?: { tracking_info?: { carrier_name: string; tracking_number: string; carrier_name_other?: string }[]; refund_ids?: string[] };
 };
-export type FileInput = { name: string; contentType: string; data: Uint8Array };
 
 const RETRYABLE = (status: number) => status === 429 || status >= 500;
 
@@ -192,36 +191,16 @@ export class PayPalClient {
     return this.request<unknown>('POST', this.path(dispute, 'make-offer'), { json: body });
   }
 
-  /** Contest with evidence (multipart: `input` JSON + optional files). */
-  async provideEvidence(dispute: PayPalDispute, evidences: EvidenceInput[], files: FileInput[] = []) {
+  /** Contest with evidence (multipart, with the evidence list as the `input` part). */
+  async provideEvidence(dispute: PayPalDispute, evidences: EvidenceInput[]) {
     this.guard(dispute, 'provide_evidence');
-    return this.request<unknown>('POST', this.path(dispute, 'provide-evidence'), { form: multipart({ evidences }, files) });
+    return this.request<unknown>('POST', this.path(dispute, 'provide-evidence'), { form: multipart({ evidences }) });
   }
 
   /** Add information while PayPal reviews a chargeback/arbitration. */
-  async provideSupportingInfo(dispute: PayPalDispute, notes: string, files: FileInput[] = []) {
+  async provideSupportingInfo(dispute: PayPalDispute, notes: string) {
     this.guard(dispute, 'provide_supporting_info');
-    return this.request<unknown>('POST', this.path(dispute, 'provide-supporting-info'), { form: multipart({ notes }, files) });
-  }
-
-  async sendMessage(dispute: PayPalDispute, message: string) {
-    this.guard(dispute, 'send_message');
-    return this.request<unknown>('POST', this.path(dispute, 'send-message'), { json: { message } });
-  }
-
-  async escalate(dispute: PayPalDispute, note: string) {
-    this.guard(dispute, 'escalate');
-    return this.request<unknown>('POST', this.path(dispute, 'escalate'), { json: { note } });
-  }
-
-  async acknowledgeReturnItem(dispute: PayPalDispute, note: string, acknowledgement_type: string) {
-    this.guard(dispute, 'acknowledge_return_item');
-    return this.request<unknown>('POST', this.path(dispute, 'acknowledge-return-item'), { json: { note, acknowledgement_type } });
-  }
-
-  async appeal(dispute: PayPalDispute, evidences: EvidenceInput[], files: FileInput[] = []) {
-    this.guard(dispute, 'appeal');
-    return this.request<unknown>('POST', this.path(dispute, 'appeal'), { form: multipart({ evidences }, files) });
+    return this.request<unknown>('POST', this.path(dispute, 'provide-supporting-info'), { form: multipart({ notes }) });
   }
 
   // --- sandbox-only helpers --------------------------------------------------------------------
@@ -240,24 +219,14 @@ export class PayPalClient {
     return this.request<unknown>('POST', this.path(dispute, 'adjudicate'), { json: { adjudication_outcome: outcome } });
   }
 
-  /**
-   * Sandbox dispute creation is not available to this app: PayPal rejects merchant-created disputes
-   * (TRANSACTION_NOT_ELIGIBLE) and buyer impersonation needs permissions we don't have. Disputes are
-   * filed in the sandbox Resolution Center instead. See docs/api-notes.md.
-   */
-  async createDispute(): Promise<never> {
-    throw new Error('createDispute is unavailable to this app; file disputes in the sandbox Resolution Center (docs/api-notes.md)');
-  }
-
   private assertSandbox() {
     if (!this.baseUrl.includes('sandbox')) throw new Error('sandbox-only method called against live PayPal');
   }
 }
 
-function multipart(input: unknown, files: FileInput[]): FormData {
+function multipart(input: unknown): FormData {
   const form = new FormData();
   form.append('input', new Blob([JSON.stringify(input)], { type: 'application/json' }));
-  files.forEach((f, i) => form.append(`file${i + 1}`, new Blob([f.data as BlobPart], { type: f.contentType }), f.name));
   return form;
 }
 
@@ -291,7 +260,7 @@ export function paypal(): PayPalClient {
     shared = new PayPalClient({
       clientId,
       clientSecret,
-      baseUrl: process.env.PAYPAL_ENV === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com',
+      baseUrl: BASE_URL,
       log: (e) => {
         if (process.env.PAYPAL_LOG !== 'off') console.log(`[paypal] ${e.method} ${e.path} ${e.status} ${e.ms}ms${e.attempt > 1 ? ` attempt ${e.attempt}` : ''}${e.debugId ? ` debug=${e.debugId}` : ''}`);
       },

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { openDb } from '@/lib/db';
 import { getDispute, upsertDispute } from '@/lib/disputes/store';
 import { buildEvidencePacket } from '@/lib/evidence/packet';
+import { defaultPlaybook } from '@/lib/settings';
 import type { PayPalDispute } from '@/lib/paypal/dispute-schema';
 import { availableAgentActions, looksLikeInjection, validateDecision } from './guardrails';
 import type { Decision } from './schema';
@@ -16,7 +17,8 @@ const ctxFor = (id: string, buyerText = '') => {
   const raw = fixture(id);
   upsertDispute(db, raw, { full: true, source: 'replay' });
   const row = getDispute(db, id)!;
-  return { dispute: raw, packet: buildEvidencePacket(db, row), disputeAmount: row.amount_cents / 100, buyerText };
+  const { approvalThresholdUsd, minConfidence } = defaultPlaybook();
+  return { dispute: raw, packet: buildEvidencePacket(db, row), disputeAmount: row.amount_cents / 100, buyerText, thresholds: { approvalUsd: approvalThresholdUsd, minConfidence } };
 };
 const decision = (over: Partial<Decision>): Decision => ({
   action: 'contest',

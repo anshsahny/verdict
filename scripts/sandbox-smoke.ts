@@ -56,7 +56,6 @@ const issue = (res: RawResponse) => {
 };
 
 const firstCapture = (o: Order) => o.purchase_units?.[0]?.payments?.captures?.[0];
-const hasLink = (d: Dispute, rel: string) => d.links?.some((l) => l.rel === rel) ?? false;
 
 const merchant = merchantCreds();
 const run = Date.now().toString(36);
@@ -169,7 +168,10 @@ async function stepWalletOrder(): Promise<{ orderId: string; capture: Capture } 
     }
     const notApproved = issue(res).includes('ORDER_NOT_APPROVED');
     record('b2 buyer-account order', notApproved ? 'PENDING' : 'FAIL', notApproved ? 'approval link not used yet' : `${res.status} ${issue(res)}`);
-    if (!notApproved) delete state.approvalOrderId, saveState();
+    if (!notApproved) {
+      delete state.approvalOrderId;
+      saveState();
+    }
     return;
   }
   if (!state.vaultId) {

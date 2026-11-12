@@ -24,7 +24,8 @@ export function importArenaSampleIfEmpty(db: Db, path = SAMPLE_PATH): number {
   const insertRun = db.prepare("INSERT OR IGNORE INTO arena_runs (id, scenario_id, started_at, finished_at, mode, result_json, arbiter_json) VALUES (?, ?, ?, ?, 'sample', ?, ?)");
   db.transaction(() => {
     for (const r of runs) {
-      const { runId, scenario, startedAt, verdict, mode: _mode, ...rest } = r;
+      const { runId, scenario, startedAt, verdict, ...rest } = r;
+      delete rest.mode; // stored as 'sample' instead
       insertScenario.run(scenario.id, scenario.seed, scenario.type, scenario.persona, scenario.truth, JSON.stringify(scenario));
       insertRun.run(runId, scenario.id, startedAt, startedAt, JSON.stringify(rest), JSON.stringify(verdict));
     }

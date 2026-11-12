@@ -43,7 +43,7 @@ describe('REPLAY mode', () => {
   });
 
   it('applies recorded transitions: an offer waits on the buyer; disallowed actions are refused like PayPal', async () => {
-    const { db, client } = setup();
+    const { client } = setup();
     const gso = await client.getDispute('PP-R-GSO-10197884');
     await client.makeOffer(gso, { note: 'n', offer_type: 'REFUND', offer_amount: { currency_code: 'USD', value: '10.00' } });
     expect((await client.getDispute('PP-R-GSO-10197884')).status).toBe('WAITING_FOR_BUYER_RESPONSE');

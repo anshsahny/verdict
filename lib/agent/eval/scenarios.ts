@@ -9,7 +9,7 @@ import { upsertDispute } from '@/lib/disputes/store';
 import type { PayPalDispute } from '@/lib/paypal/dispute-schema';
 import type { AgentAction } from '../schema';
 
-export const FILED_AT = '2026-11-08T12:00:00.000Z';
+const FILED_AT = '2026-11-08T12:00:00.000Z';
 const FILED_AT_DEFAULT = FILED_AT;
 export const EVAL_NOW = new Date('2026-11-11T12:00:00.000Z'); // three days after filing
 
@@ -85,7 +85,7 @@ const LINKS: Record<string, string[]> = {
   CHARGEBACK: ['accept_claim', 'provide_evidence'],
 };
 
-export type MaterializeOptions = {
+type MaterializeOptions = {
   tag?: string; // numbers the records (default: the scenario's index in SCENARIOS)
   prefix?: string; // dispute id prefix
   orderPrefix?: string; // store order id prefix (default 'EV')
@@ -153,8 +153,8 @@ export function materialize(db: Db, s: Scenario, opts: MaterializeOptions = {}):
       events.push({ at: last, status: 'IN_TRANSIT', location: 'USPS regional facility' });
     }
     db.prepare(
-      `INSERT INTO shipments (id, order_id, carrier, tracking_number, status, shipped_at, delivered_at, signed_by, delivered_to_json, address_match, events_json, synced_to_paypal)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
+      `INSERT INTO shipments (id, order_id, carrier, tracking_number, status, shipped_at, delivered_at, signed_by, delivered_to_json, address_match, events_json)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).run(
       `ship-${orderId}`, orderId, tracking ? 'USPS' : 'USPS First-Class (untracked)', tracking, spec.status, shippedAt, deliveredAt,
       spec.status === 'DELIVERED' ? (spec.signedBy ?? null) : null, deliveredTo ? JSON.stringify(deliveredTo) : null,

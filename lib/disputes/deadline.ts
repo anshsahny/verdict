@@ -3,12 +3,12 @@
 
 export type DeadlineBucket = 'overdue' | 'critical' | 'urgent' | 'soon' | 'ok' | 'none';
 
-export type Deadline = { dueAt: string | null; msRemaining: number | null; bucket: DeadlineBucket };
+type Deadline = { dueAt: string | null; msRemaining: number | null; bucket: DeadlineBucket };
 
 const HOUR = 3_600_000;
 
 // Upper bounds (exclusive) for each bucket, in hours remaining.
-export const BUCKET_LIMITS_HOURS = { critical: 24, urgent: 48, soon: 7 * 24 } as const;
+const BUCKET_LIMITS_HOURS = { critical: 24, urgent: 48, soon: 7 * 24 } as const;
 
 /** `none` means PayPal isn't waiting on the seller (e.g. UNDER_REVIEW, RESOLVED): no clock. */
 export function computeDeadline(dueAt: string | null | undefined, now: Date = new Date()): Deadline {

@@ -23,7 +23,7 @@ Small merchants lose disputes they should win. The response window passes while 
 
 ## How it uses PayPal
 
-- **Disputes API** (`/v1/customer/disputes`): list and get, then the actions PayPal offers for each dispute's stage: `accept-claim`, `make-offer`, `provide-evidence` (multipart, with a generated evidence PDF) and `provide-supporting-info`. Actions are gated by the HATEOAS links PayPal returns, and the dispute is re-fetched right before any action. Sandbox-only `require-evidence` and `adjudicate` settle test disputes.
+- **Disputes API** (`/v1/customer/disputes`): list and get, then the actions PayPal offers for each dispute's stage: `accept-claim`, `make-offer`, `provide-evidence` (multipart, built from the cited store records) and `provide-supporting-info`. Actions are gated by the HATEOAS links PayPal returns, and the dispute is re-fetched right before any action. Sandbox-only `require-evidence` and `adjudicate` settle test disputes.
 - **Webhooks**: `CUSTOMER.DISPUTE.*` events are verified with `/v1/notifications/verify-webhook-signature` and ingested idempotently; a poller backs them up.
 - **Orders v2** and **Shipment Tracking** (`/v2/checkout/orders`, `/v2/checkout/orders/{id}/track`): the demo store's real sandbox orders, with tracking attached, are what buyers dispute.
 - Every call is OAuth-authenticated, retried on 5xx/429 with backoff, and logged with PayPal's debug id. Findings and sandbox quirks are in [docs/api-notes.md](docs/api-notes.md).
@@ -42,7 +42,7 @@ We call the REST API directly rather than through the PayPal Agent Toolkit: the 
 
 ## The arbiter is SIMULATED
 
-The Arena's arbiter is a **rule-based stand-in for PayPal's reviewers**, written from PayPal's published seller-protection rules ([docs/arbiter.md](docs/arbiter.md)). It is not PayPal and doesn't predict PayPal's decisions. Arena and eval numbers measure how consistently Verdict applies the shop's rules on simulated disputes; **they are not real-world win rates**. The Arena's scenarios, the shop (Kiln & Co.), its orders and customers are fictional.
+The Arena's arbiter is a **rule-based stand-in for PayPal's reviewers**, written from PayPal's published seller-protection rules. The rules are on the app's **Arbiter rules** page (`/arena/rules`) and in [docs/arbiter.md](docs/arbiter.md). It is not PayPal and doesn't predict PayPal's decisions. Arena and eval numbers measure how consistently Verdict applies the shop's rules on simulated disputes; **they are not real-world win rates**. The Arena's scenarios, the shop (Kiln & Co.), its orders and customers are fictional.
 
 ## Architecture
 
@@ -128,6 +128,7 @@ All of them are listed with comments in [.env.example](.env.example). The main o
 | `npm run sandbox:capture` | Save redacted dispute fixtures |
 | `npm run replay:export` | Rebuild the REPLAY data from recorded sandbox disputes (`-- --rerun` re-runs the agent) |
 | `npm run seed -- --reset` | Recreate the demo store |
+| `npm run screens` | Re-capture the landing page's War Room screenshots from a running app |
 
 ## Sandbox notes
 
@@ -135,7 +136,7 @@ Disputes in this repo are real sandbox disputes on real sandbox orders, filed by
 
 ## Project docs
 
-[DECISIONS.md](DECISIONS.md) (decision log) · [docs/api-notes.md](docs/api-notes.md) (PayPal and AG Studio findings) · [docs/arbiter.md](docs/arbiter.md) (SIMULATED arbiter rules) · [docs/ux-review.md](docs/ux-review.md) (UX review against the judging criteria) · [CONTRIBUTING.md](CONTRIBUTING.md)
+[DECISIONS.md](DECISIONS.md) (decision log) · [docs/api-notes.md](docs/api-notes.md) (PayPal and AG Studio findings) · [docs/arbiter.md](docs/arbiter.md) (SIMULATED arbiter rules) · [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Attribution
 

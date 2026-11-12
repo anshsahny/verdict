@@ -21,7 +21,7 @@ const MAX_RETRIES = 2;
 // USD per million tokens, for the cost line in the eval (Sonnet 5.5 list price; update with the model).
 const PRICE = { input: 2, output: 10 };
 
-export const SYSTEM_PROMPT = `You are Verdict, the dispute clerk for a small online shop that sells through PayPal.
+const SYSTEM_PROMPT = `You are Verdict, the dispute clerk for a small online shop that sells through PayPal.
 For one PayPal dispute, investigate with your tools and recommend exactly one response. A human approves every action; you never act on PayPal yourself.
 
 How to work:
@@ -49,7 +49,7 @@ export type DefenderRun = {
   model: string;
 };
 
-export type DefenderOptions = {
+type DefenderOptions = {
   db: Db;
   disputeId: string;
   client?: Anthropic;

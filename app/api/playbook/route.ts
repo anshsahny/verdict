@@ -1,7 +1,7 @@
 // Save or reset the merchant's Playbook (store policies, dispute rules, guardrail thresholds).
 
 import { getDb } from '@/lib/db';
-import { assertHourlyLimit, RateLimitError } from '@/lib/rate-limit';
+import { hourlyLimitHit } from '@/lib/rate-limit';
 import { defaultPlaybook, Playbook, savePlaybook } from '@/lib/settings';
 
 export async function PUT(req: Request) {
@@ -9,12 +9,8 @@ export async function PUT(req: Request) {
   const parsed = (body?.reset ? { success: true as const, data: defaultPlaybook() } : Playbook.safeParse(body)) as ReturnType<typeof Playbook.safeParse>;
   if (!parsed.success) return Response.json({ error: 'Some fields are missing or too long.' }, { status: 400 });
   const db = getDb();
-  try {
-    assertHourlyLimit(db, 'playbook.saved', Number(process.env.PLAYBOOK_SAVES_PER_HOUR ?? 30));
-  } catch (e) {
-    if (e instanceof RateLimitError) return Response.json({ error: e.message }, { status: 429 });
-    throw e;
-  }
+  const limited = hourlyLimitHit(db, 'playbook.saved', Number(process.env.PLAYBOOK_SAVES_PER_HOUR ?? 30));
+  if (limited) return Response.json({ error: limited }, { status: 429 });
   savePlaybook(db, parsed.data, 'owner (web)');
   return Response.json({ ok: true, playbook: parsed.data });
 }

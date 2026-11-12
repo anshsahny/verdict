@@ -61,3 +61,4 @@ Entry for the **PayPal AI Hackathon** (Devpost). Solo builder: Ansh. Judges scor
 - `npm run agent -- <disputeId>` — agent recommendation; `-- --approve <decisionId>` / `-- --override <decisionId> <action> [usd]` executes
 - `npm run arena -- --runs N [--seed S] [--export]` — run the arena headless (`--export` rewrites fixtures/arena/sample.json)
 - `npm run arena:bound -- prepare|run|settle` — Arena runs bound to real sandbox disputes
+- `npm run screens` — re-capture public/screens/war-room-{light,dark}.png from a running app (`-- <baseUrl>`)

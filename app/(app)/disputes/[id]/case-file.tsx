@@ -558,7 +558,7 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
             {cf.order ? (
               <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
                 <dt className="text-v-muted">Placed</dt>
-                <dd className="text-v-ink" suppressHydrationWarning>
+                <dd className="text-v-ink">
                   {cf.order.id} · <LocalTime iso={cf.order.createdAt} dateOnly />
                 </dd>
                 <dt className="text-v-muted">Items</dt>
@@ -596,7 +596,7 @@ export function CaseFileView({ cf, mode }: { cf: CaseFile; mode: AppMode }) {
           {cf.customer ? (
             <Card title="Customer">
               <p className="text-sm font-medium text-v-ink">{cf.customer.name}</p>
-              <p className="text-sm text-v-muted" suppressHydrationWarning>
+              <p className="text-sm text-v-muted">
                 {cf.customer.city}, {cf.customer.region} · {cf.customer.orders} order{cf.customer.orders === 1 ? '' : 's'} · customer since <LocalTime iso={cf.customer.firstSeen} dateOnly />
               </p>
             </Card>

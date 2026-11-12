@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { connection } from 'next/server';
 import { getDb } from '@/lib/db';
-import { getCaseFile, listDisputeRows } from '@/lib/views/disputes';
+import { getDispute } from '@/lib/disputes/store';
+import { disputeTimeline, listDisputeRows } from '@/lib/views/disputes';
 import type { WarRoomData } from '@/lib/ui/war-room-report';
 import type { InboxItem, RecentItem } from './inbox';
 import { WarRoom } from './war-room';
@@ -13,7 +14,7 @@ export default async function WarRoomPage() {
   const db = getDb();
   const rows = listDisputeRows(db);
   const events = rows.flatMap((r) =>
-    (getCaseFile(db, r.id)?.timeline ?? [])
+    disputeTimeline(db, getDispute(db, r.id)!)
       .filter((t) => t.kind !== 'system')
       .map((t, i) => ({ ...t, detail: t.detail ?? '', id: `${r.id}-${i}`, disputeId: r.id })),
   );
