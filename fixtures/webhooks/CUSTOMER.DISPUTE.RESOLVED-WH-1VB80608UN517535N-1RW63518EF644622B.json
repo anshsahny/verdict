@@ -1,0 +1,133 @@
+{
+  "verification": "SUCCESS",
+  "event": {
+    "id": "WH-1VB80608UN517535N-1RW63518EF644622B",
+    "event_version": "1.0",
+    "create_time": "2026-11-12T17:33:46.022Z",
+    "resource_type": "dispute",
+    "event_type": "CUSTOMER.DISPUTE.RESOLVED",
+    "summary": "A dispute was resolved with case # PP-R-OWO-10200299",
+    "resource": {
+      "dispute_id": "PP-R-OWO-10200299",
+      "create_time": "2026-11-12T17:07:54.163Z",
+      "update_time": "2026-11-12T17:33:37.629Z",
+      "disputed_transactions": [
+        {
+          "buyer_transaction_id": "2MU318287H667694N",
+          "seller_transaction_id": "75576002X4599753Y",
+          "transaction_status": "COMPLETED",
+          "invoice_number": "VRD-1010-mwdsofiy",
+          "seller": {
+            "merchant_id": "KNT7TPTCVPK3N",
+            "name": "Test Store"
+          },
+          "items": [
+            {
+              "item_name": "Matcha whisk set",
+              "item_description": "Matcha whisk set",
+              "item_quantity": "1",
+              "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+              "item_type": "PRODUCT"
+            }
+          ],
+          "seller_protection_eligible": true,
+          "seller_protection_type": "EXPANDED_SELLER_PROTECTION"
+        }
+      ],
+      "reason": "MERCHANDISE_OR_SERVICE_NOT_RECEIVED",
+      "status": "RESOLVED",
+      "dispute_amount": {
+        "currency_code": "USD",
+        "value": "34.00"
+      },
+      "dispute_outcome": {
+        "outcome_code": "RESOLVED_SELLER_FAVOUR",
+        "outcome_reason": "INELIGIBLE_BUYER_PROTECTION_POLICY"
+      },
+      "adjudications": [
+        {
+          "type": "DENY_BUYER",
+          "adjudication_time": "2026-11-12T17:31:31.534Z",
+          "reason": "INELIGIBLE_BUYER_PROTECTION_POLICY",
+          "dispute_life_cycle_stage": "CHARGEBACK"
+        }
+      ],
+      "fund_movements": [
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "34.00"
+          },
+          "initiated_time": "2026-11-12T17:11:04.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        },
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "32.32"
+          },
+          "initiated_time": "2026-11-12T17:16:34.000Z",
+          "type": "CREDIT",
+          "reason": "HOLD_RELEASED"
+        },
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "32.32"
+          },
+          "initiated_time": "2026-11-12T17:16:35.000Z",
+          "type": "DEBIT",
+          "reason": "HOLD_PLACED"
+        },
+        {
+          "party": "SELLER",
+          "amount": {
+            "currency_code": "USD",
+            "value": "32.32"
+          },
+          "initiated_time": "2026-11-12T17:32:34.000Z",
+          "type": "CREDIT",
+          "reason": "HOLD_RELEASED"
+        }
+      ],
+      "dispute_life_cycle_stage": "CHARGEBACK",
+      "dispute_channel": "INTERNAL",
+      "offer": {
+        "buyer_requested_amount": {
+          "currency_code": "USD",
+          "value": "34.00"
+        }
+      },
+      "refund_details": {
+        "allowed_refund_amount": {
+          "currency_code": "USD",
+          "value": "34.00"
+        }
+      },
+      "links": [
+        {
+          "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-R-OWO-10200299",
+          "rel": "self",
+          "method": "GET",
+          "encType": "application/json"
+        }
+      ]
+    },
+    "links": [
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-1VB80608UN517535N-1RW63518EF644622B",
+        "rel": "self",
+        "method": "GET"
+      },
+      {
+        "href": "https://api.sandbox.paypal.com/v1/notifications/webhooks-events/WH-1VB80608UN517535N-1RW63518EF644622B/resend",
+        "rel": "resend",
+        "method": "POST"
+      }
+    ]
+  }
+}

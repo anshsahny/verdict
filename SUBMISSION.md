@@ -25,6 +25,8 @@ Hackathon: https://paypalaihackathon.devpost.com/ · Deadline **Thu Nov 12, 12:0
 Best Use of PayPal + AI · Most Impactful · Best Demo Delivery · Best Use of Agentic Commerce · AG Grid prize (polish, custom widgets/theming, Studio Agent Framework use) · Render (hosting) · APIMatic (only claim it if you really use it).
 
 ## Video script
+**Published:** https://youtu.be/02pvRKyrTjg (public).
+
 The full script, shot list, prep, editing and upload steps are in [docs/video/script.md](docs/video/script.md), with title cards in [docs/video/cards](docs/video/cards). Upload as **Public** as early as possible: YouTube processing takes time.
 
 ## Devpost text (fill from the repo's README; keep the headings)

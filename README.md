@@ -4,7 +4,7 @@
 
 Built for the PayPal AI Hackathon with the **PayPal REST APIs** (sandbox), **Claude** by Anthropic, and **AG Studio / AG Grid**.
 
-**Live demo:** [verdict-0bbi.onrender.com](https://verdict-0bbi.onrender.com) (REPLAY mode) · **Video:** _link added after upload_ · [MIT licence](LICENSE)
+**Live demo:** [verdict-0bbi.onrender.com](https://verdict-0bbi.onrender.com) (REPLAY mode) · **Video:** [youtu.be/02pvRKyrTjg](https://youtu.be/02pvRKyrTjg) · [MIT licence](LICENSE)
 
 ![The War Room: disputes waiting for a decision, each with its deadline and Verdict's suggestion](public/screens/war-room-light.png)
 
@@ -125,6 +125,7 @@ All of them are listed with comments in [.env.example](.env.example). The main o
 | `npm run agent -- <disputeId>` | Agent recommendation for one dispute (no PayPal action); `-- --approve <decisionId>` executes it |
 | `npm run sandbox:smoke` | PayPal sandbox smoke test |
 | `npm run sandbox:orders` | Create labelled sandbox orders to dispute |
+| `npm run demo:orders` | Create the video's extra sandbox orders (VRD-1009 to 1011) and add their store records |
 | `npm run sandbox:capture` | Save redacted dispute fixtures |
 | `npm run replay:export` | Rebuild the REPLAY data from recorded sandbox disputes (`-- --rerun` re-runs the agent) |
 | `npm run seed -- --reset` | Recreate the demo store |
