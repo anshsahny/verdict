@@ -78,5 +78,25 @@
     "tracking": null,
     "suggestedReason": "Item not received",
     "createdAt": "2026-11-10T05:38:02.991Z"
+  },
+  {
+    "ref": "VRD-1009",
+    "item": "Glazed dinner plates (set of 4)",
+    "amount": "96.00",
+    "orderId": "6LC57489VM566824D",
+    "captureId": "0A3810530Y293132D",
+    "tracking": "9400111899560000100109",
+    "suggestedReason": "Item not received",
+    "createdAt": "2026-11-12T17:01:14.264Z"
+  },
+  {
+    "ref": "VRD-1010",
+    "item": "Matcha whisk set",
+    "amount": "34.00",
+    "orderId": "2GG7059023486492J",
+    "captureId": "75576002X4599753Y",
+    "tracking": "9400111899560000100110",
+    "suggestedReason": "Item not received",
+    "createdAt": "2026-11-12T17:01:17.408Z"
   }
 ]

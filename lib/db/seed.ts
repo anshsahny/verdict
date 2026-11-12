@@ -76,6 +76,9 @@ const SANDBOX_SHIPMENTS: Record<string, { product: string; status: string; signe
   'VRD-1006': { product: 'p-towels', status: 'DELIVERED', addressMatch: false, days: 4 },
   'VRD-1007': { product: 'p-grinder', status: 'DELIVERED', signedBy: 'FRONT DESK', addressMatch: true, days: 2 },
   'VRD-1008': { product: 'p-espresso', status: 'SHIPPED_UNTRACKED', days: 0 },
+  // The demo video's orders (npm run demo:orders).
+  'VRD-1009': { product: 'p-plates', status: 'DELIVERED', addressMatch: true, days: 3 },
+  'VRD-1010': { product: 'p-matcha', status: 'DELIVERED', addressMatch: true, days: 2 },
 };
 
 // mulberry32: small deterministic PRNG.
