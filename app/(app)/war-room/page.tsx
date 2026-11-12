@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { connection } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getDispute } from '@/lib/disputes/store';
+import { allowedActions } from '@/lib/paypal/actions';
 import { disputeTimeline, listDisputeRows } from '@/lib/views/disputes';
 import type { WarRoomData } from '@/lib/ui/war-room-report';
 import type { InboxItem, RecentItem } from './inbox';
@@ -34,8 +35,16 @@ export default async function WarRoomPage() {
   const latest = db.prepare(
     "SELECT action, amount_cents, status, confidence FROM decisions WHERE dispute_id = ? AND status IN ('proposed', 'needs_human') ORDER BY created_at DESC LIMIT 1",
   );
+  // A claim PayPal is reviewing still needs the merchant until they respond: it has no deadline but
+  // takes supporting info or a refund.
+  const responded = db.prepare("SELECT 1 FROM decisions WHERE dispute_id = ? AND status = 'executed' LIMIT 1");
+  const needsYou = (r: (typeof rows)[number]) =>
+    r.status === 'Waiting on us' ||
+    (r.status === 'Under review' &&
+      !responded.get(r.id) &&
+      allowedActions(JSON.parse(getDispute(db, r.id)!.raw_json)).some((a) => a === 'provide_supporting_info' || a === 'accept_claim'));
   const inbox: InboxItem[] = rows
-    .filter((r) => r.status === 'Waiting on us')
+    .filter(needsYou)
     .sort((a, b) => (a.hoursLeft ?? 1e9) - (b.hoursLeft ?? 1e9))
     .map((r) => {
       const dec = latest.get(r.id) as { action: string; amount_cents: number | null; status: string; confidence: number | null } | undefined;

@@ -49,9 +49,9 @@ export function Inbox({ items, recent, asOf }: { items: InboxItem[]; recent: Rec
                     <DeadlineRing dueAt={it.dueAt} now={now} size={36} />
                     <div>
                       <p className="text-sm font-semibold tabular" style={{ color: URGENCY[d.bucket].color }}>
-                        {it.dueAt ? formatRemaining(d.msRemaining) : '—'}
+                        {it.dueAt ? formatRemaining(d.msRemaining) : 'Claim'}
                       </p>
-                      <p className="text-[11px] text-v-muted">to respond</p>
+                      <p className="text-[11px] text-v-muted">{it.dueAt ? 'to respond' : 'PayPal reviewing'}</p>
                     </div>
                   </div>
                   <div className="min-w-0 flex-1">
