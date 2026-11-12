@@ -33,7 +33,12 @@ export function ButtonLink({ href, variant = 'primary', size = 'md', children, c
   );
 }
 
-export type Tone = 'win' | 'warn' | 'danger' | 'muted' | 'sim' | 'accent';
+/** A small ring that spins in the current text colour; sits inside a Button while it waits. */
+export function Spinner({ className = '' }: { className?: string }) {
+  return <span aria-hidden className={`inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-current border-r-transparent ${className}`} />;
+}
+
+export type Tone ='win' | 'warn' | 'danger' | 'muted' | 'sim' | 'accent';
 const TONE: Record<Tone, string> = {
   win: 'bg-v-win-soft text-v-win',
   warn: 'bg-v-warn-soft text-v-warn',
@@ -44,6 +49,14 @@ const TONE: Record<Tone, string> = {
 };
 export function Badge({ tone = 'muted', children, className = '' }: { tone?: Tone; children: ReactNode; className?: string }) {
   return <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${TONE[tone]} ${className}`}>{children}</span>;
+}
+
+export function SimulatedBadge() {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-v-sim-soft px-2.5 py-0.5 text-xs font-bold tracking-wide text-v-sim" title="Outcomes come from a rule-based stand-in for PayPal's reviewers">
+      SIMULATED
+    </span>
+  );
 }
 
 export function Card({ title, subtitle, right, children, className = '', padded = true }: { title?: ReactNode; subtitle?: ReactNode; right?: ReactNode; children: ReactNode; className?: string; padded?: boolean }) {

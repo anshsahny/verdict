@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { DeadlineRing, LocalTime, StrengthGauge, Timeline, URGENCY, useNow } from '@/components/viz';
-import { Badge, Button, Card, usd, useToast } from '@/components/ui';
+import { Badge, Button, Card, Spinner, usd, useToast } from '@/components/ui';
 import { computeDeadline, formatRemaining } from '@/lib/disputes/deadline';
 import type { AppMode } from '@/lib/mode';
 import type { CaseFile } from '@/lib/views/disputes';
@@ -240,7 +240,13 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
         </p>
         {!resolved ? (
           <Button size="lg" className="mt-4" onClick={recommend} disabled={busy !== null}>
-            {busy === 'recommend' ? 'Reviewing… about 10 seconds' : 'Review this dispute'}
+            {busy === 'recommend' ? (
+              <>
+                <Spinner /> Reviewing…
+              </>
+            ) : (
+              'Review this dispute'
+            )}
           </Button>
         ) : null}
         {error ? (
@@ -341,7 +347,13 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
           <div className="flex flex-wrap gap-2">
             {d.action !== 'escalate_to_human' ? (
               <Button size="lg" onClick={() => execute({ mode: 'approve' })} disabled={busy !== null}>
-                {busy === 'execute' ? (replay ? 'Applying…' : 'Sending to PayPal…') : `Approve: ${ACTION_SHORT[d.action].toLowerCase()}`}
+                {busy === 'execute' ? (
+                  <>
+                    <Spinner /> {replay ? 'Applying…' : 'Sending to PayPal…'}
+                  </>
+                ) : (
+                  `Approve: ${ACTION_SHORT[d.action].toLowerCase()}`
+                )}
               </Button>
             ) : null}
             {d.action === 'accept' || d.action === 'offer_refund' ? (
@@ -383,8 +395,9 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
               className="mt-4 grid gap-3 rounded-xl border border-v-border bg-v-raised p-4"
               onSubmit={(ev) => {
                 ev.preventDefault();
-                const needsAmount = overrideAction === 'accept' || overrideAction === 'offer_refund';
-                execute({ mode: 'override', action: overrideAction, amount: needsAmount ? Number(amount || cf.dispute.amount) : null });
+                // A full refund is always the disputed amount; only a partial offer takes one from the owner.
+                const amountFor = overrideAction === 'accept' ? cf.dispute.amount : overrideAction === 'offer_refund' ? Number(amount || cf.dispute.amount) : null;
+                execute({ mode: 'override', action: overrideAction, amount: amountFor });
               }}
             >
               <fieldset className="grid gap-2 text-sm">
@@ -396,9 +409,9 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
                   </label>
                 ))}
               </fieldset>
-              {overrideAction === 'accept' || overrideAction === 'offer_refund' ? (
+              {overrideAction === 'offer_refund' ? (
                 <label className="grid gap-1 text-sm">
-                  <span className="text-v-muted">Amount</span>
+                  <span className="text-v-muted">Offer amount (up to {usd(cf.dispute.amount)})</span>
                   <input type="number" step="0.01" min="0.01" max={cf.dispute.amount} required value={amount || String(cf.dispute.amount)} onChange={(e) => setAmount(e.target.value)} className="w-40 rounded-lg border border-v-border bg-v-surface px-3 py-1.5 tabular" />
                 </label>
               ) : null}
@@ -419,7 +432,13 @@ function Recommendation({ cf, mode, showSources }: { cf: CaseFile; mode: AppMode
 
       {!resolved && decided ? (
         <Button variant="ghost" size="sm" className="mt-4" onClick={recommend} disabled={busy !== null}>
-          {busy === 'recommend' ? 'Reviewing…' : 'Ask Verdict again'}
+          {busy === 'recommend' ? (
+            <>
+              <Spinner /> Reviewing…
+            </>
+          ) : (
+            'Ask Verdict again'
+          )}
         </Button>
       ) : null}
       {error ? (

@@ -6,7 +6,9 @@
 import { useRouter } from 'next/navigation';
 import { useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { AgStudio, AgStudioProvider } from 'ag-studio-react';
+import Link from 'next/link';
 import { PageHeader } from '@/components/page-header';
+import { SimulatedBadge } from '@/components/ui';
 import type { PolicyProjection } from '@/lib/arena/benchmark';
 import type { ArenaEvent } from '@/lib/arena/run';
 import { ARENA_REPORT, arenaData, type ArenaRow } from '@/lib/ui/arena-report';
@@ -19,14 +21,6 @@ const noSubscription = () => () => {};
 const pct = (x: number | null) => (x === null ? 'n/a' : `${Math.round(x * 100)}%`);
 const usd = (x: number) => `$${x.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 const ACTION: Record<string, string> = { accept: 'refund in full', offer_refund: 'partial refund offer', contest: 'contest with evidence', escalate_to_human: 'send to a human', invalid: 'no valid decision' };
-
-function SimulatedBadge() {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-v-sim-soft px-2.5 py-0.5 text-xs font-bold tracking-wide text-v-sim" title="Outcomes come from a rule-based stand-in for PayPal's reviewers">
-      SIMULATED
-    </span>
-  );
-}
 
 function PolicySlider({ policy }: { policy: PolicyProjection[] }) {
   const [i, setI] = useState(0);
@@ -209,9 +203,9 @@ export function Arena({ rows, bench, policy, caps, licenseKey }: { rows: ArenaRo
       />
       <div className="border-b border-v-border bg-v-warn-soft px-6 py-2 text-sm text-v-warn" role="note">
         <strong>How it works:</strong> a Claude buyer agent disputes a fictional order, Verdict responds as it would to a real dispute, and a rule-based arbiter, a stand-in for PayPal&apos;s reviewers, rules on it. Outcomes are <strong>simulated</strong>, not real-world results.{' '}
-        <a href="https://github.com/anshsahny/verdict/blob/main/docs/arbiter.md" className="font-medium underline">
+        <Link href="/arena/rules" className="font-medium underline">
           Arbiter rules
-        </a>
+        </Link>
       </div>
       <div className="grid gap-5 p-6 xl:grid-cols-3">
         <LiveRun caps={caps} />

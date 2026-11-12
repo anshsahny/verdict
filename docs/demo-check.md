@@ -8,52 +8,53 @@ Tick each box as you go. **Expect** is what should be on screen. **Flag** is wha
 
 ## 0. Before you start (5 min)
 
-- [ ] Open a **private window** (no extensions, no saved state). A laptop at 1280–1440 px wide is closest to what judges use.
-- [ ] Open https://verdict-0bbi.onrender.com/api/health. **Expect** `{"ok":true,"mode":"replay","disputes":9,"commit":"<latest>"}`, where `<latest>` is the short id of the newest commit on GitHub `main` (shown next to the latest commit message on the repo page, or run `git rev-parse --short origin/main`). An older id means Render hasn't finished deploying the last push.
-- [ ] In the footer of any app page, click **Reset demo**. **Expect** a toast and 7 disputes in the War Room. That's the starting state judges will see.
+- [x] Open a **private window** (no extensions, no saved state). A laptop at 1280–1440 px wide is closest to what judges use.
+- [x] Open https://verdict-0bbi.onrender.com/api/health. **Expect** `{"ok":true,"mode":"replay","disputes":9,"commit":"<latest>"}`, where `<latest>` is the short id of the newest commit on GitHub `main` (shown next to the latest commit message on the repo page, or run `git rev-parse --short origin/main`). An older id means Render hasn't finished deploying the last push.
+- [x] In the footer of any app page, click **Reset demo**. **Expect** a toast and 7 disputes in the War Room. That's the starting state judges will see.
+
 - Reset demo puts back disputes, recommendations and the Playbook. It **keeps Arena runs**, so the Arena headline only returns to 60 runs after a redeploy (each deploy starts a fresh database).
 
 ## 1. Landing page `/` (judge's first 30 seconds)
 
-- [ ] **Expect** the headline "An AI clerk for your PayPal disputes". The intro says Verdict tracks disputes, gathers evidence and recommends refund / offer / fight, and that "You approve every action".
-- [ ] The War Room screenshot loads in the light theme. Switch the OS or browser to dark mode and reload: the dark screenshot should appear.
-- [ ] **How it works** (3 steps), **What's inside** (4 cards linking to the four screens), **Inside the agent** (can see / can't do / stays honest).
-- [ ] **Measured, not promised**: 95%, 100%, 12/12, 9 s. The sentence under them says the numbers come from simulated disputes.
-- [ ] **What's real / What's simulated** both present. Only the simulated column mentions the arbiter.
-- [ ] Nav "How it works" jumps to the section. **Open the demo** goes to `/war-room`.
+- [x] **Expect** the headline "An AI clerk for your PayPal disputes". The intro says Verdict tracks disputes, gathers evidence and recommends refund / offer / fight, and that "You approve every action".
+- [x] The War Room screenshot loads in the light theme. Switch the OS or browser to dark mode and reload: the dark screenshot should appear.
+- [x] **How it works** (3 steps), **What's inside** (4 cards linking to the four screens), **Inside the agent** (can see / can't do / stays honest).
+- [x] **Measured, not promised**: 95%, 100%, 12/12, 9 s. The sentence under them says the numbers come from simulated disputes.
+- [x] **What's real / What's simulated** both present. Only the simulated column mentions the arbiter.
+- [x] Nav "How it works" jumps to the section. **Open the demo** goes to `/war-room`.
 
 - **Flag**: a broken image, a stat with no "simulated" wording near it, or a link that 404s.
 
 ## 2. War Room `/war-room`
 
-- [ ] Header: **"7 disputes need a decision · $401.65 at stake · next deadline in ~19h"**. The countdown ticks down live.
-- [ ] **Needs your decision**, soonest first. Top row: red clock, **Unauthorized · $89.00**, "Not reviewed yet", *weak evidence*, **Open**.
-- [ ] Three rows say **Review** (have a recommendation): $47.40 "Refund $47.40 in full · 85% confident", $64.00 and $118.00 "Needs your judgment". The rest say "Not reviewed yet" / **Open**.
-- [ ] **Recently closed**: "No closed disputes yet." (fills after you approve one in step 3).
-- [ ] **Insights** (AG Studio): KPI tiles, **Response deadlines** (custom deadline-clock widget), **Evidence strength** gauge (custom), **All disputes** grid. Click a dispute id in the grid: it opens that Case File.
-- [ ] Select a grid row: the other widgets focus on that dispute (cross-filtering). Click the row again or clear the filter to undo.
-- [ ] **Customize** turns on edit mode (panels for Widgets, Data). **Done** leaves it.
-- [ ] KPI tiles: **$ at risk $462.90 · Ready to approve 1 · Due within 48h 1 · Needs your judgment 2**. After you approve the $47.40 refund, "Ready to approve" drops to 0.
+- [x] Header: **"7 disputes need a decision · $401.65 at stake · next deadline in ~19h"**. The countdown ticks down live.
+- [x] **Needs your decision**, soonest first. Top row: red clock, **Unauthorized · $89.00**, "Not reviewed yet", *weak evidence*, **Open**.
+- [x] Three rows say **Review** (have a recommendation): $47.40 "Refund $47.40 in full · 85% confident", $64.00 and $118.00 "Needs your judgment". The rest say "Not reviewed yet" / **Open**.
+- [x] **Recently closed**: "No closed disputes yet." (fills after you approve one in step 3).
+- [ ] **Insights** (AG Studio): KPI tiles, **Response deadlines** (custom deadline-clock widget, tall enough for two rows of clocks with no scroll bar), **Evidence strength** gauge (custom), **All disputes** grid. Click a dispute id in the grid: it opens that Case File.
+- [ ] Cross-filtering: click a bar in **Disputed $ by reason and outcome** (or a slice of the status donut). **Expect** the grid, clocks, gauge and KPI tiles to narrow to those disputes, and the other chart to dim what doesn't match. Click empty space in the same chart to clear it. (AG Studio 3.0 grids can't start a cross-filter, only charts can, so grid rows aren't clickable for this.)
+- [ ] **Customize** opens only the editing tools on the right (**Compose** and **Data**; no assistant, no filters). Drag or resize a widget; select one to see its settings. **Done** leaves it.
+- [x] KPI tiles: **$ at risk $462.90 · Ready to approve 1 · Due within 48h 1 · Needs your judgment 2**. After you approve the $47.40 refund, "Ready to approve" drops to 0.
 
 - **Known, not a failure**: KPI "$ at risk" says **$462.90** while the header says $401.65. The KPI includes the two disputes that are waiting on the buyer or under review; its caption says "incl. waiting on buyer".
 
 ### 2a. AI assistant (Claude through the AG Studio Agent Framework)
 
-- [ ] Click **Ask the AI assistant**. **Expect** the page to scroll to Insights, the studio to fit the screen, and the **AI Assistant** panel open on the left with the message box visible and focused (you can type straight away). **Done** closes it and restores the full dashboard.
-- [ ] Click the starter **What needs me first?** **Expect** within ~10 s: "Delegated to Data agent", a table of 9 open disputes with deadlines and amounts, BFE as most urgent, totals $462.90 / $401.65. I got exactly this on the live site.
-- [ ] Type **"Add a bar chart of disputed amount by reason"** and press Enter. **Expect** "Delegated to Page agent / Widget agent" and "I added **Disputed Amount by Reason**". The chart appears on the canvas. I got this on the live site too.
-- Don't use "Add deadline clocks for the not-as-described disputes". I tried it live: the assistant filtered the existing clocks widget instead of adding one, and the filter didn't take (all 6 clocks still showed). Stick to the bar-chart prompt for the video.
-- Assistant changes to the dashboard live only in your browser tab. A reload puts the default dashboard back.
+- [ ] Click **Ask the AI assistant**. **Expect** the page to scroll to Insights, the studio to fit the screen, and **only** the **AI Assistant** panel open on the left (no Compose or Data panels) with the message box visible and focused (you can type straight away). **Close assistant** (same button) restores the full dashboard.
+- [x] Click the starter **What needs me first?** **Expect** within ~10 s: "Delegated to Data agent", a table of 9 open disputes with deadlines and amounts, BFE as most urgent, totals $462.90 / $401.65. I got exactly this on the live site.
+- [ ] Click the starter **Chart what Verdict recommends**. **Expect** "Delegated to Page agent / Widget agent" and "I added a pie chart, **Disputed Amount by Recommendation**…"; the chart appears at the bottom of the canvas. I got this locally. Don't ask for a chart **by reason**: the default dashboard already has one, so the assistant may reply that it exists instead of adding one.
 
+- Don't use "Add deadline clocks for the not-as-described disputes". I tried it live: the assistant filtered the existing clocks widget instead of adding one, and the filter didn't take (all 6 clocks still showed). Stick to the recommendation-chart starter for the video.
+- Assistant changes to the dashboard live only in your browser tab. A reload puts the default dashboard back.
 - **Flag**: an error bubble, no reply after 30 s, or raw `@field[...]` text in the assistant's **main reply**. The small grey "Delegated to … agent" summary lines can show `@field[...]`; that's AG Studio's own collapsed tool summary, not a failure.
 
 ## 3. Case File: approve a refund (the core loop)
 
 From the War Room, click **Review** on **Not received · $47.40** (`/disputes/PP-R-SLD-10197881`).
 
-- [ ] Header: **Not received · $47.40**, Jordan Avery, order VRD-1008, deadline ~9d 20h. Progress: Opened ✓ → **Your response** → PayPal review → Closed.
-- [ ] **Verdict recommends: Refund in full ($47.40)**, ~85% confident, a plain-language **Why**, **Show full reasoning**, **Risks to know**, a **Message to the buyer**.
-- [ ] Open **How Verdict decided**. **Expect** the summary "checked 5 sources · **6 of 6 checks passed**".
+- [x] Header: **Not received · $47.40**, Jordan Avery, order VRD-1008, deadline ~9d 20h. Progress: Opened ✓ → **Your response** → PayPal review → Closed.
+- [x] **Verdict recommends: Refund in full ($47.40)**, ~85% confident, a plain-language **Why**, **Show full reasoning**, **Risks to know**, a **Message to the buyer**.
+- [x] Open **How Verdict decided**. **Expect** the summary "checked 5 sources · **6 of 6 checks passed**".
   - **Looked at**: The PayPal dispute, Your Playbook, Evidence on file, The order, Shipping and tracking.
   - **Checks**:
     - allowed response within the amount;
@@ -63,58 +64,57 @@ From the War Room, click **Review** on **Not received · $47.40** (`/disputes/PP
     - as sure as the Playbook requires;
     - the Playbook gives a clear answer.
   - **Footer**: "Claude (claude-sonnet-5-5) with read-only tools… Valid on the first try, 10 s. Every step is in the audit log."
-- [ ] **Your evidence**: strength gauge + Helps / Hurts items. **Show sources** reveals the record id behind each item.
-- [ ] Buttons: **Approve: refund in full**, **Edit amount or message**, **Do something else**. Below them: "**REPLAY**: this acts on recorded sandbox data… Nothing is sent to PayPal."
-- [ ] Optional: **Edit amount or message** opens a form (amount up to $47.40, message to the buyer) with **Approve with my changes**. Close it again without submitting if you want to do the plain approve next.
-- [ ] Click **Approve: refund in full**. The button briefly reads "Applying…". **Expect**:
+- [x] **Your evidence**: strength gauge + Helps / Hurts items. **Show sources** reveals the record id behind each item.
+- [x] Buttons: **Approve: refund in full**, **Edit amount or message**, **Do something else**. Below them: "**REPLAY**: this acts on recorded sandbox data… Nothing is sent to PayPal."
+- [x] Optional: **Edit amount or message** opens a form (amount up to $47.40, message to the buyer) with **Approve with my changes**. Close it again without submitting if you want to do the plain approve next.
+- [x] Click **Approve: refund in full**. The button briefly reads "Applying…". **Expect**:
   - a toast **Done** · "Refund applied to the recorded dispute, the way PayPal resolved it. Nothing was sent to PayPal." (In LIVE mode, locally, it says "Refund sent to PayPal…" instead.)
   - the badge **Approved** and the status **Lost / refunded**;
   - the progress bar at Closed;
   - "owner (web) approved" on the History.
-- [ ] Back to the War Room: **6** need a decision, and the dispute appears under **Recently closed**.
-- [ ] History times are in **your** time zone, and none is later than now. The newest "PayPal: waiting on us" shows when the demo was last reset.
+- [x] Back to the War Room: **6** need a decision, and the dispute appears under **Recently closed**.
+- [x] History times are in **your** time zone, and none is later than now. The newest "PayPal: waiting on us" shows when the demo was last reset.
 
 ## 4. Case File: an escalation and an override
 
 Open **Not as described · $64.00** (`PP-R-GSO-10197884`).
 
-- [ ] **Handle this one yourself · Needs your judgment**, ~60% confident. The Why explains the buyer only wrote "N/A" and tracking shows delivery. **How Verdict decided** shows **5 of 6** checks, with the Playbook check flagged.
-- [ ] Click **Choose a response**. A panel asks "Which response should Verdict apply?" with radio buttons, only for actions PayPal allows on this dispute (here **Refund in full** and **Offer a partial refund**). In LIVE mode the question reads "What should Verdict send to PayPal?" and the button **Send to PayPal**.
-  - Pick **Offer a partial refund**, set Amount to 20, and click **Apply this response**.
+- [x] **Handle this one yourself · Needs your judgment**, ~60% confident. The Why explains the buyer only wrote "N/A" and tracking shows delivery. **How Verdict decided** shows **5 of 6** checks, with the Playbook check flagged.
+- [ ] Click **Choose a response**. A panel asks "Which response should Verdict apply?" with radio buttons, only for actions PayPal allows on this dispute (here **Refund in full** and **Offer a partial refund**). With **Refund in full** selected there is **no** amount field (it's always the full $64.00). In LIVE mode the question reads "What should Verdict send to PayPal?" and the button **Send to PayPal**.
+  - Pick **Offer a partial refund**. An **Offer amount (up to $64.00)** field appears. Set it to 20 and click **Apply this response**.
   - **Expect** the toast "Offer applied: the recorded dispute now waits on the buyer. Nothing was sent to PayPal."
   - The History adds **PayPal: waiting on buyer**, and the progress bar moves to **Buyer's reply** (PayPal's recorded transition).
   - The dispute leaves "Needs your decision" in the War Room.
   - This shows a human override going through the same executor.
-- [ ] Optional: on the $89.00 Unauthorized dispute (no recommendation yet), click **Review this dispute**. **Expect** a live Claude review in ~15–20 s. On the live site I got "Handle this one yourself", 70%, with a clear Why and a polite buyer message. It costs ~$0.03 of Anthropic credit and counts toward the hourly cap (20/h).
+- [ ] Optional: on the $89.00 Unauthorized dispute (no recommendation yet), click **Review this dispute**. The button shows a spinner and "Reviewing…". **Expect** a live Claude review in ~15–20 s. On the live site I got "Handle this one yourself", 70%, with a clear Why and a polite buyer message. It costs ~$0.03 of Anthropic credit and counts toward the hourly cap (20/h).
 
 ## 5. Arena `/arena` (SIMULATED)
 
-- [ ] **SIMULATED** badge in the header, plus the "How it works… Outcomes are simulated, not real-world results. Arbiter rules" banner. **Arbiter rules** opens docs/arbiter.md on GitHub.
-- [ ] Headline: **60 runs: right call 98%, contests won 96%, $1,707 saved vs always refunding** (after a fresh deploy; each run adds to it).
-- [ ] **Runs** defaults to **3** (about a minute); pick **1** for a quick check, then click **Start** (it becomes **Stop** while running). **Expect**:
+- [ ] **SIMULATED** badge in the header, plus the "How it works… Outcomes are simulated, not real-world results. Arbiter rules" banner. **Arbiter rules** opens the in-app page `/arena/rules` (SIMULATED badge, outcomes table, contest rules by dispute type, right call, money, limitations) with **← Back to the Arena**. On a phone the contest-rules table swipes sideways inside its card.
+- [x] Headline: **60 runs: right call 98%, contests won 96%, $1,707 saved vs always refunding** (after a fresh deploy; each run adds to it).
+- [x] **Runs** defaults to **3** (about a minute); pick **1** for a quick check, then click **Start** (it becomes **Stop** while running). **Expect**:
   - "Running… about 20 seconds per round";
   - for each run, a line like "not received · untracked · honest buyer · $89.00" and the buyer's claim in quotes (written live by Claude);
   - "Verdict: …", then "**Simulated ruling:** … · right call".
-
   I ran 3 on the live site: all right calls, and the headline went to 63 runs. Each run costs a few cents, and there are 10 runs per hour across everyone.
-- [ ] **Policy** slider: drag "Auto-refund under $…" up. **Expect** the numbers to change instantly. At **$20** I got: Auto-refunded 3, Saved $1,649, **vs Verdict −$58**, right calls 93%. In other words, auto-refunding small disputes costs more than letting Verdict decide, which is a good line for the video.
-- [ ] **Weak spots**: "Late-delivery claims with a parcel that arrived after the claim: wrong call in 1 of 5…". It's honest and good to point at in the video.
-- [ ] Charts: outcomes by dispute type, response by persona, money by type. **Every run** grid lists each run's facts, persona, response and simulated outcome. Column headers read **Disputed** and **Right call**, with no "(sum)" anywhere on the page.
+- [x] **Policy** slider: drag "Auto-refund under $…" up. **Expect** the numbers to change instantly. At **$20** I got: Auto-refunded 3, Saved $1,649, **vs Verdict −$58**, right calls 93%. In other words, auto-refunding small disputes costs more than letting Verdict decide, which is a good line for the video.
+- [x] **Weak spots**: "Late-delivery claims with a parcel that arrived after the claim: wrong call in 1 of 5…". It's honest and good to point at in the video.
+- [x] Charts: outcomes by dispute type, response by persona, money by type. **Every run** grid lists each run's facts, persona, response and simulated outcome. Column headers read **Disputed** and **Right call**, with no "(sum)" anywhere on the page.
 
 - **Flag**: any place a number appears without "simulated" nearby, or a run that errors or hangs past 60 s.
 
 ## 6. Playbook `/playbook`
 
-- [ ] 5 rules (editable text), store policies, **Guardrails**: flag above $250, flag under 60% confidence, "Every action needs your click", "Prompt-injection screen on". The **Verdict never…** list has 4 items.
-- [ ] Change "Flag disputes larger than" to 50. **Expect** the top button to change from **Saved** to **Save changes**. Click it: "Saving…", then **Saved**. Then **Reset to defaults** (Reset demo also restores the Playbook).
+- [x] 5 rules (editable text), store policies, **Guardrails**: flag above $250, flag under 60% confidence, "Every action needs your click", "Prompt-injection screen on". The **Verdict never…** list has 4 items.
+- [x] Change "Flag disputes larger than" to 50. **Expect** the top button to change from **Saved** to **Save changes**. Click it: "Saving…", then **Saved**. Then **Reset to defaults** (Reset demo also restores the Playbook).
 
 ## 7. Cross-cutting checks
 
-- [ ] Footer on every app page: **REPLAY · recorded sandbox disputes, dates shifted to today**, **Reset demo**, and "Verdict suggests; you decide. Arena outcomes use a **SIMULATED** arbiter, not PayPal."
-- [ ] **Dark theme** toggle (bottom of the sidebar) on every page. Nothing unreadable.
-- [ ] **Phone** (your real phone): landing, War Room list, a Case File, Arena, Playbook. Nothing scrolls sideways. The Insights dashboard swipes sideways **inside its own box** (that's by design).
-- [ ] **Open source (MIT)** in the sidebar opens the GitHub repo. The repo's About shows the MIT licence.
-- [ ] After changing something (an approval or a Playbook edit), leave the demo alone for **25 minutes**, then reload. **Expect** it to be back at the starting state. It resets after 20 minutes idle, and the check runs every 5 minutes. An untouched demo isn't reset until its dates are 6 hours old.
+- [x] Footer on every app page: **REPLAY · recorded sandbox disputes, dates shifted to today**, **Reset demo**, and "Verdict suggests; you decide. Arena outcomes use a **SIMULATED** arbiter, not PayPal."
+- [x] **Dark theme** toggle (bottom of the sidebar) on every page. Nothing unreadable.
+- [x] **Phone** (your real phone): landing, War Room list, a Case File, Arena, Playbook. Nothing scrolls sideways. The Insights dashboard swipes sideways **inside its own box** (that's by design).
+- [x] **Open source (MIT)** in the sidebar opens the GitHub repo. The repo's About shows the MIT licence.
+- [x] After changing something (an approval or a Playbook edit), leave the demo alone for **25 minutes**, then reload. **Expect** it to be back at the starting state. It resets after 20 minutes idle, and the check runs every 5 minutes. An untouched demo isn't reset until its dates are 6 hours old.
 
 ---
 
@@ -127,6 +127,15 @@ Open **Not as described · $64.00** (`PP-R-GSO-10197884`).
 | 3 | **Ask the AI assistant**: message box below the fold on a laptop | Judges trying the chat | Studio fits the screen while editing; message box focused | **Fixed** (c8777cd), checked live |
 | 4 | Arena grid headers read **"Disputed (sum)"** and **"Right call (sum)"** (AG Studio's auto-labels) | Sharp-eyed judges | Studio's "${name} (sum)" label overridden to the plain name, on both studios | **Fixed**, checked locally |
 | 5 | In **REPLAY** the Case File said "**Sending to PayPal…**", "**Send to PayPal**" and toasted "**Refund sent to PayPal**", directly under the note "Nothing is sent to PayPal" | Judges checking the honesty claims | REPLAY now says "Applying…", "Apply this response" and "…applied to the recorded dispute… Nothing was sent to PayPal". LIVE keeps the PayPal wording. The e2e test now fails if REPLAY ever claims a send | **Fixed**, checked locally |
+
+| 6 | **Response deadlines** card scrolled to show its second row | Every viewer | Card is taller, so two rows of clocks fit | **Fixed**, checked locally |
+| 7 | **Customize** opened four panels at once (assistant, filters, compose, data) | Judges trying the dashboard | Customize opens only Compose + Data on the right | **Fixed**, checked locally |
+| 8 | **Selecting a grid row did nothing** though the grid said it would | Judges trying the dashboard | AG Studio 3.0 grids can't start a cross-filter, only charts can, and our charts had it off. Turned it on for both charts; the grid and gauge text now say "click a chart bar or slice" | **Fixed**, checked locally |
+| 9 | **Ask the AI assistant** opened the whole Customize screen | Judges, and the video | The assistant opens on its own, with no editing panels | **Fixed**, checked locally |
+| 10 | Bar-chart-by-reason prompt sometimes answered "that chart already exists" (it does: the default dashboard has one) | The video | New starter **Chart what Verdict recommends** adds a chart that isn't there | **Fixed**, checked locally (live Claude) |
+| 11 | **Refund in full** override showed an amount field | Anyone overriding | The amount field shows only for **Offer a partial refund**; a full refund always sends the disputed amount | **Fixed**, checked locally |
+| 12 | Review button said "Reviewing… about 10 seconds" | Everyone | Spinner + "Reviewing…" (also on Approve while it applies) | **Fixed**, checked locally |
+| 13 | **Arbiter rules** left the site for GitHub | Judges in the Arena | In-app page `/arena/rules`, with the fee and signature threshold read from the arbiter code | **Fixed**, checked locally |
 
 All of these are polish on the demo path, not new features.
 
@@ -143,7 +152,7 @@ Devpost's own video advice: under 3:00, public on YouTube, **open with the probl
 | 0:50 approve → PayPal state changes | Needs prep | Show the Case File status change **and** the same dispute in the PayPal sandbox (developer dashboard or Resolution Center) so "real PayPal" is unmistakable. |
 | 1:20 guardrails / injection | Gap: no on-screen moment yet | Use the injection dispute filed above: it lands as **Needs your judgment**, and **How Verdict decided** shows the injection check flagged. Add 3 s on "Every piece of evidence points to a real record". |
 | 1:50 Arena | Good | Show the SIMULATED badge clearly, one live run (set Runs to 1, about 20 s; cut the wait), the slider at $20 ("vs Verdict −$58"), the weak spot. Say "simulated arbiter" out loud. |
-| 2:30 dashboard chat | Good, verified live | **Ask the AI assistant** now opens with the cursor in the box, so it films cleanly. Use the bar-chart prompt (works live). Don't use the deadline-clocks prompt (it didn't work). The KPI tiles **Ready to approve** and **Needs your judgment** are worth a beat: they tie the dashboard to the agent. |
+| 2:30 dashboard chat | Good, verified live | **Ask the AI assistant** now opens with the cursor in the box, so it films cleanly. Use the **Chart what Verdict recommends** starter (it adds a new chart; a by-reason chart already exists). Don't use the deadline-clocks prompt (it didn't work). A chart click that cross-filters the page is a good 3-second beat. The KPI tiles **Ready to approve** and **Needs your judgment** are worth a beat: they tie the dashboard to the agent. |
 | 2:50 closing card | **Outdated line** | The script still ends "Verdict: win the disputes you should win", the line you found confusing. Use "Verdict: an AI clerk for your PayPal disputes". Show the hosted URL + repo + "MIT". |
 | (missing) Render | Optional | One line: "Hosted on Render." Costs nothing and supports the Render tick box. |
 

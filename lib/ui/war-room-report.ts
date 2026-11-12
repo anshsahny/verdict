@@ -143,7 +143,7 @@ export const WAR_ROOM_REPORT = {
           // One sort field per grid: Waiting on us > Waiting on buyer > Under review > Resolved. Rows
           // arrive pre-ordered by deadline (page.tsx), which holds within each status.
           sort: [{ field: { id: 'disputes.status' }, direction: 'desc' }],
-          format: title('All disputes', 'Click an id to open its Case File. Select a row to focus the other widgets on it.'),
+          format: title('All disputes', 'Click an id to open its Case File. Click a chart bar or slice to narrow this list.'),
         },
         timeline: {
           type: 'dispute-timeline',
@@ -153,12 +153,13 @@ export const WAR_ROOM_REPORT = {
         'by-reason': {
           type: 'column-chart-stacked',
           dataMapping: { categoryKey: [{ id: 'disputes.reason' }], valueKey: [sum('disputes.amount')], legendKey: [{ id: 'disputes.outcome' }] },
-          format: { ...title('Disputed $ by reason and outcome'), style: { theme: { common: { legend: { enabled: true } } } } },
+          // Clicking a bar or slice cross-filters the rest of the page (the grid can't start one).
+          format: { ...title('Disputed $ by reason and outcome'), crossFilter: 'highlight', style: { theme: { common: { legend: { enabled: true } } } } },
         },
         'by-status': {
           type: 'donut-chart',
           dataMapping: { categoryKey: [{ id: 'disputes.status' }], valueKey: [sum('disputes.amount')] },
-          format: { ...title('Disputed $ by status'), style: { theme: { common: { legend: { enabled: true } } } } },
+          format: { ...title('Disputed $ by status'), crossFilter: 'highlight', style: { theme: { common: { legend: { enabled: true } } } } },
         },
       },
       widgetLayout: {
@@ -166,12 +167,12 @@ export const WAR_ROOM_REPORT = {
         'kpi-ready': at(6, 0, 6, 7),
         'kpi-due': at(12, 0, 6, 7),
         'kpi-judgment': at(18, 0, 6, 7),
-        clocks: at(0, 7, 16, 11),
-        strength: at(16, 7, 8, 11),
-        queue: at(0, 18, 24, 22),
-        timeline: at(0, 40, 8, 20),
-        'by-reason': at(8, 40, 8, 20),
-        'by-status': at(16, 40, 8, 20),
+        clocks: at(0, 7, 16, 14),
+        strength: at(16, 7, 8, 14),
+        queue: at(0, 21, 24, 22),
+        timeline: at(0, 43, 8, 20),
+        'by-reason': at(8, 43, 8, 20),
+        'by-status': at(16, 43, 8, 20),
       },
     },
   ],

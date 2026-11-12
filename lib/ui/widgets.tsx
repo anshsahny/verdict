@@ -2,7 +2,7 @@
 
 // Verdict's custom AG Studio widgets and grid cell renderers, registered through createWidgets.
 // Each widget declares a data mapping and reads rows with widgetApi.getData, so page filters and
-// cross-filtering (selecting a dispute in the queue) drive it like any built-in widget.
+// cross-filtering (clicking a chart bar or slice) drive it like any built-in widget.
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -40,8 +40,9 @@ function useWidgetRows(params: AgWidgetParams, keys: string[], queryId: string) 
       setRows(next);
       widgetApi.setDisplayState('displayed'); // the components render their own empty states
     };
+    // Asking for crossFilter explicitly is what registers the widget for a refresh when a chart click changes it.
     widgetApi
-      .getData({ kind: 'flat', fields }, { queryId, onDataUpdated: (r: { results: { rows: Row[] } }) => apply(r.results.rows) } as never)
+      .getData({ kind: 'flat', fields }, { queryId, crossFilter: 'filter', onDataUpdated: (r: { results: { rows: Row[] } }) => apply(r.results.rows) } as never)
       .then((res) => {
         if (!(res as { replaced?: boolean }).replaced) apply(res.results.rows);
       })
@@ -49,9 +50,9 @@ function useWidgetRows(params: AgWidgetParams, keys: string[], queryId: string) 
     return () => {
       live = false;
     };
-    // fieldKey captures the mapping; widgetApi is stable per widget
+    // fieldKey captures the mapping; widgetApi is stable per widget; Studio hands over new params on each refresh
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fieldKey, queryId]);
+  }, [fieldKey, queryId, params]);
   return { rows, field: (k: string) => (dataMapping as Record<string, AgWidgetField[] | undefined>)[k]?.[0] };
 }
 
@@ -97,7 +98,7 @@ function EvidenceMeterWidget(params: AgWidgetParams) {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-1">
       <StrengthGauge value={Number.isFinite(v) ? v : null} size={170} />
-      <p className="text-center text-xs text-v-muted">Average across the disputes in view. Select a dispute in the queue to see its own score.</p>
+      <p className="text-center text-xs text-v-muted">Average across the disputes in view. Click a chart bar or slice to score just those disputes.</p>
     </div>
   );
 }
